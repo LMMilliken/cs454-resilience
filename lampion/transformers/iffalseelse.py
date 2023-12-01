@@ -169,7 +169,7 @@ class IfFalseElseTransformer(BaseTransformer, ABC):
             self.node_count = 0
 
         def visit_node(self, node):
-            if not self.finished:
+            if not self.__applied:
                 self.node_count += 1
 
         def applied(self):
