@@ -93,9 +93,9 @@ class RenameVariableTransformer(BaseTransformer, ABC):
 
                 to_replace = rand.choice(seen_names)
                 if self.__string_randomness == "pseudo":
-                    replacement = get_pseudo_random_string()
+                    replacement = get_pseudo_random_string(rand=rand)
                 elif self.__string_randomness == "full":
-                    replacement = get_random_string(5)
+                    replacement = get_random_string(5, rand=rand)
 
                 renamer = self.__Renamer(to_replace, replacement)
 

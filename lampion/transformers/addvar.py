@@ -188,9 +188,9 @@ class AddVariableTransformer(BaseTransformer, ABC):
             :raises: ValueError in case of different strings.
             """
             if string_randomness == "pseudo":
-                name = get_pseudo_random_string()
+                name = get_pseudo_random_string(rand=self.random)
             elif string_randomness == "full":
-                name = get_random_string(5)
+                name = get_random_string(5, rand=self.random)
             else:
                 raise ValueError(
                     "Something changed the StringRandomness in AddVariableTransformer to an invalid value."
@@ -203,7 +203,7 @@ class AddVariableTransformer(BaseTransformer, ABC):
 
             value = ""
             if type_str == "str":
-                value = f'"{get_random_string(self.random.randint(3, 30))}"'
+                value = f'"{get_random_string(self.random.randint(3, 30), rand=self.random)}"'
             if type_str == "int":
                 value = self.random.randint(2, 1000)
             if type_str == "float":

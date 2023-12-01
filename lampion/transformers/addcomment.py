@@ -165,7 +165,9 @@ class AddCommentTransformer(BaseTransformer, ABC):
             if self.finished:
                 return updated_node
 
-            added_stmt = _make_snippet(string_randomness=self.__string_randomness)
+            added_stmt = _make_snippet(
+                self.random, string_randomness=self.__string_randomness
+            )
 
             # Case 2: We did not alter yet, at the current (random) statement apply it in 1 of 20 cases.
             # TODO: this has a slight bias towards early nodes if the file is long?
@@ -180,7 +182,7 @@ class AddCommentTransformer(BaseTransformer, ABC):
             return updated_node
 
 
-def _make_snippet(string_randomness: str = "pseudo") -> CSTNode:
+def _make_snippet(rand: random.Random, string_randomness: str = "pseudo") -> CSTNode:
     """
     Creates a CSTNode of a comment made of random strings.
     Supported randomness are "pseudo" and "full".
@@ -201,8 +203,8 @@ def _make_snippet(string_randomness: str = "pseudo") -> CSTNode:
     """
     if string_randomness == "full":
         pieces = [
-            get_random_string(random.randint(1, 8))
-            for x in range(1, random.randint(2, 5))
+            get_random_string(rand.randint(1, 8), rand=rand)
+            for x in range(1, rand.randint(2, 5), rand=rand)
         ]
     elif string_randomness == "pseudo":
         suppliers = [
@@ -211,27 +213,31 @@ def _make_snippet(string_randomness: str = "pseudo") -> CSTNode:
                 with_job=False,
                 with_animal=False,
                 with_adjective=False,
+                rand=rand,
             ),
             lambda: get_pseudo_random_string(
                 with_keyword=False,
                 with_job=True,
                 with_animal=False,
                 with_adjective=False,
+                rand=rand,
             ),
             lambda: get_pseudo_random_string(
                 with_keyword=False,
                 with_job=False,
                 with_animal=True,
                 with_adjective=False,
+                rand=rand,
             ),
             lambda: get_pseudo_random_string(
                 with_keyword=False,
                 with_job=False,
                 with_animal=False,
                 with_adjective=True,
+                rand=rand,
             ),
         ]
-        pieces = [random.choice(suppliers)() for x in range(1, random.randint(3, 8))]
+        pieces = [rand.choice(suppliers)() for x in range(1, rand.randint(3, 8))]
     else:
         raise ValueError(
             "Unrecognized Value for String Randomness, supported are pseudo and full"
