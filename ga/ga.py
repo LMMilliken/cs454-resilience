@@ -14,9 +14,7 @@ def ga(
     globals.original = parse_expression(target["code"])
     globals.expected_out = target["docstring"]
 
-    population = sorted(
-        [Solution.generate() for _ in range(pop_size)], key=lambda x: x.fitness
-    )
+    population = sorted([Solution() for _ in range(pop_size)], key=lambda x: x.fitness)
     fittest = population[0]
     stagnant = 0
     while time.time() - start_time < budget and stagnant < early_stopping:

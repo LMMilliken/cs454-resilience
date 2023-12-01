@@ -1,12 +1,14 @@
 from typing import Tuple
 from libcst import CSTNode
+from ga import globals
 import copy
 
 
 class Solution:
-    def __init__(self, original: CSTNode) -> None:
-        self.original = original
+    def __init__(self, mutate: bool = True) -> None:
+        self.original = globals.original
         self.adversary = copy.deepcopy(self.original)
+        self.mutate()
         # TODO: define structure of solution
         self._fitness = None
 
@@ -30,10 +32,4 @@ class Solution:
 
     def crossover(p1: "Solution", p2: "Solution") -> Tuple["Solution", "Solution"]:
         # TODO: implement once structure of Solution has been defined
-        pass
-
-    @classmethod
-    def generate(cls) -> "Solution":
-        # TODO: implement once structure of Solution has been defined
-        # Generates a new candidate solution
         pass
