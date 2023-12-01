@@ -23,6 +23,7 @@ class BaseTransformer:
 
     def __init__(self, seed: Optional[int] = None) -> None:
         self.seed = seed if seed is not None else random.randint(0, 20000)
+        self.node_count = None
 
     def reset(self):
         """Resets the Transformer to be applied again.

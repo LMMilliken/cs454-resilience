@@ -48,6 +48,7 @@ class RenameParameterTransformer(BaseTransformer, ABC):
             raise ValueError(
                 "Unrecognized Value for String Randomness, supported are pseudo and full"
             )
+        self.node_count = 0
 
         self._worked = False
         self.set_max_tries(max_tries)

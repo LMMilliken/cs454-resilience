@@ -90,6 +90,8 @@ class IfTrueTransformer(BaseTransformer, ABC):
         tries: int = 0
         max_tries: int = self.get_max_tries()
 
+        transformer = None
+
         while (not self._worked) and tries <= max_tries:
             try:
                 transformer = self.__IfTrueWrapper()
@@ -112,6 +114,8 @@ class IfTrueTransformer(BaseTransformer, ABC):
         if tries == max_tries and not self.worked():
             log.warning("IfTrueTransformer failed after %i attempts", max_tries)
 
+        if transformer is not None:
+            self.node_count = transformer.node_count
         return altered_cst
 
     def reset(self) -> None:
@@ -174,6 +178,11 @@ class IfTrueTransformer(BaseTransformer, ABC):
             self.random = random.Random(seed)
             self.__applied = False
             self.chance = 0.1
+            self.node_count = 0
+
+        def visit_node(self, node):
+            if not self.finished:
+                self.node_count += 1
 
         def applied(self):
             return self.__applied

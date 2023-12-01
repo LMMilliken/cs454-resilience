@@ -90,6 +90,8 @@ class LambdaIdentityTransformer(BaseTransformer, ABC):
 
         rand = random.Random(self.seed)
 
+        replacer = None
+
         while (not self._worked) and tries <= max_tries:
             try:
                 to_replace = rand.choice(seen_literals)
@@ -124,6 +126,8 @@ class LambdaIdentityTransformer(BaseTransformer, ABC):
                 "Lambda Identity Transformer failed after %i attempt", max_tries
             )
 
+        if replacer is not None:
+            self.node_count = replacer.node_count
         return altered_cst
 
     def reset(self) -> None:
@@ -178,6 +182,11 @@ class LambdaIdentityTransformer(BaseTransformer, ABC):
             self.to_replace = to_replace
             self.replace_type = replace_type
             self.replacer_finished = False
+            self.node_count = 0
+
+        def visit_node(self, node):
+            if not self.finished:
+                self.node_count += 1
 
         def leave_Float(
             self, original_node: "Float", updated_node: "Float"

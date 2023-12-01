@@ -58,6 +58,7 @@ class RenameVariableTransformer(BaseTransformer, ABC):
         log.info(
             "RenameVariableTransformer created (%d Re-Tries)", self.get_max_tries()
         )
+        self.node_count = 0
 
     def apply(self, cst_to_alter: CSTNode) -> CSTNode:
         """

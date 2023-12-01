@@ -78,6 +78,8 @@ class AddCommentTransformer(BaseTransformer, ABC):
         if tries == max_tries:
             log.warning("Add Comment Transformer failed after %i attempts", max_tries)
 
+        self.node_count = visitor.node_count
+
         return altered_cst
 
     def reset(self) -> None:
@@ -143,6 +145,11 @@ class AddCommentTransformer(BaseTransformer, ABC):
                 ]
 
             self.finished = False
+            self.node_count = 0
+
+        def visit_node(self, node):
+            if not self.finished:
+                self.node_count += 1
 
         def leave_SimpleStatementLine(
             self,

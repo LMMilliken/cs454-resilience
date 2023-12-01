@@ -89,7 +89,7 @@ class AddNeutralElementTransformer(BaseTransformer, ABC):
 
         while (not self._worked) and tries <= max_tries:
             try:
-                to_replace = rand.choice(seen_literals)
+                node_count, to_replace = rand.choice(list(enumerate(seen_literals)))
 
                 replacer = self.__Replacer(to_replace[1], to_replace[0])
 
@@ -102,6 +102,10 @@ class AddNeutralElementTransformer(BaseTransformer, ABC):
 
                 tries = tries + 1
                 self._worked = replacer.worked
+
+                if self._worked:
+                    self.node_count = node_count
+
             except libcst._nodes.base.CSTValidationError:
                 # This can happen if we try to add strings and add too many Parentheses
                 # See https://github.com/Instagram/LibCST/issues/640

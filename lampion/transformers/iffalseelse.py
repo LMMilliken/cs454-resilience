@@ -103,6 +103,7 @@ class IfFalseElseTransformer(BaseTransformer, ABC):
         if tries == max_tries and not self.worked():
             log.warning("IfTrueTransformer failed after %i attempts", max_tries)
 
+        self.node_count = transformer.node_count
         return altered_cst
 
     def reset(self) -> None:
@@ -165,6 +166,11 @@ class IfFalseElseTransformer(BaseTransformer, ABC):
             super().__init__()
             self.__applied = False
             self.chance = 0.1
+            self.node_count = 0
+
+        def visit_node(self, node):
+            if not self.finished:
+                self.node_count += 1
 
         def applied(self):
             return self.__applied

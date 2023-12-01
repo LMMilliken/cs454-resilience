@@ -80,6 +80,8 @@ class AddVariableTransformer(BaseTransformer, ABC):
         if tries == max_tries:
             log.warning("Add Variable Visitor failed after %i attempts", max_tries)
 
+        self.node_count = visitor.node_count
+
         return altered_cst
 
     def reset(self) -> None:
@@ -132,8 +134,13 @@ class AddVariableTransformer(BaseTransformer, ABC):
             log.debug("AddVariableVisitor Created")
             self.finished = False
             self.__string_randomness = string_randomness
+            self.node_count = 0
 
         finished = False
+
+        def visit_node(self, node):
+            if not self.finished:
+                self.node_count += 1
 
         def leave_SimpleStatementLine(
             self,
