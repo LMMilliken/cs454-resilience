@@ -1,0 +1,3888 @@
+code,docstring,generated_comment
+"def foo(p, level=""s""):
+  level = level+""__""
+ 
+  result = p.split(level)
+ 
+  return result[0]+level+result[1].split("";"")[0]","Return either the full or truncated version of a QIIME-formatted taxonomy string.
+ 
+ 
+ 
+  :type p: str
+ 
+  :param p: A QIIME-formatted taxonomy string: k__Foo; p__Bar; ...
+ 
+ 
+ 
+  :type level: str
+ 
+  :param level: The different level of identification are kingdom (k), phylum (p),
+ 
+  class (c),order (o), family (f), genus (g) and species (s). If level is
+ 
+  not provided, the default level of identification is species.
+ 
+ 
+ 
+  :rtype: str
+ 
+  :return: A QIIME-formatted taxonomy string up to the classification given
+ 
+  by param level.","This function takes a string as input and splits it based on a given level. The level is concatenated with ""__"". The string is then split into two parts based on the level and a semicolon. The function returns the first part of the string concatenated with the level and the first part of the second part of the string."
+"def foo(d):
+
+  if not os.path.exists(d):
+ 
+  try:
+ 
+  os.makedirs(d)
+ 
+  except OSError as oe:
+ 
+  # should not happen with os.makedirs
+ 
+  # ENOENT: No such file or directory
+ 
+  if os.errno == errno.ENOENT:
+ 
+  msg = twdd(""""""One or more directories in the path ({}) do not exist. If
+ 
+  you are specifying a new directory for output, please ensure
+ 
+  all other directories in the path currently exist."""""")
+ 
+  return msg.format(d)
+ 
+  else:
+ 
+  msg = twdd(""""""An error occurred trying to create the output directory
+ 
+  ({}) with message: {}"""""")
+ 
+  return msg.format(d, oe.strerror)","Check to make sure the supplied directory path does not exist, if so, create it. The
+ 
+  method catches OSError exceptions and returns a descriptive message instead of
+ 
+  re-raising the error.
+ 
+ 
+ 
+  :type d: str
+ 
+  :param d: It is the full path to a directory.
+ 
+ 
+ 
+  :return: Does not return anything, but creates a directory path if it doesn't exist
+ 
+  already.","This function checks if the specified directory exists. If it does not exist, it attempts to create the directory. If an error occurs during the creation process, it generates an appropriate error message indicating the cause of the error."
+"def foo(fnh, mode=""rU""):
+ 
+  handle = None
+ 
+  if isinstance(fnh, file):
+ 
+  if fnh.closed:
+ 
+  raise ValueError(""Input file is closed."")
+ 
+  handle = fnh
+ 
+  elif isinstance(fnh, str):
+ 
+  handle = open(fnh, mode)
+ 
+ 
+ 
+  return handle","Takes either a file path or an open file handle, checks validity and returns an open
+ 
+  file handle or raises an appropriate Exception.
+ 
+ 
+ 
+  :type fnh: str
+ 
+  :param fnh: It is the full path to a file, or open file handle
+ 
+ 
+ 
+  :type mode: str
+ 
+  :param mode: The way in which this file will be used, for example to read or write or
+ 
+  both. By default, file will be opened in rU mode.
+ 
+ 
+ 
+  :return: Returns an opened file for appropriate usage.","This function takes in a file handle or a file name as input and opens the file in read mode if it is not already open. If a file handle is given, it checks if the file is closed and raises a ValueError if it is. The function returns the opened file handle."
+"def foo(imap, header, categories=None):
+
+ 
+  if categories is None:
+ 
+  return {""default"": DataCategory(set(imap.keys()), {})}
+ 
+ 
+ 
+  cat_ids = [header.index(cat)
+ 
+  for cat in categories if cat in header and ""="" not in cat]
+ 
+ 
+ 
+  table = OrderedDict()
+ 
+  conditions = defaultdict(set)
+ 
+  for i, cat in enumerate(categories):
+ 
+  if ""="" in cat and cat.split(""="")[0] in header:
+ 
+  cat_name = header[header.index(cat.split(""="")[0])]
+ 
+  conditions[cat_name].add(cat.split(""="")[1])
+
+  if not cat_ids and not conditions:
+ 
+  return {""default"": DataCategory(set(imap.keys()), {})}
+ 
+
+  if cat_ids and not conditions:
+ 
+  for sid, row in imap.items():
+ 
+  cat_name = ""_"".join([row[cid] for cid in cat_ids])
+ 
+  if cat_name not in table:
+ 
+  table[cat_name] = DataCategory(set(), {})
+ 
+  table[cat_name].sids.add(sid)
+ 
+  return table
+ 
+ct all condition names
+ 
+  cond_ids = set()
+ 
+  for k in conditions:
+ 
+  try:
+ 
+  cond_ids.add(header.index(k))
+ 
+  except ValueError:
+ 
+  continue
+ 
+  idx_to_test = set(cat_ids).union(cond_ids)
+
+ 
+  for sid, row in imap.items():
+ 
+  if all([row[header.index(c)] in conditions[c] for c in conditions]):
+ 
+  key = ""_"".join([row[idx] for idx in idx_to_test])
+ 
+  try:
+ 
+  assert key in table.keys()
+ 
+  except AssertionError:
+ 
+  table[key] = DataCategory(set(), {})
+ 
+  table[key].sids.add(sid)
+ 
+  try:
+ 
+  assert len(table) > 0
+ 
+  except AssertionError:
+ 
+  return {""default"": DataCategory(set(imap.keys()), {})}
+ 
+  else:
+ 
+  return table","Find the user specified categories in the map and create a dictionary to contain the
+ 
+  relevant data for each type within the categories. Multiple categories will have their
+ 
+  types combined such that each possible combination will have its own entry in the
+ 
+  dictionary.
+ 
+ 
+ 
+  :type imap: dict
+ 
+  :param imap: The input mapping file data keyed by SampleID
+ 
+  :type header: list
+ 
+  :param header: The header line from the input mapping file. This will be searched for
+ 
+  the user-specified categories
+ 
+  :type categories: list
+ 
+  :param categories: The list of user-specified category column name from mapping file
+ 
+  :rtype: dict
+ 
+  :return: A sorted dictionary keyed on the combinations of all the types found within
+ 
+  the user-specified categories. Each entry will contain an empty DataCategory
+ 
+  namedtuple. If no categories are specified, a single entry with the key
+ 
+  'default' will be returned","This function takes in a dictionary of data with associated headers and optional categories. It organizes the data based on the categories and returns a table of data categories. If no categories are provided, it returns a default category. The function uses the categories and conditions to filter and group the data into appropriate data categories."
+"def foo(unifracFN):
+ 
+  with open(unifracFN, ""rU"") as uF:
+ 
+  first = uF.next().split(""\t"")
+ 
+  lines = [line.strip() for line in uF]
+ 
+ 
+ 
+  unifrac = {""pcd"": OrderedDict(), ""eigvals"": [], ""varexp"": []}
+ 
+  if first[0] == ""pc vector number"":
+ 
+  return parse_unifrac_v1_8(unifrac, lines)
+ 
+  elif first[0] == ""Eigvals"":
+ 
+  return parse_unifrac_v1_9(unifrac, lines)
+ 
+  else:
+ 
+  raise ValueError(""File format not supported/recognized. Please check input ""
+ 
+  ""unifrac file."")","Parses the unifrac results file into a dictionary
+ 
+ 
+ 
+  :type unifracFN: str
+ 
+  :param unifracFN: The path to the unifrac results file
+ 
+ 
+ 
+  :rtype: dict
+ 
+  :return: A dictionary with keys: 'pcd' (principle coordinates data) which is a
+ 
+  dictionary of the data keyed by sample ID, 'eigvals' (eigenvalues), and
+ 
+  'varexp' (variation explained)","This function reads and parses a file in the UNIFRAC format. It first checks the format of the file by reading the first line. If the first item in the first line is ""pc vector number"", it calls the function for parsing UNIFRAC file version 1.8. If the first item is ""Eigvals"", it calls the function for parsing UNIFRAC file version 1.9. If neither of these conditions are met, it raises a ValueError indicating that the file format is not supported or recognized. The parsed data is stored in a dictionary object called ""unifrac"", which contains the principal coordinates (pcd), eigenvalues (eigvals), and variance explained (varexp)."
+"def foo(unifrac, file_data):
+  for line in file_data:
+ 
+  if line == """":
+ 
+  break
+ 
+  line = line.split(""\t"")
+ 
+  unifrac[""pcd""][line[0]] = [float(e) for e in line[1:]]
+ 
+ 
+ 
+  unifrac[""eigvals""] = [float(entry) for entry in file_data[-2].split(""\t"")[1:]]
+ 
+  unifrac[""varexp""] = [float(entry) for entry in file_data[-1].split(""\t"")[1:]]
+ 
+  return unifrac","Function to parse data from older version of unifrac file obtained from Qiime version
+ 
+  1.8 and earlier.
+ 
+ 
+ 
+  :type unifrac: dict
+ 
+  :param unifracFN: The path to the unifrac results file
+ 
+ 
+ 
+  :type file_data: list
+ 
+  :param file_data: Unifrac data lines after stripping whitespace characters.","This function takes two inputs: unifrac, which is a dictionary, and file_data, which is a list of strings. 
+It iterates through each line in file_data, splitting each line by tabs. 
+If the line is empty, the loop breaks. 
+Otherwise, it adds the values from line[1:] as a list of floats to the unifrac dictionary, with line[0] as the key. 
+It then extracts the values from the second to last line of file_data as a list of floats and assigns it to the ""eigvals"" key in the unifrac dictionary. 
+Similarly, it extracts the values from the last line of file_data as a list of floats and assigns it to the ""varexp"" key in the unifrac dictionary. 
+Finally, it returns the modified unifrac dictionary."
+"def foo(unifrac, file_data):
+  unifrac[""eigvals""] = [float(entry) for entry in file_data[0].split(""\t"")]
+ 
+  unifrac[""varexp""] = [float(entry)*100 for entry in file_data[3].split(""\t"")]
+ 
+ 
+ 
+  for line in file_data[8:]:
+ 
+  if line == """":
+ 
+  break
+ 
+  line = line.split(""\t"")
+ 
+  unifrac[""pcd""][line[0]] = [float(e) for e in line[1:]]
+ 
+  return unifrac","Function to parse data from newer version of unifrac file obtained from Qiime version
+ 
+  1.9 and later.
+ 
+ 
+ 
+  :type unifracFN: str
+ 
+  :param unifracFN: The path to the unifrac results file
+ 
+ 
+ 
+  :type file_data: list
+ 
+  :param file_data: Unifrac data lines after stripping whitespace characters.","This function takes in two arguments, `unifrac` and `file_data`. 
+The purpose of this function is to parse data from a file and populate the `unifrac` dictionary with the relevant information. 
+First, it extracts the eigenvalues from the first line of `file_data` and converts them to floats, storing them in `unifrac[""eigvals""]`. 
+Next, it extracts the variation explained percentages from the fourth line of `file_data` and converts them to floats, storing them in `unifrac[""varexp""]`. 
+Then, it loops through the remaining lines of `file_data` starting from the ninth line. For each line, it splits the line and stores the first element as the key in the `unifrac[""pcd""]` dictionary, and the remaining elements as floats in a list associated with that key. 
+Finally, it returns the `unifrac` dictionary."
+"def foo(sample_map, header, group_column, color_column=None):
+ 
+  group_colors = OrderedDict()
+ 
+  group_gather = gather_categories(sample_map, header, [group_column])
+ 
+ 
+ 
+  if color_column is not None:
+ 
+  color_gather = gather_categories(sample_map, header, [color_column])
+ 
+  # match sample IDs between color_gather and group_gather
+ 
+  for group in group_gather:
+ 
+  for color in color_gather:
+ 
+  # allow incomplete assignment of colors, if group sids overlap at
+ 
+  # all with the color sids, consider it a match
+ 
+  if group_gather[group].sids.intersection(color_gather[color].sids):
+ 
+  group_colors[group] = color
+ 
+  else:
+ 
+  bcolors = itertools.cycle(Set3_12.hex_colors)
+ 
+  for group in group_gather:
+ 
+  group_colors[group] = bcolors.next()
+ 
+ 
+ 
+  return group_colors","Determine color-category mapping. If color_column was specified, then map the category
+ 
+  names to color values. Otherwise, use the palettable colors to automatically generate
+ 
+  a set of colors for the group values.
+ 
+ 
+ 
+  :type sample_map: dict
+ 
+  :param unifracFN: Map associating each line of the mapping file with the appropriate
+ 
+  sample ID (each value of the map also contains the sample ID)
+ 
+ 
+ 
+  :type header: tuple
+ 
+  :param A tuple of header line for mapping file
+ 
+ 
+ 
+  :type group_column: str
+ 
+  :param group_column: String denoting the column name for sample groups.
+ 
+ 
+ 
+  :type color_column: str
+ 
+  :param color_column: String denoting the column name for sample colors.
+ 
+ 
+ 
+  :type return: dict
+ 
+  :param return: {SampleID: Color}","This function takes in a sample map, header, group column, and color column (optional) as input. It creates an ordered dictionary to store the colors assigned to each group. 
+The function first gathers the categories from the sample map based on the group column. If a color column is specified, it also gathers the categories from the sample map based on the color column.
+Then, it matches the sample IDs between the group_gather and color_gather.
+For each group, if there is a match between the group_sids and color_sids, the function assigns the color to the group.
+If there is no match, it assigns a color from a cycle of hex colors to the group.
+Finally, the function returns the mapping of groups to colors."
+"def foo(read):
+ 
+  rc = []
+ 
+  rc_nucs = {'A':'T', 'T':'A', 'G':'C', 'C':'G', 'N':'N'}
+ 
+  for base in read:
+ 
+  rc.extend(rc_nucs[base.upper()])
+ 
+  return rc[::-1]",return reverse completment of read,"This function takes a DNA sequence as input and returns its reverse complement. It iterates through each base of the sequence and finds its complement (A with T, T with A, G with C, C with G, and N with N). It stores the complements in a list, and then reverses the order of the list to obtain the reverse complement."
+"def foo(genome, cat, fraction = float(100), plot = True, \
+ 
+  alpha = 0.1, beta = 100000, \
+ 
+  min_length = 1000, max_length = 200000):
+ 
+  header = '>randomized_%s' % (genome.name)
+ 
+  sequence = list(''.join([i[1] for i in parse_fasta(genome)]))
+ 
+  length = len(sequence)
+ 
+  shuffled = []
+ 
+  # break genome into pieces
+ 
+  while sequence is not False:
+ 
+  s = int(random.gammavariate(alpha, beta))
+ 
+  if s <= min_length or s >= max_length:
+ 
+  continue
+ 
+  if len(sequence) < s:
+ 
+  seq = sequence[0:]
+ 
+  else:
+ 
+  seq = sequence[0:s]
+ 
+  sequence = sequence[s:]
+ 
+ # if bool(random.getrandbits(1)) is True:
+ 
+ # seq = rev_c(seq)
+ 
+ # print('fragment length: %s reverse complement: True' % ('{:,}'.format(s)), file=sys.stderr)
+ 
+ # else:
+ 
+ # print('fragment length: %s reverse complement: False' % ('{:,}'.format(s)), file=sys.stderr)
+ 
+  shuffled.append(''.join(seq))
+ 
+  if sequence == []:
+ 
+  break
+ 
+  # shuffle pieces
+ 
+  random.shuffle(shuffled)
+ 
+  # subset fragments
+ 
+  if fraction == float(100):
+ 
+  subset = shuffled
+ 
+  else:
+ 
+  max_pieces = int(length * fraction/100)
+ 
+  subset, total = [], 0
+ 
+  for fragment in shuffled:
+ 
+  length = len(fragment)
+ 
+  if total + length <= max_pieces:
+ 
+  subset.append(fragment)
+ 
+  total += length
+ 
+  else:
+ 
+  diff = max_pieces - total
+ 
+  subset.append(fragment[0:diff])
+ 
+  break
+ 
+  # combine sequences, if requested
+ 
+  if cat is True:
+ 
+  yield [header, ''.join(subset)]
+ 
+  else:
+ 
+  for i, seq in enumerate(subset):
+ 
+  yield ['%s fragment:%s' % (header, i), seq]",randomly shuffle genome,This function takes a genome sequence and generates randomized fragments from it. These fragments are then shuffled and a subset of them is selected based on a given fraction. The shuffled and subset fragments can be combined into a single sequence if desired. The function returns the header and sequence for each fragment.
+"def foo(self, fit, p_max):
+  def remove_from_model_desc(x, model_desc):
+ 
+  rhs_termlist = []
+ 
+  for t in model_desc.rhs_termlist:
+ 
+  if not t.factors:
+ 
+  # intercept, add anyway
+ 
+  rhs_termlist.append(t)
+ 
+  elif not x == t.factors[0]._varname:
+ 
+  # this is not the term with x
+ 
+  rhs_termlist.append(t)
+ 
+ 
+ 
+  md = ModelDesc(model_desc.lhs_termlist, rhs_termlist)
+ 
+  return md
+ 
+ 
+ 
+  corrected_model_desc = ModelDesc(fit.model.formula.lhs_termlist[:], fit.model.formula.rhs_termlist[:])
+ 
+  pars_to_prune = fit.pvalues.where(fit.pvalues > p_max).dropna().index.tolist()
+ 
+  try:
+ 
+  pars_to_prune.remove('Intercept')
+ 
+  except:
+ 
+  pass
+ 
+  while pars_to_prune:
+ 
+  corrected_model_desc = remove_from_model_desc(pars_to_prune[0], corrected_model_desc)
+ 
+  fit = fm.ols(corrected_model_desc, data=self.df).fit()
+ 
+  pars_to_prune = fit.pvalues.where(fit.pvalues > p_max).dropna().index.tolist()
+ 
+  try:
+ 
+  pars_to_prune.remove('Intercept')
+ 
+  except:
+ 
+  pass
+ 
+  return fit","If the fit contains statistically insignificant parameters, remove them.
+ 
+  Returns a pruned fit where all parameters have p-values of the t-statistic below p_max
+ 
+ 
+ 
+  Parameters
+ 
+  ----------
+ 
+  fit: fm.ols fit object
+ 
+  Can contain insignificant parameters
+ 
+  p_max : float
+ 
+  Maximum allowed probability of the t-statistic
+ 
+ 
+ 
+  Returns
+ 
+  -------
+ 
+  fit: fm.ols fit object
+ 
+  Won't contain any insignificant parameters",This function performs a stepwise variable selection process in linear regression models. It removes variables from the model by iterating over the p-values of the coefficients and removing variables with p-values greater than a specified threshold (p_max). The function starts by creating a copy of the original model description. It then iteratively checks the p-values of the remaining variables in the model and removes the variable with the highest p-value. The process continues until no variables with p-values above the threshold remain in the model. The resulting model is returned.
+"def find_best_rsquared(list_of_fits):
+ 
+  """"""Return the best fit, based on rsquared""""""
+ 
+  res = sorted(list_of_fits, key=lambda x: x.rsquared)
+ 
+  return res[-1]","Return the best fit, based on rsquared",This function takes a list of fits and returns the fit with the highest r-squared value. The r-squared value is a measure of how well the fit explains the variability in the data. The function sorts the fits in ascending order based on their r-squared values and returns the fit with the highest value.
+"def foo(self, fit, df):
+ 
+  # Add model results to data as column 'predictions'
+ 
+  df_res = df.copy()
+ 
+  if 'Intercept' in fit.model.exog_names:
+ 
+  df_res['Intercept'] = 1.0
+ 
+  df_res['predicted'] = fit.predict(df_res)
+ 
+  if not self.allow_negative_predictions:
+ 
+  df_res.loc[df_res['predicted'] < 0, 'predicted'] = 0
+ 
+ 
+ 
+  prstd, interval_l, interval_u = wls_prediction_std(fit,
+ 
+  df_res[fit.model.exog_names],
+ 
+  alpha=1 - self.confint)
+ 
+  df_res['interval_l'] = interval_l
+ 
+  df_res['interval_u'] = interval_u
+ 
+ 
+ 
+  if 'Intercept' in df_res:
+ 
+  df_res.drop(labels=['Intercept'], axis=1, inplace=True)
+ 
+ 
+ 
+  return df_res","Return a df with predictions and confidence interval
+ 
+ 
+ 
+  Notes
+ 
+  -----
+ 
+  The df will contain the following columns:
+ 
+  - 'predicted': the model output
+ 
+  - 'interval_u', 'interval_l': upper and lower confidence bounds.
+ 
+ 
+ 
+  The result will depend on the following attributes of self:
+ 
+  confint : float (default=0.95)
+ 
+  Confidence level for two-sided hypothesis
+ 
+  allow_negative_predictions : bool (default=True)
+ 
+  If False, correct negative predictions to zero (typically for energy consumption predictions)
+ 
+ 
+ 
+  Parameters
+ 
+  ----------
+ 
+  fit : Statsmodels fit
+ 
+  df : pandas DataFrame or None (default)
+ 
+  If None, use self.df
+ 
+ 
+ 
+ 
+ 
+  Returns
+ 
+  -------
+ 
+  df_res : pandas DataFrame
+ 
+  Copy of df with additional columns 'predicted', 'interval_u' and 'interval_l'","This function takes in a fitted model and a dataframe as inputs. It adds the model's predictions to the dataframe as a new column called 'predictions'. If the 'allow_negative_predictions' parameter is set to True, negative predictions are allowed and not modified. Otherwise, any negative predictions are set to 0. The function also calculates prediction standard error and confidence intervals based on the fitted model, and adds them to the dataframe as 'interval_l' (lower bound) and 'interval_u' (upper bound). Finally, it removes the 'Intercept' column from the dataframe (if present) and returns the modified dataframe."
+"def foo(biomf, sampleIDs=None):
+ 
+  if sampleIDs is None:
+ 
+  sampleIDs = biomf.ids()
+ 
+  else:
+ 
+  try:
+ 
+  for sid in sampleIDs:
+ 
+  assert sid in biomf.ids()
+ 
+  except AssertionError:
+ 
+  raise ValueError(
+ 
+  ""\nError while calculating relative abundances: The sampleIDs provided do""
+ 
+  "" not match the sampleIDs in biom file. Please double check the sampleIDs""
+ 
+  "" provided.\n"")
+ 
+  otuIDs = biomf.ids(axis=""observation"")
+ 
+  norm_biomf = biomf.norm(inplace=False)
+ 
+ 
+ 
+  return {sample: {otuID: norm_biomf.get_value_by_ids(otuID, sample)
+ 
+  for otuID in otuIDs} for sample in sampleIDs}","Calculate the relative abundance of each OTUID in a Sample.
+ 
+ 
+ 
+  :type biomf: A BIOM file.
+ 
+  :param biomf: OTU table format.
+ 
+ 
+ 
+  :type sampleIDs: list
+ 
+  :param sampleIDs: A list of sample id's from BIOM format OTU table.
+ 
+ 
+ 
+  :rtype: dict
+ 
+  :return: Returns a keyed on SampleIDs, and the values are dictionaries keyed on
+ 
+  OTUID's and their values represent the relative abundance of that OTUID in
+ 
+  that SampleID.","This function calculates the relative abundances of OTUs (Operational Taxonomic Units) in a biom file. It takes a biom file as input and optionally a list of sample IDs. If the sample IDs are not provided, it uses all the sample IDs in the biom file. It then checks that the provided sample IDs exist in the biom file. If any of the provided sample IDs are not found in the biom file, it raises a ValueError. 
+
+The function retrieves the list of OTU IDs in the biom file. It then normalizes the biom file, creating a normalized copy. Finally, it calculates the relative abundances for each sample and returns them as a dictionary of dictionaries."
+"def foo(ra, otuIDs):
+  sids = ra.keys()
+ 
+  otumeans = defaultdict(int)
+ 
+ 
+ 
+  for oid in otuIDs:
+ 
+  otumeans[oid] = sum([ra[sid][oid] for sid in sids
+ 
+  if oid in ra[sid]]) / len(sids) * 100
+ 
+  return otumeans","Calculate the mean OTU abundance percentage.
+ 
+ 
+ 
+  :type ra: Dict
+ 
+  :param ra: 'ra' refers to a dictionary keyed on SampleIDs, and the values are
+ 
+  dictionaries keyed on OTUID's and their values represent the relative
+ 
+  abundance of that OTUID in that SampleID. 'ra' is the output of
+ 
+  relative_abundance() function.
+ 
+ 
+ 
+  :type otuIDs: List
+ 
+  :param otuIDs: A list of OTUID's for which the percentage abundance needs to be
+ 
+  measured.
+ 
+ 
+ 
+  :rtype: dict
+ 
+  :return: A dictionary of OTUID and their percent relative abundance as key/value pair.","This function takes in a dictionary of values and a list of OTU IDs as input. It calculates the mean value for each OTU ID across all samples in the dictionary, excluding any samples where the OTU ID is not present. The calculated mean values are then returned as a dictionary."
+"def MRA(biomf, sampleIDs=None, transform=None):
+ 
+  ra = relative_abundance(biomf, sampleIDs)
+ 
+  if transform is not None:
+ 
+  ra = {sample: {otuID: transform(abd) for otuID, abd in ra[sample].items()}
+ 
+  for sample in ra.keys()}
+ 
+  otuIDs = biomf.ids(axis=""observation"")
+ 
+  return mean_otu_pct_abundance(ra, otuIDs)","Calculate the mean relative abundance percentage.
+ 
+ 
+ 
+  :type biomf: A BIOM file.
+ 
+  :param biomf: OTU table format.
+ 
+ 
+ 
+  :type sampleIDs: list
+ 
+  :param sampleIDs: A list of sample id's from BIOM format OTU table.
+ 
+ 
+ 
+  :param transform: Mathematical function which is used to transform smax to another
+ 
+  format. By default, the function has been set to None.
+ 
+ 
+ 
+  :rtype: dict
+ 
+  :return: A dictionary keyed on OTUID's and their mean relative abundance for a given
+ 
+  number of sampleIDs.","This function calculates the mean relative abundance (MRA) of each OTU (Operational Taxonomic Unit) in a given biom file. 
+It first calculates the relative abundance of each OTU in each sample. Then, if a transformation function is provided, it 
+applies the transformation to each relative abundance value. Finally, it calculates the mean relative abundance for each OTU 
+across all samples and returns the results."
+"def raw_abundance(biomf, sampleIDs=None, sample_abd=True):
+ 
+  results = defaultdict(int)
+ 
+  if sampleIDs is None:
+ 
+  sampleIDs = biomf.ids()
+ 
+  else:
+ 
+  try:
+ 
+  for sid in sampleIDs:
+ 
+  assert sid in biomf.ids()
+ 
+  except AssertionError:
+ 
+  raise ValueError(
+ 
+  ""\nError while calculating raw total abundances: The sampleIDs provided ""
+ 
+  ""do not match the sampleIDs in biom file. Please double check the ""
+ 
+  ""sampleIDs provided.\n"")
+ 
+  otuIDs = biomf.ids(axis=""observation"")
+ 
+ 
+ 
+  for sampleID in sampleIDs:
+ 
+  for otuID in otuIDs:
+ 
+  abd = biomf.get_value_by_ids(otuID, sampleID)
+ 
+  if sample_abd:
+ 
+  results[sampleID] += abd
+ 
+  else:
+ 
+  results[otuID] += abd
+ 
+  return results","Calculate the total number of sequences in each OTU or SampleID.
+ 
+ 
+ 
+  :type biomf: A BIOM file.
+ 
+  :param biomf: OTU table format.
+ 
+ 
+ 
+  :type sampleIDs: List
+ 
+  :param sampleIDs: A list of column id's from BIOM format OTU table. By default, the
+ 
+  list has been set to None.
+ 
+ 
+ 
+  :type sample_abd: Boolean
+ 
+  :param sample_abd: A boolean operator to provide output for OTUID's or SampleID's. By
+ 
+  default, the output will be provided for SampleID's.
+ 
+ 
+ 
+  :rtype: dict
+ 
+  :return: Returns a dictionary keyed on either OTUID's or SampleIDs and their
+ 
+  respective abundance as values.","This function calculates the raw abundance of OTUs (operational taxonomic units) in a biom file. It takes as input a biom file and optionally a list of sample IDs. By default, it calculates the total abundance for each sample, but if sample_abd is set to False, it calculates the total abundance for each OTU. The function returns a dictionary with sample IDs or OTU IDs as keys and their corresponding raw abundance as values. If the provided sample IDs do not match the sample IDs in the biom file, an error is raised."
+"def foo(biomf, fn=math.log10, sampleIDs=None, sample_abd=True):
+  totals = raw_abundance(biomf, sampleIDs, sample_abd)
+ 
+  return {sid: fn(abd) for sid, abd in totals.items()}","Function to transform the total abundance calculation for each sample ID to another
+ 
+  format based on user given transformation function.
+ 
+ 
+ 
+  :type biomf: A BIOM file.
+ 
+  :param biomf: OTU table format.
+ 
+ 
+ 
+  :param fn: Mathematical function which is used to transform smax to another format.
+ 
+  By default, the function has been given as base 10 logarithm.
+ 
+ 
+ 
+  :rtype: dict
+ 
+  :return: Returns a dictionary similar to output of raw_abundance function but with
+ 
+  the abundance values modified by the mathematical operation. By default, the
+ 
+  operation performed on the abundances is base 10 logarithm.","This function calculates the abundance of samples in a given biom file. It takes as input the biom file, and can optionally apply a logarithmic transformation to the abundance values. The function returns a dictionary with the sample IDs as keys and their corresponding abundance values as values. If a subset of sample IDs is specified, only those samples will be included in the calculation. If the sample abundance flag is set to true, the function will normalize the abundance values before returning them."
+"def foo(div_calc):
+ 
+  try:
+ 
+  x = div_calc.values()[0].values()
+ 
+  y = div_calc.values()[1].values()
+ 
+  except:
+ 
+  return ""Error setting up input arrays for Mann-Whitney U Test. Skipping ""\
+ 
+  ""significance testing.""
+ 
+  T, p = stats.mannwhitneyu(x, y)
+ 
+  print ""\nMann-Whitney U test statistic:"", T
+ 
+  print ""Two-tailed p-value: {}"".format(2 * p)",Compute the Mann-Whitney U test for unequal group sample sizes.,"The function `foo` is designed to perform the Mann-Whitney U Test, a nonparametric test used to determine if there is a significant difference between two groups. The function takes in a dictionary `div_calc` containing two arrays of numerical values. 
+
+First, the function attempts to extract the values from the dictionary and assign them to variables `x` and `y`. If an error occurs during this process, the function returns an error message indicating that the input arrays were not properly set up.
+
+If the extraction is successful, the function then uses the `stats.mannwhitneyu` function from the `stats` module to perform the Mann-Whitney U Test. This function calculates the test statistic `T` and the two-tailed p-value `p`.
+
+Finally, the function prints the test statistic and the p-value in a user-friendly format. The p-value is multiplied by 2 to account for the two-tailed nature of the test."
+"def foo(div_calc):
+ 
+  calc = defaultdict(list)
+ 
+  try:
+ 
+  for k1, v1 in div_calc.iteritems():
+ 
+  for k2, v2 in v1.iteritems():
+ 
+  calc[k1].append(v2)
+ 
+  except:
+ 
+  return ""Error setting up input arrays for Kruskal-Wallis H-Test. Skipping ""\
+ 
+  ""significance testing.""
+ 
+  h, p = stats.kruskal(*calc.values())
+ 
+  print ""\nKruskal-Wallis H-test statistic for {} groups: {}"".format(str(len(div_calc)), h)
+ 
+  print ""p-value: {}"".format(p)","Compute the Kruskal-Wallis H-test for independent samples. A typical rule is that
+ 
+  each group must have at least 5 measurements.","This function computes the Kruskal-Wallis H-test statistic and p-value for a given set of data. It takes in a dictionary as input, where each key represents a group and each value is a list of integers. The function then groups the integers by their corresponding group and calculates the H-test statistic and p-value using the kruskal function from the scipy.stats module. Finally, it prints the H-test statistic and p-value. If there is an error setting up the input arrays for the H-test, the function will return an error message."
+"def handle_program_options():
+  parser = argparse.ArgumentParser(description=""Calculate the alpha diversity\
+ 
+  of a set of samples using one or more \
+ 
+  metrics and output a kernal density \
+ 
+  estimator-smoothed histogram of the \
+ 
+  results."")
+ 
+  parser.add_argument(""-m"", ""--map_file"",
+ 
+  help=""QIIME mapping file."")
+ 
+  parser.add_argument(""-i"", ""--biom_fp"",
+ 
+  help=""Path to the BIOM table"")
+ 
+  parser.add_argument(""-c"", ""--category"",
+ 
+  help=""Specific category from the mapping file."")
+ 
+  parser.add_argument(""-d"", ""--diversity"", default=[""shannon""], nargs=""+"",
+ 
+  help=""The alpha diversity metric. Default \
+ 
+  value is 'shannon', which will calculate the Shannon\
+ 
+  entropy. Multiple metrics can be specified (space separated).\
+ 
+  The full list of metrics is available at:\
+ 
+  http://scikit-bio.org/docs/latest/generated/skbio.diversity.alpha.html.\
+ 
+  Beta diversity metrics will be supported in the future."")
+ 
+  parser.add_argument(""--x_label"", default=[None], nargs=""+"",
+ 
+  help=""The name of the diversity metric to be displayed on the\
+ 
+  plot as the X-axis label. If multiple metrics are specified,\
+ 
+  then multiple entries for the X-axis label should be given."")
+ 
+  parser.add_argument(""--color_by"",
+ 
+  help=""A column name in the mapping file containing\
+ 
+  hexadecimal (#FF0000) color values that will\
+ 
+  be used to color the groups. Each sample ID must\
+ 
+  have a color entry."")
+ 
+  parser.add_argument(""--plot_title"", default="""",
+ 
+  help=""A descriptive title that will appear at the top \
+ 
+  of the output plot. Surround with quotes if there are\
+ 
+  spaces in the title."")
+ 
+  parser.add_argument(""-o"", ""--output_dir"", default=""."",
+ 
+  help=""The directory plots will be saved to."")
+ 
+  parser.add_argument(""--image_type"", default=""png"",
+ 
+  help=""The type of image to save: png, svg, pdf, eps, etc..."")
+ 
+  parser.add_argument(""--save_calculations"",
+ 
+  help=""Path and name of text file to store the calculated ""
+ 
+  ""diversity metrics."")
+ 
+  parser.add_argument(""--suppress_stats"", action=""store_true"", help=""Do not display ""
+ 
+  ""significance testing results which are shown by default."")
+ 
+  parser.add_argument(""--show_available_metrics"", action=""store_true"",
+ 
+  help=""Supply this parameter to see which alpha diversity metrics ""
+ 
+  "" are available for usage. No calculations will be performed""
+ 
+  "" if this parameter is provided."")
+ 
+  return parser.parse_args()",Parses the given options passed in at the command line.,"This function handles the program options for the alpha diversity calculation. It takes in various command line arguments such as the mapping file, BIOM table, diversity metrics, etc. It also allows for customization of the output plot, including the title, x-axis label, color scheme, image type, and output directory. Additionally, it provides options to save the calculated diversity metrics and suppress the display of significance testing results. The function returns the parsed command line arguments."
+"def blastdb(fasta, maxfile = 10000000):
+ 
+  db = fasta.rsplit('.', 1)[0]
+ 
+  type = check_type(fasta)
+ 
+  if type == 'nucl':
+ 
+  type = ['nhr', type]
+ 
+  else:
+ 
+  type = ['phr', type]
+ 
+  if os.path.exists('%s.%s' % (db, type[0])) is False \
+ 
+  and os.path.exists('%s.00.%s' % (db, type[0])) is False:
+ 
+  print('# ... making blastdb for: %s' % (fasta), file=sys.stderr)
+ 
+  os.system('makeblastdb \
+ 
+  -in %s -out %s -dbtype %s -max_file_sz %s >> log.txt' \
+ 
+  % (fasta, db, type[1], maxfile))
+ 
+  else:
+ 
+  print('# ... database found for: %s' % (fasta), file=sys.stderr)
+ 
+  return db",make blast db,"This function creates a blast database from a fasta file. It first checks if the database already exists, and if not, it runs the command to create the database using the makeblastdb tool. The function takes two arguments, the fasta file path and the maximum file size. It returns the name of the blast database."
+"def usearchdb(fasta, alignment = 'local', usearch_loc = 'usearch'):
+ 
+  if '.udb' in fasta:
+ 
+  print('# ... database found: %s' % (fasta), file=sys.stderr)
+ 
+  return fasta
+ 
+  type = check_type(fasta)
+ 
+  db = '%s.%s.udb' % (fasta.rsplit('.', 1)[0], type)
+ 
+  if os.path.exists(db) is False:
+ 
+  print('# ... making usearch db for: %s' % (fasta), file=sys.stderr)
+ 
+  if alignment == 'local':
+ 
+  os.system('%s -makeudb_ublast %s -output %s >> log.txt' % (usearch_loc, fasta, db))
+ 
+  elif alignment == 'global':
+ 
+  os.system('%s -makeudb_usearch %s -output %s >> log.txt' % (usearch_loc, fasta, db))
+ 
+  else:
+ 
+  print('# ... database found for: %s' % (fasta), file=sys.stderr)
+ 
+  return db",make usearch db,"This function takes a FASTA file as input and creates a USEARCH database from it. If the input file already has a USEARCH database format (ends with '.udb'), then the function returns the input file as is. Otherwise, it determines the type of the input file, creates a USEARCH database with the corresponding file extension ('.fasta.udb' or '.faa.udb'), and returns the path to the created database. The type of USEARCH database to create (local or global alignment) can be specified using the 'alignment' parameter. The USEARCH location can be specified using the 'usearch_loc' parameter."
+"def _pp(dict_data):
+  for key, val in dict_data.items():
+ 
+  # pylint: disable=superfluous-parens
+ 
+  print('{0:<11}: {1}'.format(key, val))",Pretty print.,"This function takes a dictionary as input and iterates through its key-value pairs. It then prints each key-value pair as a formatted string, with the key left-aligned and a colon separating it from the value. The function is named ""_pp"" and does not return anything."
+"def foo(params, metadata):
+ 
+  if hasattr(params, 'licenses'):
+ 
+  if params.licenses:
+ 
+  _pp(metadata.licenses_desc())
+ 
+  sys.exit(0)","Print licenses.
+ 
+ 
+ 
+  :param argparse.Namespace params: parameter
+ 
+  :param bootstrap_py.classifier.Classifiers metadata: package metadata","This function checks if there is a 'licenses' attribute in the 'params' object. If the attribute exists and is not empty, it prints the description of the licenses from the 'metadata' object and then exits the program."
+"def foo(params):
+ 
+  repodir = os.path.join(params.outdir, params.name)
+ 
+  if os.path.isdir(repodir):
+ 
+  raise Conflict(
+ 
+  'Package repository ""{0}"" has already exists.'.format(repodir))","Check repository existence.
+ 
+ 
+ 
+  :param argparse.Namespace params: parameters","This function checks if a package repository with a given name already exists in a specified directory. It first creates the path for the repository directory based on the output directory and the name parameter. Then it checks if the directory already exists. If it does, it raises a Conflict exception indicating that the repository already exists."
+"def foo(params):
+ 
+  pkg_data = package.PackageData(params)
+ 
+  pkg_tree = package.PackageTree(pkg_data)
+ 
+  pkg_tree.generate()
+ 
+  pkg_tree.move()
+ 
+  VCS(os.path.join(pkg_tree.outdir, pkg_tree.name), pkg_tree.pkg_data)","Generate package repository.
+ 
+ 
+ 
+  :param argparse.Namespace params: parameters","This function takes a set of parameters and performs the following steps:
+
+1. It creates an instance of the PackageData class, passing the parameters as arguments.
+2. It creates an instance of the PackageTree class, passing the PackageData object as an argument.
+3. It generates the package tree structure using the generate() method of the PackageTree object.
+4. It moves the generated package tree to the specified output directory using the move() method of the PackageTree object.
+5. It performs a VCS operation on the package tree directory, using the VCS class and the PackageData object as arguments."
+"def print_single(line, rev):
+ 
+  if rev is True:
+ 
+  seq = rc(['', line[9]])[1]
+ 
+  qual = line[10][::-1]
+ 
+  else:
+ 
+  seq = line[9]
+ 
+  qual = line[10]
+ 
+  fq = ['@%s' % line[0], seq, '+%s' % line[0], qual]
+ 
+  print('\n'.join(fq), file = sys.stderr)",print single reads to stderr,"This function takes a line of input and a boolean value indicating whether to reverse the line or not. If the boolean value is True, it reverses the sequence and quality of the line. Otherwise, it keeps them as they are. The function then prints the modified line in a FASTQ format, with the sequence preceded by a '@' symbol and the quality scores preceded by a '+' symbol."
+"def foo(sam, singles = False, force = False):
+ 
+  L, R = None, None
+ 
+  for line in sam:
+ 
+  if line.startswith('@') is True:
+ 
+  continue
+ 
+  line = line.strip().split()
+ 
+  bit = [True if i == '1' else False \
+ 
+  for i in bin(int(line[1])).split('b')[1][::-1]]
+ 
+  while len(bit) < 8:
+ 
+  bit.append(False)
+ 
+  pair, proper, na, nap, rev, mrev, left, right = bit
+ 
+  # make sure read is paired
+ 
+  if pair is False:
+ 
+  if singles is True:
+ 
+  print_single(line, rev)
+ 
+  continue
+ 
+  # check if sequence is reverse-complemented
+ 
+  if rev is True:
+ 
+  seq = rc(['', line[9]])[1]
+ 
+  qual = line[10][::-1]
+ 
+  else:
+ 
+  seq = line[9]
+ 
+  qual = line[10]
+ 
+  # check if read is forward or reverse, return when both have been found
+ 
+  if left is True:
+ 
+  if L is not None and force is False:
+ 
+  print('sam file is not sorted', file = sys.stderr)
+ 
+  print('\te.g.: %s' % (line[0]), file = sys.stderr)
+ 
+  exit()
+ 
+  if L is not None:
+ 
+  L = None
+ 
+  continue
+ 
+  L = ['@%s' % line[0], seq, '+%s' % line[0], qual]
+ 
+  if R is not None:
+ 
+  yield L
+ 
+  yield R
+ 
+  L, R = None, None
+ 
+  if right is True:
+ 
+  if R is not None and force is False:
+ 
+  print('sam file is not sorted', file = sys.stderr)
+ 
+  print('\te.g.: %s' % (line[0]), file = sys.stderr)
+ 
+  exit()
+ 
+  if R is not None:
+ 
+  R = None
+ 
+  continue
+ 
+  R = ['@%s' % line[0], seq, '+%s' % line[0], qual]
+ 
+  if L is not None:
+ 
+  yield L
+ 
+  yield R
+ 
+  L, R = None, None",convert sam to fastq,"This function takes in a SAM file and extracts paired-end sequence reads. It checks if the reads are properly paired and if they are reverse-complemented. If the reads are properly paired and in the correct order, it yields the paired-end sequences. If the file is not sorted correctly, it prints an error message and exits the program. The function also has optional parameters to handle single-end reads and to force processing even if the file is not sorted correctly."
+"def foo(sam, sort):
+ 
+  tempdir = '%s/' % (os.path.abspath(sam).rsplit('/', 1)[0])
+ 
+  if sort is True:
+ 
+  mapping = '%s.sorted.sam' % (sam.rsplit('.', 1)[0])
+ 
+  if sam != '-':
+ 
+  if os.path.exists(mapping) is False:
+ 
+  os.system(""\
+ 
+  sort -k1 --buffer-size=%sG -T %s -o %s %s\
+ 
+  "" % (sbuffer, tempdir, mapping, sam)) 
+ 
+  else:
+ 
+  mapping = 'stdin-sam.sorted.sam'
+ 
+  p = Popen(""sort -k1 --buffer-size=%sG -T %s -o %s"" \
+ 
+  % (sbuffer, tempdir, mapping), stdin = sys.stdin, shell = True) 
+ 
+  p.communicate()
+ 
+  mapping = open(mapping)
+ 
+  else:
+ 
+  if sam == '-':
+ 
+  mapping = sys.stdin
+ 
+  else:
+ 
+  mapping = open(sam)
+ 
+  return mapping",sort sam file,"This function takes two parameters, ""sam"" and ""sort"". It checks if ""sort"" is set to True. If it is, the function reads the content of the ""sam"" file, sorts it by the first column, and saves the sorted data in a new file. If ""sam"" is set to ""-"", it reads the content from the standard input. If the ""sort"" parameter is False, it checks if ""sam"" is set to ""-"", and reads the content from the standard input if it is, otherwise it reads the content from the ""sam"" file. The function returns the content of the file in a readable format."
+"def sub_sam(sam, percent, sort = True, sbuffer = False):
+  mapping = sort_sam(sam, sort)
+ 
+  pool = [1 for i in range(0, percent)] + [0 for i in range(0, 100 - percent)]
+ 
+  c = cycle([1, 2])
+ 
+  for line in mapping:
+ 
+  line = line.strip().split()
+ 
+  if line[0].startswith('@'): # get the sam header
+ 
+  yield line
+ 
+  continue
+ 
+  if int(line[1]) <= 20: # is this from a single read?
+ 
+  if random.choice(pool) == 1:
+ 
+  yield line
+ 
+  else:
+ 
+  n = next(c)
+ 
+  if n == 1:
+ 
+  prev = line
+ 
+  if n == 2 and random.choice(pool) == 1:
+ 
+  yield prev
+ 
+  yield line",randomly subset sam file,"This function is used to subsample a SAM (Sequence Alignment/Map) file based on a given percentage. It takes in a SAM file, a percentage value, and optional sorting and buffering parameters. 
+
+The function first sorts the SAM file based on a given sorting option. 
+
+Then, it creates a pool of values where the number of elements with a value of 1 represents the desired subsampling percentage, and the remaining elements have a value of 0. 
+
+Next, it iterates over each line in the sorted SAM file. If a line starts with '@', it is considered a SAM header and is yielded immediately. Otherwise, it checks if the mapping quality of the line is less than or equal to 20, indicating that the read is from a single read. 
+
+If it is a single read, the function randomly selects a value from the pool. If the selected value is 1, the line is yielded. 
+
+If it is not a single read, the function uses a cycle iterator to alternate between two values. If the current value is 1, the line is stored as the previous line. If the current value is 2 and a random value from the pool is 1, both the previous line and the current line are yielded. 
+
+Overall, this function subsamples a SAM file by randomly selecting a subset of reads based on a given percentage, and optionally sorts and buffers the output."
+"def fq2fa(fq):
+ 
+  c = cycle([1, 2, 3, 4])
+ 
+  for line in fq:
+ 
+  n = next(c)
+ 
+  if n == 1:
+ 
+  seq = ['>%s' % (line.strip().split('@', 1)[1])]
+ 
+  if n == 2:
+ 
+  seq.append(line.strip())
+ 
+  yield seq",convert fq to fa,"This function converts a Fastq file to a FastA file format. It takes a Fastq file as input and iterates over each line in the file. This function uses a cyclic iterator with elements 1, 2, 3, and 4 to keep track of the current step in processing the Fastq file. 
+
+For each line, the function checks the next element from the cyclic iterator. If it is 1, it extracts the sequence ID from the line and appends it to a list called 'seq'. If the next element is 2, it appends the sequence data to the 'seq' list. 
+
+Finally, the function yields the 'seq' list, which represents a single record in FastA format, as the output."
+"def foo(f):
+ 
+  @wraps(f)
+ 
+  def wrapper(*args, **kwargs):
+ 
+  if kwargs.has_key('return_type'):
+ 
+  return_type = kwargs['return_type']
+ 
+  kwargs.pop('return_type')
+ 
+  return return_type(f(*args, **kwargs))
+ 
+  elif len(args) > 0:
+ 
+  return_type = type(args[0])
+ 
+  return return_type(f(*args, **kwargs))
+ 
+  else:
+ 
+  return f(*args, **kwargs)
+ 
+  return wrapper","Converts the returned value of wrapped function to the type of the
+ 
+  first arg or to the type specified by a kwarg key return_type's value.","This function is a decorator that allows the user to specify the return type of a function. It takes a function as input and returns a wrapper function. The wrapper function checks if the keyword argument 'return_type' exists. If it does, it extracts the return type value and removes it from the keyword arguments. Then it calls the original function and applies the return type to the result. If the 'return_type' keyword argument doesn't exist, the wrapper function checks the type of the first argument (if it exists) and applies that as the return type. If there are no arguments, it calls the original function without any modifications."
+"def foo(f):
+ 
+  @wraps(f)
+ 
+  def wrapper(*args, **kwargs):
+ 
+  args = (setify(x) for x in args)
+ 
+  return f(*args, **kwargs)
+ 
+  return wrapper",Converts all args to 'set' type via self.setify function.,"This function is a decorator called ""foo"" that wraps around another function. It takes an input function ""f"" and decorates it by adding some functionality.
+The wrapper function, also called ""wrapper"", takes any number of arguments and keyword arguments. The arguments are transformed using the ""setify"" function, which converts each element in the argument to a set. 
+Finally, the wrapper function returns the decorated function with the transformed arguments."
+"def _init_entri(self, laman):
+ 
+ 
+  sup = BeautifulSoup(laman.text, 'html.parser')
+ 
+  estr = ''
+ 
+  for label in sup.find('hr').next_siblings:
+ 
+  if label.name == 'hr':
+ 
+  self.entri.append(Entri(estr))
+ 
+  break
+ 
+  if label.name == 'h2':
+ 
+  if estr:
+ 
+  self.entri.append(Entri(estr))
+ 
+  estr = ''
+ 
+  estr += str(label).strip()","Membuat objek-objek entri dari laman yang diambil.
+ 
+ 
+ 
+  :param laman: Laman respons yang dikembalikan oleh KBBI daring.
+ 
+  :type laman: Response","This function parses HTML content using BeautifulSoup and extracts specific elements to create entries. It iterates through the HTML siblings, identifies 'hr' and 'h2' elements, and concatenates the content in between. Finally, it creates an ""Entri"" object for each entry."
+"def _init_kata_dasar(self, dasar):
+ 
+ 
+  for tiap in dasar:
+ 
+  kata = tiap.find('a')
+ 
+  dasar_no = kata.find('sup')
+ 
+  kata = ambil_teks_dalam_label(kata)
+ 
+  self.kata_dasar.append(
+ 
+  kata + ' [{}]'.format(dasar_no.text.strip()) if dasar_no else kata
+ 
+  )","Memproses kata dasar yang ada dalam nama entri.
+ 
+ 
+ 
+  :param dasar: ResultSet untuk label HTML dengan class=""rootword""
+ 
+  :type dasar: ResultSet","This function initializes a list of base words. It takes input as a parameter called 'dasar', which is a list of objects. The function loops through each object in 'dasar' and extracts the text within the anchor tag. It then checks if there is a superscript tag within the anchor tag. If there is, it combines the extracted text with the text within the superscript tag and appends it to the 'kata_dasar' list. If there is no superscript tag, it appends only the extracted text to the list."
+"def serialisasi(self):
+  return {
+ 
+  ""nama"": self.nama,
+ 
+  ""nomor"": self.nomor,
+ 
+  ""kata_dasar"": self.kata_dasar,
+ 
+  ""pelafalan"": self.pelafalan,
+ 
+  ""bentuk_tidak_baku"": self.bentuk_tidak_baku,
+ 
+  ""varian"": self.varian,
+ 
+  ""makna"": [makna.serialisasi() for makna in self.makna]
+ 
+  }","Mengembalikan hasil serialisasi objek Entri ini.
+ 
+ 
+ 
+  :returns: Dictionary hasil serialisasi
+ 
+  :rtype: dict","This function serializes an object into a dictionary format. The dictionary contains attributes of the object such as name, number, base word, pronunciation, non-standard form, variant, and meaning. The meaning attribute is a list of dictionaries, where each dictionary represents the meaning of the object. The function uses a comprehension to iterate over the meanings and serialize them into a dictionary format."
+"def _makna(self):
+ 
+ 
+  if len(self.makna) > 1:
+ 
+  return '\n'.join(
+ 
+  str(i) + "". "" + str(makna)
+ 
+  for i, makna in enumerate(self.makna, 1)
+ 
+  )
+ 
+  return str(self.makna[0])","Mengembalikan representasi string untuk semua makna entri ini.
+ 
+ 
+ 
+  :returns: String representasi makna-makna
+ 
+  :rtype: str","This function returns the meaning(s) of a word. If the word has multiple meanings, it returns each meaning with its corresponding number. Otherwise, it returns the single meaning of the word."
+"def _nama(self):
+ 
+ 
+  hasil = self.nama
+ 
+  if self.nomor:
+ 
+  hasil += "" [{}]"".format(self.nomor)
+ 
+  if self.kata_dasar:
+ 
+  hasil = "" ¬ª "".join(self.kata_dasar) + "" ¬ª "" + hasil
+ 
+  return hasil","Mengembalikan representasi string untuk nama entri ini.
+ 
+ 
+ 
+  :returns: String representasi nama entri
+ 
+  :rtype: str","This function is a method that returns the name of an object. It concatenates the object's name with its number if it has one, and appends the object's base words if they are available. The result is returned as a string."
+"def _varian(self, varian):
+ 
+ 
+  if varian == self.bentuk_tidak_baku:
+ 
+  nama = ""Bentuk tidak baku""
+ 
+  elif varian == self.varian:
+ 
+  nama = ""Varian""
+ 
+  else:
+ 
+  return ''
+ 
+  return nama + ': ' + ', '.join(varian)","Mengembalikan representasi string untuk varian entri ini.
+ 
+  Dapat digunakan untuk ""Varian"" maupun ""Bentuk tidak baku"".
+ 
+ 
+ 
+  :param varian: List bentuk tidak baku atau varian
+ 
+  :type varian: list
+ 
+  :returns: String representasi varian atau bentuk tidak baku
+ 
+  :rtype: str","This function checks the input varian against a predefined list of values. If the varian matches the ""bentuk_tidak_baku"" value, it assigns the name ""Bentuk tidak baku"" to the variable ""nama"". If the varian matches the ""varian"" value, it assigns the name ""Varian"" to the variable ""nama"". If the varian does not match any of the predefined values, it returns an empty string. Finally, it returns a string that combines the assigned name with the values in the varian list, joined together with commas."
+"def _init_kelas(self, makna_label):
+  kelas = makna_label.find(color='red')
+ 
+  lain = makna_label.find(color='darkgreen')
+ 
+  info = makna_label.find(color='green')
+ 
+  if kelas:
+ 
+  kelas = kelas.find_all('span')
+ 
+  if lain:
+ 
+  self.kelas = {lain.text.strip(): lain['title'].strip()}
+ 
+  self.submakna = lain.next_sibling.strip()
+ 
+  self.submakna += ' ' + makna_label.find(color='grey').text.strip()
+ 
+  else:
+ 
+  self.kelas = {
+ 
+  k.text.strip(): k['title'].strip() for k in kelas
+ 
+  } if kelas else {}
+ 
+  self.info = info.text.strip() if info else ''","Memproses kelas kata yang ada dalam makna.
+ 
+ 
+ 
+  :param makna_label: BeautifulSoup untuk makna yang ingin diproses.
+ 
+  :type makna_label: BeautifulSoup","This function is used to initialize the classes and other attributes of a given label. It first checks for any classes with a red color and if found, retrieves the text and title of each span in the class. Then, it checks for any classes with a dark green color and retrieves the text content and title. If found, it also retrieves the next sibling content and concatenates it with the previous content. If no dark green class is found, it initializes an empty dictionary for classes and retrieves any content in a green class as additional information."
+"def _init_contoh(self, makna_label):  
+ 
+  indeks = makna_label.text.find(': ')
+ 
+  if indeks != -1:
+ 
+  contoh = makna_label.text[indeks + 2:].strip()
+ 
+  self.contoh = contoh.split('; ')
+ 
+  else:
+ 
+  self.contoh = []","Memproses contoh yang ada dalam makna.
+ 
+ 
+ 
+  :param makna_label: BeautifulSoup untuk makna yang ingin diproses.
+ 
+  :type makna_label: BeautifulSoup","This function initializes the ""contoh"" attribute based on the ""makna_label"" input text. It checks if the input text contains a "":"" and if so, extracts the substring following it. It then splits the substring by "";"" and assigns the resulting list to the ""contoh"" attribute. If the input text does not contain a "":"", an empty list is assigned to the ""contoh"" attribute."
+"def serialisasi(self):
+ 
+  return {
+ 
+  ""kelas"": self.kelas,
+ 
+  ""submakna"": self.submakna,
+ 
+  ""info"": self.info,
+ 
+  ""contoh"": self.contoh
+ 
+  }","Mengembalikan hasil serialisasi objek Makna ini.
+ 
+ 
+ 
+  :returns: Dictionary hasil serialisasi
+ 
+  :rtype: dict","This function serializes an object by converting its attributes into a dictionary. It returns the serialized dictionary, which includes the object's class, sub-meaning, information, and example."
+"def foo(pkg_data, projectdir):
+  try:
+ 
+  version, _minor_version = pkg_data.version.rsplit('.', 1)
+ 
+  except ValueError:
+ 
+  version = pkg_data.version
+ 
+  args = ' '.join(('sphinx-quickstart',
+ 
+  '--sep',
+ 
+  '-q',
+ 
+  '-p ""{name}""',
+ 
+  '-a ""{author}""',
+ 
+  '-v ""{version}""',
+ 
+  '-r ""{release}""',
+ 
+  '-l en',
+ 
+  '--suffix=.rst',
+ 
+  '--master=index',
+ 
+  '--ext-autodoc',
+ 
+  '--ext-viewcode',
+ 
+  '--makefile',
+ 
+  '{projectdir}')).format(name=pkg_data.name,
+ 
+  author=pkg_data.author,
+ 
+  version=version,
+ 
+  release=pkg_data.version,
+ 
+  projectdir=projectdir)
+ 
+  if subprocess.call(shlex.split(args)) == 0:
+ 
+  _touch_gitkeep(projectdir)","Build sphinx documentation.
+ 
+ 
+ 
+  :rtype: int
+ 
+  :return: subprocess.call return code
+ 
+ 
+ 
+  :param `bootstrap_py.control.PackageData` pkg_data: package meta data
+ 
+  :param str projectdir: project root directory","This function takes in two parameters: pkg_data, which represents package data, and projectdir, which represents the project directory. 
+The function begins by trying to split the version number of the package data into two parts: the main version number and the minor version number. 
+If the version number cannot be split (i.e., there is no minor version), then the entire version number is assigned to the variable ""version"". 
+Next, a string of arguments is constructed using the pkg_data and projectdir values. These arguments are used to execute the ""sphinx-quickstart"" command, which initializes a Sphinx project. 
+The command is executed using the subprocess.call() function and the output is checked to see if it returns 0 (indicating success). 
+If the command is successful, the _touch_gitkeep() function is called to create a "".gitkeep"" file in the project directory."
+"def bowtiedb(fa, keepDB):
+  btdir = '%s/bt2' % (os.getcwd())
+ 
+  # make directory for
+ 
+  if not os.path.exists(btdir):
+ 
+  os.mkdir(btdir)
+ 
+  btdb = '%s/%s' % (btdir, fa.rsplit('/', 1)[-1])
+ 
+  if keepDB is True:
+ 
+  if os.path.exists('%s.1.bt2' % (btdb)):
+ 
+  return btdb
+ 
+  p = subprocess.Popen('bowtie2-build -q %s %s' \
+ 
+  % (fa, btdb), shell = True)
+ 
+  p.communicate()
+ 
+  return btdb",make bowtie db,"The `bowtiedb` function is used to create a Bowtie2 database from a given input FASTA file. The function takes two parameters: `fa` (the input FASTA file) and `keepDB` (a boolean indicating whether or not to keep the existing database if one already exists). 
+
+The function first creates a directory named ""bt2"" if it does not already exist. Then, it creates a database file path by appending the name of the input file to the directory path. 
+
+If the `keepDB` parameter is `True` and a database file with the same name already exists, the function returns the path to the existing database file without performing any further actions. 
+
+If the `keepDB` parameter is `False` or there is no existing database file, the function uses the `bowtie2-build` command to build the database from the input FASTA file. The resulting database file is saved in the specified directory. 
+
+Finally, the function returns the path to the created (or existing) database file."
+"def bowtie(sam, btd, f, r, u, opt, no_shrink, threads):
+ 
+  bt2 = 'bowtie2 -x %s -p %s ' % (btd, threads)
+ 
+  if f is not False:
+ 
+  bt2 += '-1 %s -2 %s ' % (f, r)
+ 
+  if u is not False:
+ 
+  bt2 += '-U %s ' % (u)
+ 
+  bt2 += opt
+ 
+  if no_shrink is False:
+ 
+  if f is False:
+ 
+  bt2 += ' | shrinksam -u -k %s-shrunk.sam ' % (sam)
+ 
+  else:
+ 
+  bt2 += ' | shrinksam -k %s-shrunk.sam ' % (sam)
+ 
+  else:
+ 
+  bt2 += ' > %s.sam' % (sam)
+ 
+  return bt2",generate bowtie2 command,"This function takes in several input parameters, such as a SAM file, a bowtie2 index, forward and reverse fastq files, optional single-end fastq file, optional additional bowtie2 options, a flag for sam shrinking, and a parameter for the number of threads to use for alignment.
+The function constructs a bowtie2 command by concatenating various options and file paths. 
+If the forward option is provided, it adds the forward and reverse fastq files to the command.
+If the single-end option is provided, it adds the single-end fastq file to the command.
+It then adds the optional bowtie2 options to the command. 
+If the sam shrinking parameter is set to False, it appends a pipe command to the command to shrink the resulting sam file.
+If the forward option is set to False and sam shrinking is enabled, it appends a pipe command to the command to shrink the resulting sam file.
+Finally, it adds the output sam file path to the command. 
+The constructed command is then returned."
+"def crossmap(fas, reads, options, no_shrink, keepDB, threads, cluster, nodes):
+ 
+  if cluster is True:
+ 
+  threads = '48'
+ 
+  btc = []
+ 
+  for fa in fas:
+ 
+  btd = bowtiedb(fa, keepDB)
+ 
+  F, R, U = reads
+ 
+  if F is not False:
+ 
+  if U is False:
+ 
+  u = False
+ 
+  for i, f in enumerate(F):
+ 
+  r = R[i]
+ 
+  if U is not False:
+ 
+  u = U[i]
+ 
+  sam = '%s/%s-vs-%s' % (os.getcwd(), \
+ 
+  fa.rsplit('/', 1)[-1], f.rsplit('/', 1)[-1].rsplit('.', 3)[0])
+ 
+  btc.append(bowtie(sam, btd, f, r, u, options, no_shrink, threads))
+ 
+  else:
+ 
+  f = False
+ 
+  r = False
+ 
+  for u in U:
+ 
+  sam = '%s/%s-vs-%s' % (os.getcwd(), \
+ 
+  fa.rsplit('/', 1)[-1], u.rsplit('/', 1)[-1].rsplit('.', 3)[0])
+ 
+  btc.append(bowtie(sam, btd, f, r, u, options, no_shrink, threads))
+ 
+  if cluster is False:
+ 
+  for i in btc:
+ 
+  p = subprocess.Popen(i, shell = True)
+ 
+  p.communicate()
+ 
+  else:
+ 
+  ID = ''.join(random.choice([str(i) for i in range(0, 9)]) for _ in range(5))
+ 
+  for node, commands in enumerate(chunks(btc, nodes), 1):
+ 
+  bs = open('%s/crossmap-qsub.%s.%s.sh' % (os.getcwd(), ID, node), 'w')
+ 
+  print('\n'.join(commands), file=bs)
+ 
+  bs.close()
+ 
+  p = subprocess.Popen(\
+ 
+  'qsub -V -N crossmap %s' \
+ 
+  % (bs.name), \
+ 
+  shell = True)
+ 
+  p.communicate()",map all read sets against all fasta files,"This function performs cross-mapping analysis by aligning sequences in the input fastq files to a reference genome using the Bowtie aligner. It accepts a list of fastq files, reads (forward, reverse, and unpaired), and various options for the alignment. The function can run the alignment either on a local machine or on a cluster. If running on a cluster, the function creates separate batch scripts for each node and submits them to the cluster for execution. The function returns the alignment results in the form of SAM files."
+"def get_conn(self, *args, **kwargs):
+  connections = self.__connections_for('get_conn', args=args, kwargs=kwargs)
+ 
+ 
+ 
+  if len(connections) is 1:
+ 
+  return connections[0]
+ 
+  else:
+ 
+  return connections","Returns a connection object from the router given ``args``.
+ 
+ 
+ 
+  Useful in cases where a connection cannot be automatically determined
+ 
+  during all steps of the process. An example of this would be
+ 
+  Redis pipelines.","This function retrieves a connection. It determines the appropriate connection based on the arguments provided, and returns it. If there is only one possible connection, it directly returns that connection. If there are multiple possible connections, it returns the list of connections."
+"def __get_nondirect_init(self, init):
+ 
+  crc = init
+ 
+  for i in range(self.Width):
+ 
+  bit = crc & 0x01
+ 
+  if bit:
+ 
+  crc^= self.Poly
+ 
+  crc >>= 1
+ 
+  if bit:
+ 
+  crc |= self.MSB_Mask
+ 
+  return crc & self.Mask",return the non-direct init if the direct algorithm has been selected.,"This function calculates the non-direct initialization value for a given CRC. It iterates over the bits of the CRC and performs XOR and bit shifting operations based on the polynomial and MSB mask. Finally, it returns the calculated non-direct initialization value."
+"def reflect(self, data, width):
+  x = data & 0x01
+ 
+  for i in range(width - 1):
+ 
+  data >>= 1
+ 
+  x = (x << 1) | (data & 0x01)
+ 
+  return x","reflect a data word, i.e. reverts the bit order.","This function reflects a binary number by reversing its bits. It takes a binary number as input, along with the number of bits in the binary number. It then iterates through the bits of the binary number, starting from the least significant bit. At each iteration, it shifts the binary number to the right by one bit and appends the least significant bit to the left of the reflected number. Finally, it returns the reflected number."
+"def bit_by_bit(self, in_data):
+ 
+  # If the input data is a string, convert to bytes.
+ 
+  if isinstance(in_data, str):
+ 
+  in_data = [ord(c) for c in in_data]
+ 
+ 
+ 
+  register = self.NonDirectInit
+ 
+  for octet in in_data:
+ 
+  if self.ReflectIn:
+ 
+  octet = self.reflect(octet, 8)
+ 
+  for i in range(8):
+ 
+  topbit = register & self.MSB_Mask
+ 
+  register = ((register << 1) & self.Mask) | ((octet >> (7 - i)) & 0x01)
+ 
+  if topbit:
+ 
+  register ^= self.Poly
+ 
+ 
+ 
+  for i in range(self.Width):
+ 
+  topbit = register & self.MSB_Mask
+ 
+  register = ((register << 1) & self.Mask)
+ 
+  if topbit:
+ 
+  register ^= self.Poly
+ 
+ 
+ 
+  if self.ReflectOut:
+ 
+  register = self.reflect(register, self.Width)
+ 
+  return register ^ self.XorOut","Classic simple and slow CRC implementation. This function iterates bit
+ 
+  by bit over the augmented input message and returns the calculated CRC
+ 
+  value at the end.","This function performs a bitwise calculation on the input data. If the input data is a string, it is converted to bytes. The function initializes a register with a specific value. Then, for each octet in the input data, the function performs a bitwise calculation using a polynomial and shifts the register. If the top bit of the register is set, it is XORed with the polynomial. After processing all octets, the function performs additional shifts on the register. Finally, if the output needs to be reflected, the register is reversed and returned. The function also XORs the register with a specific value before returning it."
+"def gen_table(self):
+ 
+  table_length = 1 << self.TableIdxWidth
+ 
+  tbl = [0] * table_length
+ 
+  for i in range(table_length):
+ 
+  register = i
+ 
+  if self.ReflectIn:
+ 
+  register = self.reflect(register, self.TableIdxWidth)
+ 
+  register = register << (self.Width - self.TableIdxWidth + self.CrcShift)
+ 
+  for j in range(self.TableIdxWidth):
+ 
+  if register & (self.MSB_Mask << self.CrcShift) != 0:
+ 
+  register = (register << 1) ^ (self.Poly << self.CrcShift)
+ 
+  else:
+ 
+  register = (register << 1)
+ 
+  if self.ReflectIn:
+ 
+  register = self.reflect(register >> self.CrcShift, self.Width) << self.CrcShift
+ 
+  tbl[i] = register & (self.Mask << self.CrcShift)
+ 
+  return tbl","This function generates the CRC table used for the table_driven CRC
+ 
+  algorithm. The Python version cannot handle tables of an index width
+ 
+  other than 8. See the generated C code for tables with different sizes
+ 
+  instead.","This function generates a CRC (Cyclic Redundancy Check) lookup table. It creates a table of length 2^TableIdxWidth, where each entry corresponds to a CRC value for a particular index. The function iterates through all the possible indices and computes the corresponding CRC value using the provided polynomial and configuration settings. The computed CRC value is then stored in the table. The function also takes into account reflection of input and output values if specified. The generated table is returned as the output of the function."
+"def table_driven(self, in_data):
+ 
+  # If the input data is a string, convert to bytes.
+ 
+  if isinstance(in_data, str):
+ 
+  in_data = [ord(c) for c in in_data]
+ 
+ 
+ 
+  tbl = self.gen_table()
+ 
+ 
+ 
+  register = self.DirectInit << self.CrcShift
+ 
+  if not self.ReflectIn:
+ 
+  for octet in in_data:
+ 
+  tblidx = ((register >> (self.Width - self.TableIdxWidth + self.CrcShift)) ^ octet) & 0xff
+ 
+  register = ((register << (self.TableIdxWidth - self.CrcShift)) ^ tbl[tblidx]) & (self.Mask << self.CrcShift)
+ 
+  register = register >> self.CrcShift
+ 
+  else:
+ 
+  register = self.reflect(register, self.Width + self.CrcShift) << self.CrcShift
+ 
+  for octet in in_data:
+ 
+  tblidx = ((register >> self.CrcShift) ^ octet) & 0xff
+ 
+  register = ((register >> self.TableIdxWidth) ^ tbl[tblidx]) & (self.Mask << self.CrcShift)
+ 
+  register = self.reflect(register, self.Width + self.CrcShift) & self.Mask
+ 
+ 
+ 
+  if self.ReflectOut:
+ 
+  register = self.reflect(register, self.Width)
+ 
+  return register ^ self.XorOut",The Standard table_driven CRC algorithm.,"This function calculates the CRC (Cyclic Redundancy Check) for the given input data using a table-driven approach. It takes the input data as a parameter and converts it to bytes if it is a string. The function then generates a lookup table using the ""gen_table"" method. 
+
+The function initializes a register with the DirectInit value and shifts it by the CrcShift value. The function then checks if the ReflectIn parameter is False. If it is, the function iterates through each byte in the input data. For each byte, it calculates an index for the lookup table by performing bitwise operations on the register and the byte. The register is then updated using the calculated index and the table. Finally, the register is shifted right by the CrcShift value.
+
+If the ReflectIn parameter is True, the function reflects the register and shifts it by the CrcShift value. It then performs the same iteration as before, but with slightly different bitwise operations on the register. The register is again reflected and masked to ensure the correct number of bits.
+
+After the iteration is complete, the function checks if the ReflectOut parameter is True. If it is, the register is reflected and returned XOR-ed with the XorOut value. Otherwise, the register is directly returned XOR-ed with the XorOut value."
+"def parse_masked(seq, min_len):
+ 
+  nm, masked = [], [[]]
+ 
+  prev = None
+ 
+  for base in seq[1]:
+ 
+  if base.isupper():
+ 
+  nm.append(base)
+ 
+  if masked != [[]] and len(masked[-1]) < min_len:
+ 
+  nm.extend(masked[-1])
+ 
+  del masked[-1]
+ 
+  prev = False
+ 
+  elif base.islower():
+ 
+  if prev is False:
+ 
+  masked.append([])
+ 
+  masked[-1].append(base)
+ 
+  prev = True
+ 
+  return nm, masked",parse masked sequence into non-masked and masked regions,"This function takes in a sequence and a minimum length as input. It parses the sequence for masked regions and returns two lists - one containing the non-masked bases and another containing the masked regions. The function looks for uppercase bases to identify non-masked regions, and lowercase bases to identify masked regions. If a masked region is followed by another masked region, they are grouped together. The length of the masked regions should be greater than or equal to the minimum length specified."
+"def strip_masked(fasta, min_len, print_masked):
+ 
+ 
+  for seq in parse_fasta(fasta):
+ 
+  nm, masked = parse_masked(seq, min_len)
+ 
+  nm = ['%s removed_masked >=%s' % (seq[0], min_len), ''.join(nm)]
+ 
+  yield [0, nm]
+ 
+  if print_masked is True:
+ 
+  for i, m in enumerate([i for i in masked if i != []], 1):
+ 
+  m = ['%s insertion:%s' % (seq[0], i), ''.join(m)]
+ 
+  yield [1, m]","remove masked regions from fasta file as long as
+ 
+  they are longer than min_len","This function takes a fasta file, a minimum length, and a boolean flag as inputs. It strips masked regions from the sequences in the fasta file that are shorter than the minimum length. It returns a modified fasta file where the masked regions have been removed. If the print_masked flag is True, it also returns a separate fasta file that contains the masked regions that were removed. The function uses the parse_fasta() and parse_masked() functions to process the input fasta file. The output fasta file is generated using the yield statement."
+"def get_relative_abundance(biomfile):
+  biomf = biom.load_table(biomfile)
+ 
+  norm_biomf = biomf.norm(inplace=False)
+ 
+  rel_abd = {}
+ 
+  for sid in norm_biomf.ids():
+ 
+  rel_abd[sid] = {}
+ 
+  for otuid in norm_biomf.ids(""observation""):
+ 
+  otuname = oc.otu_name(norm_biomf.metadata(otuid, axis=""observation"")[""taxonomy""])
+ 
+  otuname = "" "".join(otuname.split(""_""))
+ 
+  abd = norm_biomf.get_value_by_ids(otuid, sid)
+ 
+  rel_abd[sid][otuname] = abd
+ 
+  ast_rel_abd = bc.arcsine_sqrt_transform(rel_abd)
+ 
+  return ast_rel_abd","Return arcsine transformed relative abundance from a BIOM format file.
+ 
+ 
+ 
+  :type biomfile: BIOM format file
+ 
+  :param biomfile: BIOM format file used to obtain relative abundances for each OTU in
+ 
+  a SampleID, which are used as node sizes in network plots.
+ 
+ 
+ 
+  :type return: Dictionary of dictionaries.
+ 
+  :return: Dictionary keyed on SampleID whose value is a dictionarykeyed on OTU Name
+ 
+  whose value is the arc sine tranfsormed relative abundance value for that
+ 
+  SampleID-OTU Name pair.","This function takes as input a biom file and calculates the relative abundance of each observation (OTU) in each sample (SID) within the file. It first loads the biom file and normalizes it. It then iterates over each sample and observation, retrieves the taxonomy name for each observation, and calculates the relative abundance. The relative abundance values are arcsine square root transformed. The function returns a dictionary of the arcsine square root transformed relative abundance values."
+"def find_otu(otuid, tree):
+ 
+ 
+  for m in re.finditer(otuid, tree):
+ 
+  before, after = tree[m.start()-1], tree[m.start()+len(otuid)]
+ 
+  if before in [""("", "","", "")""] and after in ["":"", "";""]:
+ 
+  return m.start()
+ 
+  return None","Find an OTU ID in a Newick-format tree.
+ 
+  Return the starting position of the ID or None if not found.","This function finds the position of an OTU (Operational Taxonomic Unit) in a tree. It takes in an OTU ID and a tree as inputs. It uses regular expressions to search for the OTU ID within the tree. If a match is found, it checks if the characters before and after the match meet certain conditions (parenthesis or comma before, and colon or semicolon after). If the conditions are met, it returns the start position of the match. If no match is found or the conditions are not met, it returns None."
+"def newick_replace_otuids(tree, biomf):
+ 
+  for val, id_, md in biomf.iter(axis=""observation""):
+ 
+  otu_loc = find_otu(id_, tree)
+ 
+  if otu_loc is not None:
+ 
+  tree = tree[:otu_loc] + \
+ 
+  oc.otu_name(md[""taxonomy""]) + \
+ 
+  tree[otu_loc + len(id_):]
+ 
+  return tree","Replace the OTU ids in the Newick phylogenetic tree format with truncated
+ 
+  OTU names","This function takes a tree in Newick format and a biomf object and replaces the OTU (Operational Taxonomic Unit) IDs in the tree with their corresponding OTU names from the biomf object. It iterates over each OTU in the biomf object and finds its location in the tree. If the OTU is found in the tree, the function replaces the OTU ID with its OTU name. The modified tree is then returned."
+"def genome_info(genome, info):
+ 
+  try:
+ 
+  scg = info['#SCGs']
+ 
+  dups = info['#SCG duplicates']
+ 
+  length = info['genome size (bp)']
+ 
+  return [scg - dups, length, genome]
+ 
+  except:
+ 
+  return [False, False, info['genome size (bp)'], genome]","return genome info for choosing representative
+ 
+ 
+ 
+  if ggKbase table provided - choose rep based on SCGs and genome length
+ 
+  - priority for most SCGs - extra SCGs, then largest genome
+ 
+ 
+ 
+  otherwise, based on largest genome","This function takes in a genome and information about the genome. It extracts specific information from the provided dictionary called 'info'. The function then calculates the number of unique SCGs (Single Copy Genes) by subtracting the number of SCG duplicates from the total SCGs. It also retrieves the length of the genome from the 'info' dictionary. Finally, it returns these calculated values along with the genome itself in a list format. If any error occurs during the process, the function returns False for the unique SCGs and the genome, and the length of the genome is still returned."
+"def print_clusters(fastas, info, ANI):
+ 
+  header = ['#cluster', 'num. genomes', 'rep.', 'genome', '#SCGs', '#SCG duplicates', \
+ 
+  'genome size (bp)', 'fragments', 'list']
+ 
+  yield header
+ 
+  in_cluster = []
+ 
+  for cluster_num, cluster in enumerate(connected_components(ANI)):
+ 
+  cluster = sorted([genome_info(genome, info[genome]) \
+ 
+  for genome in cluster], \
+ 
+  key = lambda x: x[0:], reverse = True)
+ 
+  rep = cluster[0][-1]
+ 
+  cluster = [i[-1] for i in cluster]
+ 
+  size = len(cluster)
+ 
+  for genome in cluster:
+ 
+  in_cluster.append(genome)
+ 
+  try:
+ 
+  stats = [size, rep, genome, \
+ 
+  info[genome]['#SCGs'], info[genome]['#SCG duplicates'], \
+ 
+  info[genome]['genome size (bp)'], info[genome]['# contigs'], cluster]
+ 
+  except:
+ 
+  stats = [size, rep, genome, \
+ 
+  'n/a', 'n/a', \
+ 
+  info[genome]['genome size (bp)'], info[genome]['# contigs'], cluster]
+ 
+  if rep == genome:
+ 
+  stats = ['*%s' % (cluster_num)] + stats
+ 
+  else:
+ 
+  stats = [cluster_num] + stats
+ 
+  yield stats
+ 
+  # print singletons
+ 
+  try:
+ 
+  start = cluster_num + 1
+ 
+  except:
+ 
+  start = 0
+ 
+  fastas = set([i.rsplit('.', 1)[0].rsplit('/', 1)[-1].rsplit('.contigs')[0] for i in fastas])
+ 
+  for cluster_num, genome in \
+ 
+  enumerate(fastas.difference(set(in_cluster)), start):
+ 
+  try:
+ 
+  stats = ['*%s' % (cluster_num), 1, genome, genome, \
+ 
+  info[genome]['#SCGs'], info[genome]['#SCG duplicates'], \
+ 
+  info[genome]['genome size (bp)'], info[genome]['# contigs'], [genome]]
+ 
+  except:
+ 
+  stats = ['*%s' % (cluster_num), 1, genome, genome, \
+ 
+  'n/a', 'n/a', \
+ 
+  info[genome]['genome size (bp)'], info[genome]['# contigs'], [genome]]
+ 
+  yield stats","choose represenative genome and
+ 
+  print cluster information
+ 
+ 
+ 
+  *if ggKbase table is provided, use SCG info to choose best genome","This function prints clusters of genomes based on their similarities using Average Nucleotide Identity (ANI). 
+It takes in a list of fasta files, information about each genome, and the ANI values between genomes. 
+The function sorts the genomes in each cluster based on their ANI values and selects a representative genome. 
+It then prints information about each cluster, including the number of genomes, the representative genome, the number of shared core genes, the number of duplicated core genes, the genome size, the number of contigs, and the list of genomes in the cluster. 
+It also prints any singleton genomes that were not included in any cluster."
+"def parse_ggKbase_tables(tables, id_type):
+ 
+ 
+  g2info = {}
+ 
+  for table in tables:
+ 
+  for line in open(table):
+ 
+  line = line.strip().split('\t')
+ 
+  if line[0].startswith('name'):
+ 
+  header = line
+ 
+  header[4] = 'genome size (bp)'
+ 
+  header[12] = '#SCGs'
+ 
+  header[13] = '#SCG duplicates'
+ 
+  continue
+ 
+  name, code, info = line[0], line[1], line
+ 
+  info = [to_int(i) for i in info]
+ 
+  if id_type is False: # try to use name and code ID
+ 
+  if 'UNK' in code or 'unknown' in code:
+ 
+  code = name
+ 
+  if (name != code) and (name and code in g2info):
+ 
+  print('# duplicate name or code in table(s)', file=sys.stderr)
+ 
+  print('# %s and/or %s' % (name, code), file=sys.stderr)
+ 
+  exit()
+ 
+  if name not in g2info:
+ 
+  g2info[name] = {item:stat for item, stat in zip(header, info)}
+ 
+  if code not in g2info:
+ 
+  g2info[code] = {item:stat for item, stat in zip(header, info)}
+ 
+  else:
+ 
+  if id_type == 'name':
+ 
+  ID = name
+ 
+  elif id_type == 'code':
+ 
+  ID = code
+ 
+  else:
+ 
+  print('# specify name or code column using -id', file=sys.stderr)
+ 
+  exit()
+ 
+  ID = ID.replace(' ', '')
+ 
+  g2info[ID] = {item:stat for item, stat in zip(header, info)}
+ 
+  if g2info[ID]['genome size (bp)'] == '':
+ 
+  g2info[ID]['genome size (bp)'] = 0
+ 
+  return g2info",convert ggKbase genome info tables to dictionary,"This function parses ggKbase tables and extracts information such as genome name, code, and other relevant stats. It takes a list of tables and an ID type as input. The tables are read line by line, where each line represents a genome entry. The function extracts the header information and replaces column names with more descriptive ones. It then processes each line, extracting the name, code, and other information and creates a dictionary entry for each unique genome name and code combination. If the ID type is specified as neither 'name' nor 'code', an error is raised. Finally, the function returns a dictionary containing the genome information, with the genome name or code as the key."
+"def foo(tables):
+ 
+ 
+  g2info = {}
+ 
+  for table in tables:
+ 
+  for line in open(table):
+ 
+  line = line.strip().split('\t')
+ 
+  if line[0].startswith('Bin Id'):
+ 
+  header = line
+ 
+  header[8] = 'genome size (bp)'
+ 
+  header[5] = '#SCGs'
+ 
+  header[6] = '#SCG duplicates'
+ 
+  continue
+ 
+  ID, info = line[0], line
+ 
+  info = [to_int(i) for i in info]
+ 
+  ID = ID.replace(' ', '')
+ 
+  g2info[ID] = {item:stat for item, stat in zip(header, info)}
+ 
+  if g2info[ID]['genome size (bp)'] == '':
+ 
+  g2info[ID]['genome size (bp)'] = 0
+ 
+  return g2info",convert checkM genome info tables to dictionary,"This function takes a list of table names as input and returns a dictionary containing information about each table. 
+
+The function loops over each table and reads its contents line by line. It checks if the first line starts with 'Bin Id' and if so, it modifies the header of the table. 
+
+For each subsequent line, it extracts information and maps it to the corresponding header item. It converts certain values to integers and stores all the information in a dictionary. 
+
+If the 'genome size (bp)' value is empty, it sets it to 0. 
+
+Finally, it returns the dictionary containing all the table information."
+"def foo(fastas, info):
+  if info is False:
+ 
+  info = {}
+ 
+  for genome in fastas:
+ 
+  name = genome.rsplit('.', 1)[0].rsplit('/', 1)[-1].rsplit('.contigs')[0]
+ 
+  if name in info:
+ 
+  continue
+ 
+  length = 0
+ 
+  fragments = 0
+ 
+  for seq in parse_fasta(genome):
+ 
+  length += len(seq[1])
+ 
+  fragments += 1
+ 
+  info[name] = {'genome size (bp)':length, '# contigs':fragments}
+ 
+  return info",get genome lengths,"This function takes in a list of FASTA files and a boolean flag as input. It then calculates the genome size and the number of contigs for each FASTA file in the list. The function returns a dictionary containing this information for each file. If the boolean flag is False, the function returns an empty dictionary."
+"def get_dbs(self, attr, args, kwargs, **fkwargs):
+ 
+ 
+  if not self._ready:
+ 
+  if not self.setup_router(args=args, kwargs=kwargs, **fkwargs):
+ 
+  raise self.UnableToSetupRouter()
+ 
+ 
+ 
+  retval = self._pre_routing(attr=attr, args=args, kwargs=kwargs, **fkwargs)
+ 
+  if retval is not None:
+ 
+  args, kwargs = retval
+ 
+ 
+ 
+  if not (args or kwargs):
+ 
+  return self.cluster.hosts.keys()
+ 
+ 
+ 
+  try:
+ 
+  db_nums = self._route(attr=attr, args=args, kwargs=kwargs, **fkwargs)
+ 
+  except Exception as e:
+ 
+  self._handle_exception(e)
+ 
+  db_nums = []
+ 
+ 
+ 
+  return self._post_routing(attr=attr, db_nums=db_nums, args=args, kwargs=kwargs, **fkwargs)","Returns a list of db keys to route the given call to.
+ 
+ 
+ 
+  :param attr: Name of attribute being called on the connection.
+ 
+  :param args: List of arguments being passed to ``attr``.
+ 
+  :param kwargs: Dictionary of keyword arguments being passed to ``attr``.
+ 
+ 
+ 
+  >>> redis = Cluster(router=BaseRouter)
+ 
+  >>> router = redis.router
+ 
+  >>> router.get_dbs('incr', args=('key name', 1))
+ 
+  [0,1,2]","This function retrieves a list of available databases based on certain parameters. It first checks if the router is set up, and if not, it raises an exception. The function then proceeds to perform pre-routing tasks and checks if there are any arguments or keyword arguments passed. If not, it returns a list of all hosts in the cluster. Next, it tries to route the request based on the specified attributes, arguments, and keyword arguments. If an exception occurs during routing, it is handled and an empty list is returned. Finally, the function performs post-routing tasks and returns a list of database numbers based on the routing."
+"def setup_router(self, args, kwargs, **fkwargs):
+ 
+  self._ready = self._setup_router(args=args, kwargs=kwargs, **fkwargs)
+ 
+ 
+ 
+  return self._ready",Call method to perform any setup,This function is responsible for setting up the router configuration. It takes in the arguments and keyword arguments provided and passes them to another function for further processing. The function then returns a boolean value indicating if the router setup was successful or not.
+"def _route(self, attr, args, kwargs, **fkwargs):
+ 
+ 
+  return self.cluster.hosts.keys()",Perform routing and return db_nums,This function returns the keys of the hosts in the cluster.
+"def check_down_connections(self):
+  now = time.time()
+ 
+ 
+ 
+  for db_num, marked_down_at in self._down_connections.items():
+ 
+  if marked_down_at + self.retry_timeout <= now:
+ 
+  self.mark_connection_up(db_num)","Iterates through all connections which were previously listed as unavailable
+ 
+  and marks any that have expired their retry_timeout as being up.","This function is responsible for checking the status of database connections that have been marked as ""down"". It iterates through the list of down connections and checks if the specified retry timeout has passed. If the timeout has passed, the function marks the connection as ""up"" again."
+"def flush_down_connections(self):
+ 
+ 
+  self._get_db_attempts = 0
+ 
+  for db_num in self._down_connections.keys():
+ 
+  self.mark_connection_up(db_num)",Marks all connections which were previously listed as unavailable as being up.,"This function is responsible for flushing down all the down connections. It first resets the number of attempts to get a database connection to zero. Then, it iterates over all the down connections and marks them as up."
+"def standby(df, resolution='24h', time_window=None): 
+ 
+ 
+  if df.empty:
+ 
+  raise EmptyDataFrame()
+ 
+ 
+ 
+  df = pd.DataFrame(df) # if df was a pd.Series, convert to DataFrame
+ 
+  def parse_time(t):
+ 
+  if isinstance(t, numbers.Number):
+ 
+  return pd.Timestamp.utcfromtimestamp(t).time()
+ 
+  else:
+ 
+  return pd.Timestamp(t).time()
+ 
+ 
+ 
+ 
+ 
+  # first filter based on the time-window
+ 
+  if time_window is not None:
+ 
+  t_start = parse_time(time_window[0])
+ 
+  t_end = parse_time(time_window[1])
+ 
+  if t_start > t_end:
+ 
+  # start before midnight
+ 
+  df = df[(df.index.time >= t_start) | (df.index.time < t_end)]
+ 
+  else:
+ 
+  df = df[(df.index.time >= t_start) & (df.index.time < t_end)]
+ 
+ 
+ 
+  return df.resample(resolution).min()","Compute standby power
+ 
+ 
+ 
+  Parameters
+ 
+  ----------
+ 
+  df : pandas.DataFrame or pandas.Series
+ 
+  Electricity Power
+ 
+  resolution : str, default='d'
+ 
+  Resolution of the computation. Data will be resampled to this resolution (as mean) before computation
+ 
+  of the minimum.
+ 
+  String that can be parsed by the pandas resample function, example ='h', '15min', '6h'
+ 
+  time_window : tuple with start-hour and end-hour, default=None
+ 
+  Specify the start-time and end-time for the analysis.
+ 
+  Only data within this time window will be considered.
+ 
+  Both times have to be specified as string ('01:00', '06:30') or as datetime.time() objects
+ 
+ 
+ 
+  Returns
+ 
+  -------
+ 
+  df : pandas.Series with DateTimeIndex in the given resolution","This function takes a pandas DataFrame or Series as input, and returns a resampled DataFrame. 
+The function first checks if the input DataFrame is empty, and raises an exception if it is.
+Then, it converts the input DataFrame to a DataFrame format if it was originally a Series.
+Next, the function defines a helper function to parse the time values.
+The function then filters the DataFrame based on a given time window, if specified.
+Finally, the function resamples the DataFrame based on the specified resolution, and returns the minimum value within each resampled period."
+"def share_of_standby(df, resolution='24h', time_window=None): 
+ 
+ 
+  p_sb = standby(df, resolution, time_window)
+ 
+  df = df.resample(resolution).mean()
+ 
+  p_tot = df.sum()
+ 
+  p_standby = p_sb.sum()
+ 
+  share_standby = p_standby / p_tot
+ 
+  res = share_standby.iloc[0]
+ 
+  return res","Compute the share of the standby power in the total consumption.
+ 
+ 
+ 
+  Parameters
+ 
+  ----------
+ 
+  df : pandas.DataFrame or pandas.Series
+ 
+  Power (typically electricity, can be anything)
+ 
+  resolution : str, default='d'
+ 
+  Resolution of the computation. Data will be resampled to this resolution (as mean) before computation
+ 
+  of the minimum.
+ 
+  String that can be parsed by the pandas resample function, example ='h', '15min', '6h'
+ 
+  time_window : tuple with start-hour and end-hour, default=None
+ 
+  Specify the start-time and end-time for the analysis.
+ 
+  Only data within this time window will be considered.
+ 
+  Both times have to be specified as string ('01:00', '06:30') or as datetime.time() objects
+ 
+ 
+ 
+  Returns
+ 
+  -------
+ 
+  fraction : float between 0-1 with the share of the standby consumption","This function calculates the share of standby power consumption from the total power consumption. It takes a dataframe containing power consumption data and calculates the share of standby power within a given time resolution and time window. The function first calculates the standby power using the standby() function, then resamples the dataframe to the specified resolution. It then calculates the total power consumption and the power consumption during standby, and finally calculates and returns the share of standby power consumption."
+"def count_peaks(ts):
+ 
+  on_toggles = ts.diff() > 3000
+ 
+  shifted = np.logical_not(on_toggles.shift(1))
+ 
+  result = on_toggles & shifted
+ 
+  count = result.sum()
+ 
+  return count","Toggle counter for gas boilers
+ 
+ 
+ 
+  Counts the number of times the gas consumption increases with more than 3kW
+ 
+ 
+ 
+  Parameters
+ 
+  ----------
+ 
+  ts: Pandas Series
+ 
+  Gas consumption in minute resolution
+ 
+ 
+ 
+  Returns
+ 
+  -------
+ 
+  int",This function counts the number of peaks in a given time series data. It looks for toggles in the data where the value changes by a significant amount (greater than 3000). It tracks the transitions from off to on and counts them as peaks. The function returns the total count of peaks.
+"def load_factor(ts, resolution=None, norm=None):
+ 
+  if norm is None:
+ 
+  norm = ts.max()
+ 
+ 
+ 
+  if resolution is not None:
+ 
+  ts = ts.resample(rule=resolution).mean()
+ 
+ 
+ 
+  lf = ts / norm
+ 
+ 
+ 
+  return lf","Calculate the ratio of input vs. norm over a given interval.
+ 
+ 
+ 
+  Parameters
+ 
+  ----------
+ 
+  ts : pandas.Series
+ 
+  timeseries
+ 
+  resolution : str, optional
+ 
+  interval over which to calculate the ratio
+ 
+  default: resolution of the input timeseries
+ 
+  norm : int | float, optional
+ 
+  denominator of the ratio
+ 
+  default: the maximum of the input timeseries
+ 
+ 
+ 
+  Returns
+ 
+  -------
+ 
+  pandas.Series","This function calculates the load factor of a time series data. The load factor is calculated as the ratio of each data point to the maximum value in the time series. If a resolution is provided, the time series is resampled at that resolution. The load factor values are then returned."
+"def top_hits(hits, num, column, reverse):
+  hits.sort(key = itemgetter(column), reverse = reverse)
+ 
+  for hit in hits[0:num]:
+ 
+  yield hit",get top hits after sorting by column number,This function takes a list of hits and sorts them based on a specific column. The number of hits to be returned and whether the sorting should be in reverse order are also specified. The function then returns the top 'num' hits based on the sorting criteria.
+"def numBlast_sort(blast, numHits, evalueT, bitT):
+ 
+  header = ['#query', 'target', 'pident', 'alen', 'mismatch', 'gapopen',
+ 
+  'qstart', 'qend', 'tstart', 'tend', 'evalue', 'bitscore']
+ 
+  yield header
+ 
+  hmm = {h:[] for h in header}
+ 
+  for line in blast:
+ 
+  if line.startswith('#'):
+ 
+  continue
+ 
+  line = line.strip().split('\t')
+ 
+  # Evalue and Bitscore thresholds
+ 
+  line[10], line[11] = float(line[10]), float(line[11])
+ 
+  evalue, bit = line[10], line[11]
+ 
+  if evalueT is not False and evalue > evalueT:
+ 
+  continue
+ 
+  if bitT is not False and bit < bitT:
+ 
+  continue
+ 
+  for i, h in zip(line, header):
+ 
+  hmm[h].append(i)
+ 
+  hmm = pd.DataFrame(hmm)
+ 
+  for query, df in hmm.groupby(by = ['#query']):
+ 
+  df = df.sort_values(by = ['bitscore'], ascending = False)
+ 
+  for hit in df[header].values[0:numHits]:
+ 
+  yield hit",parse b6 output with sorting,"This function takes in a blast file, the number of hits to return, an evalue threshold, and a bitscore threshold as input. It then parses the blast file and filters the hits based on the evalue and bitscore thresholds. The function sorts the remaining hits based on their bitscore in descending order. Finally, it returns the specified number of hits that passed the thresholds, along with their relevant information in a DataFrame format."
+"def numBlast(blast, numHits, evalueT = False, bitT = False, sort = False):
+ 
+ 
+  if sort is True:
+ 
+  for hit in numBlast_sort(blast, numHits, evalueT, bitT):
+ 
+  yield hit
+ 
+  return
+ 
+  header = ['#query', 'target', 'pident', 'alen', 'mismatch', 'gapopen',
+ 
+  'qstart', 'qend', 'tstart', 'tend', 'evalue', 'bitscore']
+ 
+  yield header
+ 
+  prev, hits = None, []
+ 
+  for line in blast:
+ 
+  line = line.strip().split('\t')
+ 
+  ID = line[0]
+ 
+  line[10], line[11] = float(line[10]), float(line[11])
+ 
+  evalue, bit = line[10], line[11]
+ 
+  if ID != prev:
+ 
+  if len(hits) > 0:
+ 
+  # column is 1 + line index
+ 
+  for hit in top_hits(hits, numHits, 11, True):
+ 
+  yield hit
+ 
+  hits = []
+ 
+  if evalueT == False and bitT == False:
+ 
+  hits.append(line)
+ 
+  elif evalue <= evalueT and bitT == False:
+ 
+  hits.append(line)
+ 
+  elif evalue <= evalueT and bit >= bitT:
+ 
+  hits.append(line)
+ 
+  elif evalueT == False and bit >= bitT:
+ 
+  hits.append(line)
+ 
+  prev = ID
+ 
+  for hit in top_hits(hits, numHits, 11, True):
+ 
+  yield hit",parse b6 output,"This function takes in a BLAST output file and extracts a specified number of top hits based on either E-value or bit score. The function can also sort the hits before extracting them. It returns a generator that yields each hit as a list of values. The function first checks if the 'sort' flag is set, and if so, it sorts the BLAST hits. Then, it iterates through each line in the BLAST file and extracts the necessary information like query ID, E-value, bit score, etc. It groups the hits by the query ID and adds them to a list. If the 'E-value Threshold' and/or 'Bit Score Threshold' arguments are provided, it filters the hits based on these thresholds. Finally, it returns the top hits as a generator."
+"def numDomtblout(domtblout, numHits, evalueT, bitT, sort):
+  if sort is True:
+ 
+  for hit in numDomtblout_sort(domtblout, numHits, evalueT, bitT):
+ 
+  yield hit
+ 
+  return
+ 
+  header = ['#target name', 'target accession', 'tlen',
+ 
+  'query name', 'query accession', 'qlen',
+ 
+  'full E-value', 'full score', 'full bias',
+ 
+  'domain #', '# domains',
+ 
+  'domain c-Evalue', 'domain i-Evalue', 'domain score', 'domain bias',
+ 
+  'hmm from', 'hmm to', 'seq from', 'seq to', 'env from', 'env to',
+ 
+  'acc', 'target description']
+ 
+  yield header
+ 
+  prev, hits = None, []
+ 
+  for line in domtblout:
+ 
+  if line.startswith('#'):
+ 
+  continue
+ 
+  # parse line and get description
+ 
+  line = line.strip().split()
+ 
+  desc = ' '.join(line[18:])
+ 
+  line = line[0:18]
+ 
+  line.append(desc)
+ 
+  # create ID based on query name and domain number
+ 
+  ID = line[0] + line[9]
+ 
+  # domain c-Evalue and domain score thresholds
+ 
+  line[11], line[13] = float(line[11]), float(line[13])
+ 
+  evalue, bitscore = line[11], line[13]
+ 
+  line[11], line[13] = evalue, bitscore
+ 
+  if ID != prev:
+ 
+  if len(hits) > 0:
+ 
+  for hit in top_hits(hits, numHits, 13, True):
+ 
+  yield hit
+ 
+  hits = []
+ 
+  if evalueT == False and bitT == False:
+ 
+  hits.append(line)
+ 
+  elif evalue <= evalueT and bitT == False:
+ 
+  hits.append(line)
+ 
+  elif evalue <= evalueT and bit >= bitT:
+ 
+  hits.append(line)
+ 
+  elif evalueT == False and bit >= bitT:
+ 
+  hits.append(line)
+ 
+  prev = ID
+ 
+  for hit in top_hits(hits, numHits, 13, True):
+ 
+  yield hit","parse hmm domain table output
+ 
+  this version is faster but does not work unless the table is sorted","This function filters and sorts hits from a domtblout file based on specified criteria. It reads the file line by line and checks if each hit meets the criteria for e-value and bit score. It then yields the hits that pass the criteria. If the 'sort' parameter is set to True, the hits are sorted before being returned. The function also generates a header for the output file."
+"def stock2fa(stock):
+  
+  seqs = {}
+ 
+  for line in stock:
+ 
+  if line.startswith('#') is False and line.startswith(' ') is False and len(line) > 3:
+ 
+  id, seq = line.strip().split()
+ 
+  id = id.rsplit('/', 1)[0]
+ 
+  id = re.split('[0-9]\|', id, 1)[-1]
+ 
+  if id not in seqs:
+ 
+  seqs[id] = []
+ 
+  seqs[id].append(seq)
+ 
+  if line.startswith('//'):
+ 
+  break
+ 
+  return seqs",convert stockholm to fasta,"This function takes in a stock file and returns a dictionary that contains sequence data. It reads through the lines of the stock file and extracts the sequence data by splitting each line and removing unnecessary characters. The sequence data is then stored in a dictionary, where the ID is used as the key and the sequences are stored as values. The function stops reading the file when it encounters a line that starts with '//'."
+"def week_schedule(index, on_time=None, off_time=None, off_days=None):
+ 
+  if on_time is None:
+ 
+  on_time = '9:00'
+ 
+  if off_time is None:
+ 
+  off_time = '17:00'
+ 
+  if off_days is None:
+ 
+  off_days = ['Sunday', 'Monday']
+ 
+  if not isinstance(on_time, datetime.time):
+ 
+  on_time = pd.to_datetime(on_time, format='%H:%M').time()
+ 
+  if not isinstance(off_time, datetime.time):
+ 
+  off_time = pd.to_datetime(off_time, format='%H:%M').time()
+ 
+  times = (index.time >= on_time) & (index.time < off_time) & (~index.weekday_name.isin(off_days))
+ 
+  return pd.Series(times, index=index)","Return boolean time series following given week schedule.
+ 
+ 
+ 
+  Parameters
+ 
+  ----------
+ 
+  index : pandas.DatetimeIndex
+ 
+  Datetime index
+ 
+  on_time : str or datetime.time
+ 
+  Daily opening time. Default: '09:00'
+ 
+  off_time : str or datetime.time
+ 
+  Daily closing time. Default: '17:00'
+ 
+  off_days : list of str
+ 
+  List of weekdays. Default: ['Sunday', 'Monday']
+ 
+ 
+ 
+  Returns
+ 
+  -------
+ 
+  pandas.Series of bool
+ 
+  True when on, False otherwise for given datetime index
+ 
+ 
+ 
+  Examples
+ 
+  --------
+ 
+  >>> import pandas as pd
+ 
+  >>> from opengrid.library.utils import week_schedule
+ 
+  >>> index = pd.date_range('20170701', '20170710', freq='H')
+ 
+  >>> week_schedule(index)","This function creates a weekly schedule for a given index. It allows the user to specify the on and off times, as well as the days off. The function checks if the on and off times are specified and in the correct format, and converts them to datetime.time if necessary. It then creates a boolean series indicating whether each time in the index falls within the specified on and off times and is not on the specified off days. The function returns this boolean series."
+"def carpet(timeseries, **kwargs):
+  
+ 
+ 
+  # define optional input parameters
+ 
+  cmap = kwargs.pop('cmap', cm.coolwarm)
+ 
+  norm = kwargs.pop('norm', LogNorm())
+ 
+  interpolation = kwargs.pop('interpolation', 'nearest')
+ 
+  cblabel = kwargs.pop('zlabel', timeseries.name if timeseries.name else '')
+ 
+  title = kwargs.pop('title', 'carpet plot: ' + timeseries.name if timeseries.name else '')
+ 
+ 
+ 
+  # data preparation
+ 
+  if timeseries.dropna().empty:
+ 
+  print('skipped {} - no data'.format(title))
+ 
+  return
+ 
+  ts = timeseries.resample('15min').interpolate()
+ 
+  vmin = max(0.1, kwargs.pop('vmin', ts[ts > 0].min()))
+ 
+  vmax = max(vmin, kwargs.pop('vmax', ts.quantile(.999)))
+ 
+ 
+ 
+  # convert to dataframe with date as index and time as columns by
+ 
+  # first replacing the index by a MultiIndex
+ 
+  mpldatetimes = date2num(ts.index.to_pydatetime())
+ 
+  ts.index = pd.MultiIndex.from_arrays(
+ 
+  [np.floor(mpldatetimes), 2 + mpldatetimes % 1]) # '2 +': matplotlib bug workaround.
+ 
+  # and then unstacking the second index level to columns
+ 
+  df = ts.unstack()
+ 
+ 
+ 
+  # data plotting
+ 
+ 
+ 
+  fig, ax = plt.subplots()
+ 
+  # define the extent of the axes (remark the +- 0.5 for the y axis in order to obtain aligned date ticks)
+ 
+  extent = [df.columns[0], df.columns[-1], df.index[-1] + 0.5, df.index[0] - 0.5]
+ 
+  im = plt.imshow(df, vmin=vmin, vmax=vmax, extent=extent, cmap=cmap, aspect='auto', norm=norm,
+ 
+  interpolation=interpolation, **kwargs)
+ 
+ 
+ 
+  # figure formatting
+ 
+ 
+ 
+  # x axis
+ 
+  ax.xaxis_date()
+ 
+  ax.xaxis.set_major_locator(HourLocator(interval=2))
+ 
+  ax.xaxis.set_major_formatter(DateFormatter('%H:%M'))
+ 
+  ax.xaxis.grid(True)
+ 
+  plt.xlabel('UTC Time')
+ 
+ 
+ 
+  # y axis
+ 
+  ax.yaxis_date()
+ 
+  dmin, dmax = ax.yaxis.get_data_interval()
+ 
+  number_of_days = (num2date(dmax) - num2date(dmin)).days
+ 
+  # AutoDateLocator is not suited in case few data is available
+ 
+  if abs(number_of_days) <= 35:
+ 
+  ax.yaxis.set_major_locator(DayLocator())
+ 
+  else:
+ 
+  ax.yaxis.set_major_locator(AutoDateLocator())
+ 
+  ax.yaxis.set_major_formatter(DateFormatter(""%a, %d %b %Y""))
+ 
+ 
+ 
+  # plot colorbar
+ 
+  cbticks = np.logspace(np.log10(vmin), np.log10(vmax), 11, endpoint=True)
+ 
+  cb = plt.colorbar(format='%.0f', ticks=cbticks)
+ 
+  cb.set_label(cblabel)
+ 
+ 
+ 
+  # plot title
+ 
+  plt.title(title)
+ 
+ 
+ 
+  return im","Draw a carpet plot of a pandas timeseries.
+ 
+ 
+ 
+  The carpet plot reads like a letter. Every day one line is added to the
+ 
+  bottom of the figure, minute for minute moving from left (morning) to right
+ 
+  (evening).
+ 
+  The color denotes the level of consumption and is scaled logarithmically.
+ 
+  If vmin and vmax are not provided as inputs, the minimum and maximum of the
+ 
+  colorbar represent the minimum and maximum of the (resampled) timeseries.
+ 
+ 
+ 
+  Parameters
+ 
+  ----------
+ 
+  timeseries : pandas.Series
+ 
+  vmin, vmax : If not None, either or both of these values determine the range
+ 
+  of the z axis. If None, the range is given by the minimum and/or maximum
+ 
+  of the (resampled) timeseries.
+ 
+  zlabel, title : If not None, these determine the labels of z axis and/or
+ 
+  title. If None, the name of the timeseries is used if defined.
+ 
+  cmap : matplotlib.cm instance, default coolwarm
+ 
+ 
+ 
+  Examples
+ 
+  --------
+ 
+  >>> import numpy as np
+ 
+  >>> import pandas as pd
+ 
+  >>> from opengrid.library import plotting
+ 
+  >>> plt = plotting.plot_style()
+ 
+  >>> index = pd.date_range('2015-1-1','2015-12-31',freq='h')
+ 
+  >>> ser = pd.Series(np.random.normal(size=len(index)), index=index, name='abc')
+ 
+  >>> im = plotting.carpet(ser)","This function generates a carpet plot for a given time series data. It accepts a time series as input and has optional parameters for customizing the plot. The function resamples the time series to 15-minute intervals and interpolates any missing values. It then converts the time series into a dataframe with the date as the index and the time as the columns. The carpet plot is created using the Matplotlib library, with the data being displayed as a color-coded grid. The x-axis represents the time and the y-axis represents the dates. The plot also includes a colorbar indicating the range of values. The function returns the image object of the carpet plot."
+"def calc_pident_ignore_gaps(a, b):
+ 
+  m = 0 # matches
+ 
+  mm = 0 # mismatches
+ 
+  for A, B in zip(list(a), list(b)):
+ 
+  if A == '-' or A == '.' or B == '-' or B == '.':
+ 
+  continue
+ 
+  if A == B:
+ 
+  m += 1
+ 
+  else:
+ 
+  mm += 1
+ 
+  try:
+ 
+  return float(float(m)/float((m + mm))) * 100
+ 
+  except:
+ 
+  return 0",calculate percent identity,This function calculates the percentage identity between two sequences while ignoring any gap characters (indicated by '-' or '.'). It counts the number of matches and mismatches between the sequences and returns the percentage identity.
+"def foo(A, B):
+ 
+  a_seq, b_seq = [], []
+ 
+  for a, b in zip(list(A), list(B)):
+ 
+  if a == '-' or a == '.' or b == '-' or b == '.':
+ 
+  continue
+ 
+  a_seq.append(a)
+ 
+  b_seq.append(b)
+ 
+  return ''.join(a_seq), ''.join(b_seq)",skip column if either is a gap,"This function takes two input strings, `A` and `B`, and removes any characters that are either ""-"" or ""."", creating two new sequences `a_seq` and `b_seq`. It then concatenates the characters in each sequence and returns the resulting strings."
+"def foo(seqs):
+  
+  A, B, ignore_gaps = seqs
+ 
+  a, b = A[1], B[1] # actual sequences
+ 
+  if len(a) != len(b):
+ 
+  print('# reads are not the same length', file=sys.stderr)
+ 
+  exit()
+ 
+  if ignore_gaps is True:
+ 
+  pident = calc_pident_ignore_gaps(a, b)
+ 
+  else:
+ 
+  pident = calc_pident(a, b)
+ 
+  return A[0], B[0], pident",compare pairs of sequences,"This function calculates the percent identity (pident) between two sequences. It takes in three arguments: seqs, which is a list containing two sequences (A and B) and a flag (ignore_gaps); A and B are tuples containing a sequence identifier and the actual sequence. 
+
+The function first checks if the two sequences have the same length. If they do not, an error message is printed. 
+
+Then, it calculates the pident based on the ignore_gaps flag. If ignore_gaps is True, it calls the calc_pident_ignore_gaps function to calculate pident. Otherwise, it calls the calc_pident function.
+
+Finally, the function returns the sequence identifiers (A[0] and B[0]) and the calculated pident."
+"def foo(seqs):
+ 
+  A, B, ignore_gaps = seqs
+ 
+  a, b = remove_gaps(A[1], B[1]) # actual sequences
+ 
+  if len(a) != len(b):
+ 
+  print('# reads are not the same length', file=sys.stderr)
+ 
+  exit()
+ 
+  pident = lr(a, b) * 100
+ 
+  return A[0], B[0], pident",calculate Levenshtein ratio of sequences,"This function takes in three sequences as input - A, B, and ignore_gaps. It removes any gaps from the sequences and checks if they are of the same length. If not, it prints an error message and exits. It then calculates the percent identity between the two sequences using a function called ""lr"". Finally, it returns the names of the input sequences (A[0] and B[0]) and the percent identity."
+"def foo(afa, leven, threads, print_list, ignore_gaps):
+ 
+ 
+  # load sequences into dictionary
+ 
+  seqs = {seq[0]: seq for seq in nr_fasta([afa], append_index = True)}
+ 
+  num_seqs = len(seqs)
+ 
+  # define all pairs
+ 
+  pairs = ((i[0], i[1], ignore_gaps) for i in itertools.combinations(list(seqs.values()), 2))
+ 
+  pool = multithread(threads)
+ 
+  # calc percent identity between all pairs - parallelize
+ 
+  if leven is True:
+ 
+  pident = pool.map(compare_seqs_leven, pairs)
+ 
+  else:
+ 
+  compare = pool.imap_unordered(compare_seqs, pairs)
+ 
+  pident = [i for i in tqdm(compare, total = (num_seqs*num_seqs)/2)]
+ 
+  pool.close()
+ 
+  pool.terminate()
+ 
+  pool.join()
+ 
+  return to_dictionary(pident, print_list)",make pairwise sequence comparisons between aligned sequences,"This function calculates the pairwise percent identity between a set of sequences. The function takes as input an alignment file (afa), a boolean value indicating whether to use Levenshtein distance for similarity calculation (leven), the number of threads to use for parallelization (threads), a boolean value indicating whether to print the output (print_list), and a boolean value indicating whether to ignore gaps when calculating percent identity (ignore_gaps). 
+
+The function first loads the sequences from the alignment file into a dictionary. It then generates all possible pairs of sequences using the combinations function from the itertools module. 
+
+If leven is set to True, the function calculates the percent identity between each pair of sequences using the compare_seqs_leven function. If leven is set to False, the function uses the compare_seqs function. The calculations are parallelized using a thread pool.
+
+The results are returned as a dictionary where each key is a pair of sequence indices and the value is their percent identity. If print_list is set to True, the function also prints the results."
+"def print_pairwise(pw, median = False):
+ 
+ 
+  names = sorted(set([i for i in pw]))
+ 
+  if len(names) != 0:
+ 
+  if '>' in names[0]:
+ 
+  yield ['#'] + [i.split('>')[1] for i in names if '>' in i]
+ 
+  else:
+ 
+  yield ['#'] + names
+ 
+  for a in names:
+ 
+  if '>' in a:
+ 
+  yield [a.split('>')[1]] + [pw[a][b] for b in names]
+ 
+  else:
+ 
+  out = []
+ 
+  for b in names:
+ 
+  if b in pw[a]:
+ 
+  if median is False:
+ 
+  out.append(max(pw[a][b]))
+ 
+  else:
+ 
+  out.append(np.median(pw[a][b]))
+ 
+  else:
+ 
+  out.append('-')
+ 
+  yield [a] + out",print matrix of pidents to stdout,"This function takes a pairwise comparison matrix as input and prints the values of the matrix in a pairwise format. The function allows for the option to calculate and print the median value instead of the maximum value for each pair. The function first sorts and retrieves the unique names from the matrix. It then prints the names in the header row. For each name in the matrix, the function prints the corresponding values for that name in each pairwise comparison. If the median option is chosen, the function calculates the median value instead of the maximum value. If a pairwise comparison is missing, the function prints ""-"" for that pair."
+"def print_comps(comps):
+ 
+  if comps == []:
+ 
+  print('n/a')
+ 
+  else:
+ 
+  print('# min: %s, max: %s, mean: %s' % \
+ 
+  (min(comps), max(comps), np.mean(comps)))",print stats for comparisons,"This function takes a list of numbers as input and prints the minimum, maximum, and mean values of the numbers. If the input list is empty, it prints 'n/a' instead."
+"def compare_clades(pw):
+  names = sorted(set([i for i in pw]))
+ 
+  for i in range(0, 4):
+ 
+  wi, bt = {}, {}
+ 
+  for a in names:
+ 
+  for b in pw[a]:
+ 
+  if ';' not in a or ';' not in b:
+ 
+  continue
+ 
+  pident = pw[a][b]
+ 
+  cA, cB = a.split(';')[i], b.split(';')[i]
+ 
+  if i == 0 and '_' in cA and '_' in cB:
+ 
+  cA = cA.rsplit('_', 1)[1]
+ 
+  cB = cB.rsplit('_', 1)[1]
+ 
+  elif '>' in cA or '>' in cB:
+ 
+  cA = cA.split('>')[1]
+ 
+  cB = cB.split('>')[1]
+ 
+  if cA == cB:
+ 
+  if cA not in wi:
+ 
+  wi[cA] = []
+ 
+  wi[cA].append(pident)
+ 
+  else:
+ 
+  if cA not in bt:
+ 
+  bt[cA] = {}
+ 
+  if cB not in bt[cA]:
+ 
+  bt[cA][cB] = []
+ 
+  bt[cA][cB].append(pident)
+ 
+  print('\n# min. within')
+ 
+  for clade, pidents in list(wi.items()):
+ 
+  print('\t'.join(['wi:%s' % str(i), clade, str(min(pidents))]))
+ 
+  # print matrix of maximum between groups
+ 
+  comps = []
+ 
+  print('\n# max. between')
+ 
+  for comp in print_pairwise(bt):
+ 
+  if comp is not None:
+ 
+  print('\t'.join(['bt:%s' % str(i)] + [str(j) for j in comp]))
+ 
+  if comp[0] != '#':
+ 
+  comps.extend([j for j in comp[1:] if j != '-'])
+ 
+  print_comps(comps)
+ 
+  # print matrix of median between groups
+ 
+  comps = []
+ 
+  print('\n# median between')
+ 
+  for comp in print_pairwise(bt, median = True):
+ 
+  if comp is not None:
+ 
+  print('\t'.join(['bt:%s' % str(i)] + [str(j) for j in comp]))
+ 
+  if comp[0] != '#':
+ 
+  comps.extend([j for j in comp[1:] if j != '-'])
+ 
+  print_comps(comps)",print min. pident within each clade and then matrix of between-clade max.,"This function compares different clades in a pairwise manner based on a given input dictionary. It first extracts unique names from the dictionary keys and sorts them. Then, it iterates over the clade levels (0 to 3) to compare the clades. It calculates the minimum within-group similarity and maximum between-group similarity for each clade. Finally, it prints the results in a formatted manner by categorizing the results as minimum within, maximum between, and median between."
+"def matrix2dictionary(matrix):
+  
+  pw = {}
+ 
+  for line in matrix:
+ 
+  line = line.strip().split('\t')
+ 
+  if line[0].startswith('#'):
+ 
+  names = line[1:]
+ 
+  continue
+ 
+  a = line[0]
+ 
+  for i, pident in enumerate(line[1:]):
+ 
+  b = names[i]
+ 
+  if a not in pw:
+ 
+  pw[a] = {}
+ 
+  if b not in pw:
+ 
+  pw[b] = {}
+ 
+  if pident != '-':
+ 
+  pident = float(pident)
+ 
+  pw[a][b] = pident
+ 
+  pw[b][a] = pident
+ 
+  return pw",convert matrix to dictionary of comparisons,"This function converts a matrix into a dictionary. The matrix is expected to be in tab-separated format, with the first row containing names and subsequent rows containing values. The function iterates through each line of the matrix, extracting the names from the second row. It then populates a dictionary with the values from the matrix, using the names as keys. The matrix values are converted to floating-point numbers before being added to the dictionary. The resulting dictionary is returned."
+"def foo(parser, metadata=None):
+ 
+  parser.add_argument('-v', action='version',
+ 
+  version=__version__)
+ 
+  subparsers = parser.add_subparsers(help='sub commands help')
+ 
+  create_cmd = subparsers.add_parser('create')
+ 
+  create_cmd.add_argument('name',
+ 
+  help='Specify Python package name.')
+ 
+  create_cmd.add_argument('-d', dest='description', action='store',
+ 
+  help='Short description about your package.')
+ 
+  create_cmd.add_argument('-a', dest='author', action='store',
+ 
+  required=True,
+ 
+  help='Python package author name.')
+ 
+  create_cmd.add_argument('-e', dest='email', action='store',
+ 
+  required=True,
+ 
+  help='Python package author email address.')
+ 
+  create_cmd.add_argument('-l', dest='license',
+ 
+  choices=metadata.licenses().keys(),
+ 
+  default='GPLv3+',
+ 
+  help='Specify license. (default: %(default)s)')
+ 
+  create_cmd.add_argument('-s', dest='status',
+ 
+  choices=metadata.status().keys(),
+ 
+  default='Alpha',
+ 
+  help=('Specify development status. '
+ 
+  '(default: %(default)s)'))
+ 
+  create_cmd.add_argument('--no-check', action='store_true',
+ 
+  help='No checking package name in PyPI.')
+ 
+  create_cmd.add_argument('--with-samples', action='store_true',
+ 
+  help='Generate package with sample code.')
+ 
+  group = create_cmd.add_mutually_exclusive_group(required=True)
+ 
+  group.add_argument('-U', dest='username', action='store',
+ 
+  help='Specify GitHub username.')
+ 
+  group.add_argument('-u', dest='url', action='store', type=valid_url,
+ 
+  help='Python package homepage url.')
+ 
+  create_cmd.add_argument('-o', dest='outdir', action='store',
+ 
+  default=os.path.abspath(os.path.curdir),
+ 
+  help='Specify output directory. (default: $PWD)')
+ 
+  list_cmd = subparsers.add_parser('list')
+ 
+  list_cmd.add_argument('-l', dest='licenses', action='store_true',
+ 
+  help='show license choices.')",Set argument parser option.,"This function sets up command line arguments for a Python package creation script. It allows the user to specify details such as package name, author name and email, license, development status, and output directory. The function also includes a sub-command ""list"" that can be used to display license choices."
+"def parse_options(metadata):
+  parser = argparse.ArgumentParser(description='%(prog)s usage:',
+ 
+  prog=__prog__)
+ 
+  setoption(parser, metadata=metadata)
+ 
+  return parser",Parse argument options.,This function takes in metadata as input and creates an argument parser using the argparse module. It then sets options based on the metadata and returns the created parser.
+"def main():
+  
+  try:
+ 
+  pkg_version = Update()
+ 
+  if pkg_version.updatable():
+ 
+  pkg_version.show_message()
+ 
+  metadata = control.retreive_metadata()
+ 
+  parser = parse_options(metadata)
+ 
+  argvs = sys.argv
+ 
+  if len(argvs) <= 1:
+ 
+  parser.print_help()
+ 
+  sys.exit(1)
+ 
+  args = parser.parse_args()
+ 
+  control.print_licences(args, metadata)
+ 
+  control.check_repository_existence(args)
+ 
+  control.check_package_existence(args)
+ 
+  control.generate_package(args)
+ 
+  except (RuntimeError, BackendFailure, Conflict) as exc:
+ 
+  sys.stderr.write('{0}\n'.format(exc))
+ 
+  sys.exit(1)",Execute main processes.,"The main function of this code performs the following steps:
+
+1. It initializes an instance of the ""Update"" class and assigns it to the variable ""pkg_version"".
+2. It checks if the package version is updatable by calling the ""updatable"" method of the ""pkg_version"" object.
+3. If the package version is updatable, it displays a message using the ""show_message"" method of the ""pkg_version"" object.
+4. It retrieves metadata by calling the ""retrieve_metadata"" method of the ""control"" object.
+5. It parses the options of the metadata using the ""parse_options"" function.
+6. It checks the command line arguments and if there are no arguments, it prints the help message using the ""print_help"" method of the ""parser"" object.
+7. It assigns the parsed arguments to the ""args"" variable.
+8. It prints the licenses using the ""print_licenses"" method of the ""control"" object, passing in the ""args"" and ""metadata"" variables.
+9. It checks if the repository exists by calling the ""check_repository_existence"" method of the ""control"" object, passing in the ""args"" variable.
+10. It checks if the package exists by calling the ""check_package_existence"" method of the ""control"" object, passing in the ""args"" variable.
+11. It generates the package using the ""generate_package"" method of the ""control"" object, passing in the ""args"" variable.
+12. If any exceptions of type ""RuntimeError"", ""BackendFailure"", or ""Conflict"" occur, they are caught and an error message is written to the standard error stream.
+13. The program exits with a status code of 1."
+"def _check_or_set_default_params(self):
+ 
+  if not hasattr(self, 'date'):
+ 
+  self._set_param('date', datetime.utcnow().strftime('%Y-%m-%d'))
+ 
+  if not hasattr(self, 'version'):
+ 
+  self._set_param('version', self.default_version)
+ 
+  # pylint: disable=no-member
+ 
+  if not hasattr(self, 'description') or self.description is None:
+ 
+  getattr(self, '_set_param')('description', self.warning_message)",Check key and set default vaule when it does not exists.,"This function checks and sets default parameters for a given class. It checks if the class has a 'date' attribute and if not, it sets it to the current date. It also checks if the class has a 'version' attribute and if not, it sets it to the default version. Additionally, it checks if the class has a 'description' attribute and if not, it sets it to a warning message."
+"def foo(self):
+ 
+  if not os.path.isdir(self.outdir):
+ 
+  os.makedirs(self.outdir)
+ 
+  shutil.move(self.tmpdir, os.path.join(self.outdir, self.name))",Move directory from working directory to output directory.,"This function creates a directory if it doesn't already exist. Then, it moves a file from a temporary directory to the output directory with a given name."
+"def foo(self):
+  
+  VCS(os.path.join(self.outdir, self.name), self.pkg_data)",Initialize VCS repository.,This function initializes and calls the VCS function with the output directory and package data as arguments.
+"def find_steam_location(): 
+  if registry is None:
+ 
+  return None
+ 
+ 
+ 
+  key = registry.CreateKey(registry.HKEY_CURRENT_USER,""Software\Valve\Steam"")
+ 
+  return registry.QueryValueEx(key,""SteamPath"")[0]","Finds the location of the current Steam installation on Windows machines.
+ 
+  Returns None for any non-Windows machines, or for Windows machines where
+ 
+  Steam is not installed.","This function finds the location of the Steam installation on a Windows computer by accessing the Windows registry. If the registry is not available, it returns None. Otherwise, it creates a key in the registry for the Steam software and queries the value of the SteamPath. The function then returns the found Steam installation location."
+"def plot_PCoA(cat_data, otu_name, unifrac, names, colors, xr, yr, outDir,
+ 
+  save_as, plot_style):
+ 
+ 
+  fig = plt.figure(figsize=(14, 8))
+ 
+  ax = fig.add_subplot(111)
+ 
+ 
+ 
+  for i, cat in enumerate(cat_data):
+ 
+  plt.scatter(cat_data[cat][""pc1""], cat_data[cat][""pc2""], cat_data[cat][""size""],
+ 
+  color=colors[cat], alpha=0.85, marker=""o"", edgecolor=""black"",
+ 
+  label=cat)
+ 
+  lgnd = plt.legend(loc=""best"", scatterpoints=3, fontsize=13)
+ 
+  for i in range(len(colors.keys())):
+ 
+  lgnd.legendHandles[i]._sizes = [80] # Change the legend marker size manually
+ 
+  plt.title("" "".join(otu_name.split(""_"")), style=""italic"")
+ 
+  plt.ylabel(""PC2 (Percent Explained Variance {:.3f}%)"".format(float(unifrac[""varexp""][1])))
+ 
+  plt.xlabel(""PC1 (Percent Explained Variance {:.3f}%)"".format(float(unifrac[""varexp""][0])))
+ 
+  plt.xlim(round(xr[0]*1.5, 1), round(xr[1]*1.5, 1))
+ 
+  plt.ylim(round(yr[0]*1.5, 1), round(yr[1]*1.5, 1))
+ 
+  if plot_style:
+ 
+  gu.ggplot2_style(ax)
+ 
+  fc = ""0.8""
+ 
+  else:
+ 
+  fc = ""none""
+ 
+  fig.savefig(os.path.join(outDir, ""_"".join(otu_name.split())) + ""."" + save_as,
+ 
+  facecolor=fc, edgecolor=""none"", format=save_as,
+ 
+  bbox_inches=""tight"", pad_inches=0.2)
+ 
+  plt.close(fig)","Plot PCoA principal coordinates scaled by the relative abundances of
+ 
+  otu_name.","This function plots a Principal Coordinate Analysis (PCoA) graph based on categorical data. The graph visually represents the similarity between samples based on their PC1 and PC2 scores. Each category is represented by a marker color, and the size of the markers represents the size of the samples in the category. The function allows customization of the plot style, labels, and limits of the axes. The resulting plot can be saved as an image file."
+"def split_by_category(biom_cols, mapping, category_id):
+  
+  columns = defaultdict(list)
+ 
+  for i, col in enumerate(biom_cols):
+ 
+  columns[mapping[col['id']][category_id]].append((i, col))
+ 
+ 
+ 
+  return columns",Split up the column data in a biom table by mapping category value.,"This function takes in a list of biom columns, a mapping dictionary, and a category ID. It splits the biom columns into different categories based on the corresponding category ID from the mapping dictionary. The function creates a defaultdict object to store the columns for each category. It iterates over the biom columns, retrieves the category ID from the mapping dictionary, and then appends the column to the corresponding category in the defaultdict. Finally, it returns the dictionary with the columns grouped by category."
+"def print_line(l):
+ 
+  print_lines = ['# STOCKHOLM', '#=GF', '#=GS', ' ']
+ 
+  if len(l.split()) == 0:
+ 
+  return True
+ 
+  for start in print_lines:
+ 
+  if l.startswith(start):
+ 
+  return True
+ 
+  return False",print line if starts with ...,"This function checks if a given line of text matches any of the specified patterns, and returns True if it does and False if it doesn't. The function takes a single argument 'l', which represents the line of text to be checked. The function iterates through a list of specified patterns and checks if 'l' starts with any of those patterns. If a match is found, the function returns True. If no match is found after iterating through all the patterns, the function returns False."
+"def stock2one(stock):
+  
+  lines = {}
+ 
+  for line in stock:
+ 
+  line = line.strip()
+ 
+  if print_line(line) is True:
+ 
+  yield line
+ 
+  continue
+ 
+  if line.startswith('//'):
+ 
+  continue
+ 
+  ID, seq = line.rsplit(' ', 1)
+ 
+  if ID not in lines:
+ 
+  lines[ID] = ''
+ 
+  else:
+ 
+  # remove preceding white space
+ 
+  seq = seq.strip()
+ 
+  lines[ID] += seq
+ 
+  for ID, line in lines.items():
+ 
+  yield '\t'.join([ID, line])
+ 
+  yield '\n//'",convert stockholm to single line format,"This function takes a stock as input and converts it into a single string. It iterates through each line in the stock, ignoring any lines that start with '//'. It splits each line into an ID and a sequence, and appends the sequence to the corresponding ID in a dictionary. Finally, it returns the IDs and sequences joined together with a tab separator, followed by a newline character and '//'."
+"def math_func(f):
+ 
+  """"""
+ 
+  Statics the methods. wut.
+ 
+  """"""
+ 
+  @wraps(f)
+ 
+  def wrapper(*args, **kwargs):
+ 
+  if len(args) > 0:
+ 
+  return_type = type(args[0])
+ 
+  if kwargs.has_key('return_type'):
+ 
+  return_type = kwargs['return_type']
+ 
+  kwargs.pop('return_type')
+ 
+  return return_type(f(*args, **kwargs))
+ 
+  args = list((setify(x) for x in args))
+ 
+  return return_type(f(*args, **kwargs))
+ 
+  return wrapper",Statics the methods. wut.,This function is a decorator that is used to wrap other functions.

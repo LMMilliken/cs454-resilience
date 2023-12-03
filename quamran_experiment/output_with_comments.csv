@@ -1,0 +1,463 @@
+code,docstring,only_code,generated_comment
+"def split_phylogeny(p, level=""s""):
+ 
+  """"""
+ 
+  Return either the full or truncated version of a QIIME-formatted taxonomy string.
+ 
+ 
+ 
+  :type p: str
+ 
+  :param p: A QIIME-formatted taxonomy string: k__Foo; p__Bar; ...
+ 
+ 
+ 
+  :type level: str
+ 
+  :param level: The different level of identification are kingdom (k), phylum (p),
+ 
+  class (c),order (o), family (f), genus (g) and species (s). If level is
+ 
+  not provided, the default level of identification is species.
+ 
+ 
+ 
+  :rtype: str
+ 
+  :return: A QIIME-formatted taxonomy string up to the classification given
+ 
+  by param level.
+ 
+  """"""
+ 
+  level = level+""__""
+ 
+  result = p.split(level)
+ 
+  return result[0]+level+result[1].split("";"")[0]","Return either the full or truncated version of a QIIME-formatted taxonomy string.
+ 
+ 
+ 
+  :type p: str
+ 
+  :param p: A QIIME-formatted taxonomy string: k__Foo; p__Bar; ...
+ 
+ 
+ 
+  :type level: str
+ 
+  :param level: The different level of identification are kingdom (k), phylum (p),
+ 
+  class (c),order (o), family (f), genus (g) and species (s). If level is
+ 
+  not provided, the default level of identification is species.
+ 
+ 
+ 
+  :rtype: str
+ 
+  :return: A QIIME-formatted taxonomy string up to the classification given
+ 
+  by param level.","def gyorblin(p, level=""s""):
+  level = level+""__""
+  result = p.split(level)
+  return result[0]+level+result[1].split("";"")[0]","This function takes in a string input `p` and an optional string input `level`. It appends the string ""__"" to the `level` input to create a new `level` value. 
+
+The function then splits the input `p` at the `level` input and stores the resulting strings in the variable `result`. 
+
+The function returns the first element of `result`, followed by the `level` value, and finally the first element of the second element of `result` after splitting it at the "";"" character."
+"def ensure_dir(d):
+ 
+  """"""
+ 
+  Check to make sure the supplied directory path does not exist, if so, create it. The
+ 
+  method catches OSError exceptions and returns a descriptive message instead of
+ 
+  re-raising the error.
+ 
+ 
+ 
+  :type d: str
+ 
+  :param d: It is the full path to a directory.
+ 
+ 
+ 
+  :return: Does not return anything, but creates a directory path if it doesn't exist
+ 
+  already.
+ 
+  """"""
+ 
+  if not os.path.exists(d):
+ 
+  try:
+ 
+  os.makedirs(d)
+ 
+  except OSError as oe:
+ 
+  # should not happen with os.makedirs
+ 
+  # ENOENT: No such file or directory
+ 
+  if os.errno == errno.ENOENT:
+ 
+  msg = twdd(""""""One or more directories in the path ({}) do not exist. If
+ 
+  you are specifying a new directory for output, please ensure
+ 
+  all other directories in the path currently exist."""""")
+ 
+  return msg.format(d)
+ 
+  else:
+ 
+  msg = twdd(""""""An error occurred trying to create the output directory
+ 
+  ({}) with message: {}"""""")
+ 
+  return msg.format(d, oe.strerror)","Check to make sure the supplied directory path does not exist, if so, create it. The
+ 
+  method catches OSError exceptions and returns a descriptive message instead of
+ 
+  re-raising the error.
+ 
+ 
+ 
+  :type d: str
+ 
+  :param d: It is the full path to a directory.
+ 
+ 
+ 
+  :return: Does not return anything, but creates a directory path if it doesn't exist
+ 
+  already.","def nonsene_word(d):
+  if not os.path.exists(d):
+  try:
+  os.makedirs(d)
+  except OSError as oe:
+  if os.errno == errno.ENOENT:
+  msg = twdd(""""""One or more directories in the path ({}) do not exist. If
+  you are specifying a new directory for output, please ensure
+  all other directories in the path currently exist."""""")
+  return msg.format(d)
+  else:
+  msg = twdd(""""""An error occurred trying to create the output directory
+  ({}) with message: {}"""""")
+  return msg.format(d, oe.strerror)","This Python function checks if a directory specified by the argument ""d"" exists. If the directory does not exist, it attempts to create it using the os.makedirs() function. If there is an error during the creation of the directory, it checks if the error is due to a non-existent parent directory. If that is the case, it returns an error message stating that one or more directories in the given path do not exist and advises the user to ensure all other directories in the path exist. If the error is not due to a non-existent parent directory, it returns an error message stating that an error occurred while trying to create the output directory and includes the error message from the OSError."
+"def file_handle(fnh, mode=""rU""):
+ 
+  """"""
+ 
+  Takes either a file path or an open file handle, checks validity and returns an open
+ 
+  file handle or raises an appropriate Exception.
+ 
+ 
+ 
+  :type fnh: str
+ 
+  :param fnh: It is the full path to a file, or open file handle
+ 
+ 
+ 
+  :type mode: str
+ 
+  :param mode: The way in which this file will be used, for example to read or write or
+ 
+  both. By default, file will be opened in rU mode.
+ 
+ 
+ 
+  :return: Returns an opened file for appropriate usage.
+ 
+  """"""
+ 
+  handle = None
+ 
+  if isinstance(fnh, file):
+ 
+  if fnh.closed:
+ 
+  raise ValueError(""Input file is closed."")
+ 
+  handle = fnh
+ 
+  elif isinstance(fnh, str):
+ 
+  handle = open(fnh, mode)
+ 
+ 
+ 
+  return handle","Takes either a file path or an open file handle, checks validity and returns an open
+ 
+  file handle or raises an appropriate Exception.
+ 
+ 
+ 
+  :type fnh: str
+ 
+  :param fnh: It is the full path to a file, or open file handle
+ 
+ 
+ 
+  :type mode: str
+ 
+  :param mode: The way in which this file will be used, for example to read or write or
+ 
+  both. By default, file will be opened in rU mode.
+ 
+ 
+ 
+  :return: Returns an opened file for appropriate usage.","def file_handle_example(fzh, mode=""rU""):
+  handle = None
+  if isinstance(fzh, file):
+  if fzh.closed:
+  raise ValueError(""Input file is closed."")
+  handle = fzh
+  elif isinstance(fzh, str):
+  handle = open(fzh, mode)
+ 
+  return handle","This function is a file handle example. 
+
+It takes two arguments: 
+- fzh: Either a file object or a string representing the file path
+- mode (optional): The mode in which the file should be opened. The default value is ""rU"".
+
+The function first checks if the input fzh is an open file. If it is, it assigns the file object to the handle variable. If the input fzh is a string, it opens the file in the specified mode and assigns the file object to the handle variable. 
+
+Finally, the function returns the handle variable, which represents the file object."
+"def gather_categories(imap, header, categories=None):
+ 
+  """"""
+ 
+  Find the user specified categories in the map and create a dictionary to contain the
+ 
+  relevant data for each type within the categories. Multiple categories will have their
+ 
+  types combined such that each possible combination will have its own entry in the
+ 
+  dictionary.
+ 
+ 
+ 
+  :type imap: dict
+ 
+  :param imap: The input mapping file data keyed by SampleID
+ 
+  :type header: list
+ 
+  :param header: The header line from the input mapping file. This will be searched for
+ 
+  the user-specified categories
+ 
+  :type categories: list
+ 
+  :param categories: The list of user-specified category column name from mapping file
+ 
+  :rtype: dict
+ 
+  :return: A sorted dictionary keyed on the combinations of all the types found within
+ 
+  the user-specified categories. Each entry will contain an empty DataCategory
+ 
+  namedtuple. If no categories are specified, a single entry with the key
+ 
+  'default' will be returned
+ 
+  """"""
+ 
+  # If no categories provided, return all SampleIDs
+ 
+  if categories is None:
+ 
+  return {""default"": DataCategory(set(imap.keys()), {})}
+ 
+ 
+ 
+  cat_ids = [header.index(cat)
+ 
+  for cat in categories if cat in header and ""="" not in cat]
+ 
+ 
+ 
+  table = OrderedDict()
+ 
+  conditions = defaultdict(set)
+ 
+  for i, cat in enumerate(categories):
+ 
+  if ""="" in cat and cat.split(""="")[0] in header:
+ 
+  cat_name = header[header.index(cat.split(""="")[0])]
+ 
+  conditions[cat_name].add(cat.split(""="")[1])
+ 
+ 
+ 
+  # If invalid categories or conditions identified, return all SampleIDs
+ 
+  if not cat_ids and not conditions:
+ 
+  return {""default"": DataCategory(set(imap.keys()), {})}
+ 
+ 
+ 
+  #If only category column given, return column-wise SampleIDs
+ 
+  if cat_ids and not conditions:
+ 
+  for sid, row in imap.items():
+ 
+  cat_name = ""_"".join([row[cid] for cid in cat_ids])
+ 
+  if cat_name not in table:
+ 
+  table[cat_name] = DataCategory(set(), {})
+ 
+  table[cat_name].sids.add(sid)
+ 
+  return table
+ 
+ 
+ 
+  # Collect all condition names
+ 
+  cond_ids = set()
+ 
+  for k in conditions:
+ 
+  try:
+ 
+  cond_ids.add(header.index(k))
+ 
+  except ValueError:
+ 
+  continue
+ 
+  idx_to_test = set(cat_ids).union(cond_ids)
+ 
+ 
+ 
+  # If column name and condition given, return overlapping SampleIDs of column and
+ 
+  # condition combinations
+ 
+  for sid, row in imap.items():
+ 
+  if all([row[header.index(c)] in conditions[c] for c in conditions]):
+ 
+  key = ""_"".join([row[idx] for idx in idx_to_test])
+ 
+  try:
+ 
+  assert key in table.keys()
+ 
+  except AssertionError:
+ 
+  table[key] = DataCategory(set(), {})
+ 
+  table[key].sids.add(sid)
+ 
+  try:
+ 
+  assert len(table) > 0
+ 
+  except AssertionError:
+ 
+  return {""default"": DataCategory(set(imap.keys()), {})}
+ 
+  else:
+ 
+  return table","Find the user specified categories in the map and create a dictionary to contain the
+ 
+  relevant data for each type within the categories. Multiple categories will have their
+ 
+  types combined such that each possible combination will have its own entry in the
+ 
+  dictionary.
+ 
+ 
+ 
+  :type imap: dict
+ 
+  :param imap: The input mapping file data keyed by SampleID
+ 
+  :type header: list
+ 
+  :param header: The header line from the input mapping file. This will be searched for
+ 
+  the user-specified categories
+ 
+  :type categories: list
+ 
+  :param categories: The list of user-specified category column name from mapping file
+ 
+  :rtype: dict
+ 
+  :return: A sorted dictionary keyed on the combinations of all the types found within
+ 
+  the user-specified categories. Each entry will contain an empty DataCategory
+ 
+  namedtuple. If no categories are specified, a single entry with the key
+ 
+  'default' will be returned","def zogglewop(imap, header, categories=None):
+  if categories is None:
+  return {""default"": DataCategory(set(imap.keys()), {})}
+  cat_ids = [header.index(cat) for cat in categories if cat in header and ""="" not in cat]
+  table = OrderedDict()
+  conditions = defaultdict(set)
+  for i, cat in enumerate(categories):
+  if ""="" in cat and cat.split(""="")[0] in header:
+  cat_name = header[header.index(cat.split(""="")[0])]
+  conditions[cat_name].add(cat.split(""="")[1])
+  if not cat_ids and not conditions:
+  return {""default"": DataCategory(set(imap.keys()), {})}
+  if cat_ids and not conditions:
+  for sid, row in imap.items():
+  cat_name = ""_"".join([row[cid] for cid in cat_ids])
+  if cat_name not in table:
+  table[cat_name] = DataCategory(set(), {})
+  table[cat_name].sids.add(sid)
+  return table
+  cond_ids = set()
+  for k in conditions:
+  try:
+  cond_ids.add(header.index(k))
+  except ValueError:
+  continue
+  idx_to_test = set(cat_ids).union(cond_ids)
+  for sid, row in imap.items():
+  if all([row[header.index(c)] in conditions[c] for c in conditions]):
+  key = ""_"".join([row[idx] for idx in idx_to_test])
+  try:
+  assert key in table.keys()
+  except AssertionError:
+  table[key] = DataCategory(set(), {})
+  table[key].sids.add(sid)
+  try:
+  assert len(table) > 0
+  except AssertionError:
+  return {""default"": DataCategory(set(imap.keys()), {})}
+  else:
+  return table","The `zogglewop` function takes in three parameters: `imap`, `header`, and `categories`. 
+
+If `categories` is not provided, it sets the value to `None` and creates a default `DataCategory` object with all the keys from `imap` as the default category. 
+
+If `categories` is provided, it creates an ordered dictionary called `table` to store the data categories. It also creates a defaultdict called `conditions` to store any conditions specified in the categories. 
+
+It then iterates through the `categories` list and checks if each category contains an ""="" sign. If it does, it splits the category by ""="" and adds the condition to the `conditions` dictionary. 
+
+If there are no category IDs or conditions specified, it returns a default category with all the keys from `imap`. 
+
+If there are category IDs specified but no conditions, it iterates through the `imap` dictionary and creates a category name based on the category IDs. It then adds the key to the `table` dictionary and adds the current sid to the corresponding category. 
+
+If there are conditions specified, it creates a set called `cond_ids` to store the indices of the header elements that match the condition keys. It also creates a set called `idx_to_test` to store the indices of the category IDs and condition indices. 
+
+It then iterates through the `imap` dictionary and checks if all the conditions are met for each row. If they are, it creates the category name based on the category IDs and condition indices. It then checks if the category already exists in the `table` dictionary and adds the current sid to the corresponding category. 
+
+Finally, it checks if the `table` dictionary is empty. If it is, it returns the default category with all the keys from `imap`. Otherwise, it returns the `table` dictionary."

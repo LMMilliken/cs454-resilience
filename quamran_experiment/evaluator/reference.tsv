@@ -1,0 +1,91 @@
+0	Return either the full or truncated version of a QIIME-formatted taxonomy string.            :type p: str      :param p: A QIIME-formatted taxonomy string: k__Foo; p__Bar; ...            :type level: str      :param level: The different level of identification are kingdom (k), phylum (p),      class (c),order (o), family (f), genus (g) and species (s). If level is      not provided, the default level of identification is species.            :rtype: str      :return: A QIIME-formatted taxonomy string up to the classification given      by param level.
+1	Check to make sure the supplied directory path does not exist, if so, create it. The      method catches OSError exceptions and returns a descriptive message instead of      re-raising the error.            :type d: str      :param d: It is the full path to a directory.            :return: Does not return anything, but creates a directory path if it doesn't exist      already.
+2	Takes either a file path or an open file handle, checks validity and returns an open      file handle or raises an appropriate Exception.            :type fnh: str      :param fnh: It is the full path to a file, or open file handle            :type mode: str      :param mode: The way in which this file will be used, for example to read or write or      both. By default, file will be opened in rU mode.            :return: Returns an opened file for appropriate usage.
+3	Find the user specified categories in the map and create a dictionary to contain the      relevant data for each type within the categories. Multiple categories will have their      types combined such that each possible combination will have its own entry in the      dictionary.            :type imap: dict      :param imap: The input mapping file data keyed by SampleID      :type header: list      :param header: The header line from the input mapping file. This will be searched for      the user-specified categories      :type categories: list      :param categories: The list of user-specified category column name from mapping file      :rtype: dict      :return: A sorted dictionary keyed on the combinations of all the types found within      the user-specified categories. Each entry will contain an empty DataCategory      namedtuple. If no categories are specified, a single entry with the key      'default' will be returned
+4	Parses the unifrac results file into a dictionary            :type unifracFN: str      :param unifracFN: The path to the unifrac results file            :rtype: dict      :return: A dictionary with keys: 'pcd' (principle coordinates data) which is a      dictionary of the data keyed by sample ID, 'eigvals' (eigenvalues), and      'varexp' (variation explained)
+5	Function to parse data from older version of unifrac file obtained from Qiime version      1.8 and earlier.            :type unifrac: dict      :param unifracFN: The path to the unifrac results file            :type file_data: list      :param file_data: Unifrac data lines after stripping whitespace characters.
+6	Function to parse data from newer version of unifrac file obtained from Qiime version      1.9 and later.            :type unifracFN: str      :param unifracFN: The path to the unifrac results file            :type file_data: list      :param file_data: Unifrac data lines after stripping whitespace characters.
+7	Determine color-category mapping. If color_column was specified, then map the category      names to color values. Otherwise, use the palettable colors to automatically generate      a set of colors for the group values.            :type sample_map: dict      :param unifracFN: Map associating each line of the mapping file with the appropriate      sample ID (each value of the map also contains the sample ID)            :type header: tuple      :param A tuple of header line for mapping file            :type group_column: str      :param group_column: String denoting the column name for sample groups.            :type color_column: str      :param color_column: String denoting the column name for sample colors.            :type return: dict      :param return: {SampleID: Color}
+8	return reverse completment of read
+9	randomly shuffle genome
+10	If the fit contains statistically insignificant parameters, remove them.      Returns a pruned fit where all parameters have p-values of the t-statistic below p_max            Parameters      ----------      fit: fm.ols fit object      Can contain insignificant parameters      p_max : float      Maximum allowed probability of the t-statistic            Returns      -------      fit: fm.ols fit object      Won't contain any insignificant parameters
+11	Return the best fit, based on rsquared
+12	Return a df with predictions and confidence interval            Notes      -----      The df will contain the following columns:      - 'predicted': the model output      - 'interval_u', 'interval_l': upper and lower confidence bounds.            The result will depend on the following attributes of self:      confint : float (default=0.95)      Confidence level for two-sided hypothesis      allow_negative_predictions : bool (default=True)      If False, correct negative predictions to zero (typically for energy consumption predictions)            Parameters      ----------      fit : Statsmodels fit      df : pandas DataFrame or None (default)      If None, use self.df                  Returns      -------      df_res : pandas DataFrame      Copy of df with additional columns 'predicted', 'interval_u' and 'interval_l'
+13	Calculate the relative abundance of each OTUID in a Sample.            :type biomf: A BIOM file.      :param biomf: OTU table format.            :type sampleIDs: list      :param sampleIDs: A list of sample id's from BIOM format OTU table.            :rtype: dict      :return: Returns a keyed on SampleIDs, and the values are dictionaries keyed on      OTUID's and their values represent the relative abundance of that OTUID in      that SampleID.
+14	Calculate the mean OTU abundance percentage.            :type ra: Dict      :param ra: 'ra' refers to a dictionary keyed on SampleIDs, and the values are      dictionaries keyed on OTUID's and their values represent the relative      abundance of that OTUID in that SampleID. 'ra' is the output of      relative_abundance() function.            :type otuIDs: List      :param otuIDs: A list of OTUID's for which the percentage abundance needs to be      measured.            :rtype: dict      :return: A dictionary of OTUID and their percent relative abundance as key/value pair.
+15	Calculate the mean relative abundance percentage.            :type biomf: A BIOM file.      :param biomf: OTU table format.            :type sampleIDs: list      :param sampleIDs: A list of sample id's from BIOM format OTU table.            :param transform: Mathematical function which is used to transform smax to another      format. By default, the function has been set to None.            :rtype: dict      :return: A dictionary keyed on OTUID's and their mean relative abundance for a given      number of sampleIDs.
+16	Calculate the total number of sequences in each OTU or SampleID.            :type biomf: A BIOM file.      :param biomf: OTU table format.            :type sampleIDs: List      :param sampleIDs: A list of column id's from BIOM format OTU table. By default, the      list has been set to None.            :type sample_abd: Boolean      :param sample_abd: A boolean operator to provide output for OTUID's or SampleID's. By      default, the output will be provided for SampleID's.            :rtype: dict      :return: Returns a dictionary keyed on either OTUID's or SampleIDs and their      respective abundance as values.
+17	Function to transform the total abundance calculation for each sample ID to another      format based on user given transformation function.            :type biomf: A BIOM file.      :param biomf: OTU table format.            :param fn: Mathematical function which is used to transform smax to another format.      By default, the function has been given as base 10 logarithm.            :rtype: dict      :return: Returns a dictionary similar to output of raw_abundance function but with      the abundance values modified by the mathematical operation. By default, the      operation performed on the abundances is base 10 logarithm.
+18	Compute the Mann-Whitney U test for unequal group sample sizes.
+19	Compute the Kruskal-Wallis H-test for independent samples. A typical rule is that      each group must have at least 5 measurements.
+20	Parses the given options passed in at the command line.
+21	make blast db
+22	make usearch db
+23	Pretty print.
+24	Print licenses.            :param argparse.Namespace params: parameter      :param bootstrap_py.classifier.Classifiers metadata: package metadata
+25	Check repository existence.            :param argparse.Namespace params: parameters
+26	Generate package repository.            :param argparse.Namespace params: parameters
+27	print single reads to stderr
+28	convert sam to fastq
+29	sort sam file
+30	randomly subset sam file
+31	convert fq to fa
+32	Converts the returned value of wrapped function to the type of the      first arg or to the type specified by a kwarg key return_type's value.
+33	Converts all args to 'set' type via self.setify function.
+43	Build sphinx documentation.            :rtype: int      :return: subprocess.call return code            :param `bootstrap_py.control.PackageData` pkg_data: package meta data      :param str projectdir: project root directory
+44	make bowtie db
+45	generate bowtie2 command
+46	map all read sets against all fasta files
+47	Returns a connection object from the router given ``args``.            Useful in cases where a connection cannot be automatically determined      during all steps of the process. An example of this would be      Redis pipelines.
+48	return the non-direct init if the direct algorithm has been selected.
+49	reflect a data word, i.e. reverts the bit order.
+50	Classic simple and slow CRC implementation. This function iterates bit      by bit over the augmented input message and returns the calculated CRC      value at the end.
+51	This function generates the CRC table used for the table_driven CRC      algorithm. The Python version cannot handle tables of an index width      other than 8. See the generated C code for tables with different sizes      instead.
+52	The Standard table_driven CRC algorithm.
+53	parse masked sequence into non-masked and masked regions
+54	remove masked regions from fasta file as long as      they are longer than min_len
+55	Return arcsine transformed relative abundance from a BIOM format file.            :type biomfile: BIOM format file      :param biomfile: BIOM format file used to obtain relative abundances for each OTU in      a SampleID, which are used as node sizes in network plots.            :type return: Dictionary of dictionaries.      :return: Dictionary keyed on SampleID whose value is a dictionarykeyed on OTU Name      whose value is the arc sine tranfsormed relative abundance value for that      SampleID-OTU Name pair.
+56	Find an OTU ID in a Newick-format tree.      Return the starting position of the ID or None if not found.
+57	Replace the OTU ids in the Newick phylogenetic tree format with truncated      OTU names
+58	return genome info for choosing representative            if ggKbase table provided - choose rep based on SCGs and genome length      - priority for most SCGs - extra SCGs, then largest genome            otherwise, based on largest genome
+59	choose represenative genome and      print cluster information            *if ggKbase table is provided, use SCG info to choose best genome
+60	convert ggKbase genome info tables to dictionary
+61	convert checkM genome info tables to dictionary
+62	get genome lengths
+63	Returns a list of db keys to route the given call to.            :param attr: Name of attribute being called on the connection.      :param args: List of arguments being passed to ``attr``.      :param kwargs: Dictionary of keyword arguments being passed to ``attr``.            >>> redis = Cluster(router=BaseRouter)      >>> router = redis.router      >>> router.get_dbs('incr', args=('key name', 1))      [0,1,2]
+64	Call method to perform any setup
+65	Perform routing and return db_nums
+66	Iterates through all connections which were previously listed as unavailable      and marks any that have expired their retry_timeout as being up.
+67	Marks all connections which were previously listed as unavailable as being up.
+68	Compute standby power            Parameters      ----------      df : pandas.DataFrame or pandas.Series      Electricity Power      resolution : str, default='d'      Resolution of the computation. Data will be resampled to this resolution (as mean) before computation      of the minimum.      String that can be parsed by the pandas resample function, example ='h', '15min', '6h'      time_window : tuple with start-hour and end-hour, default=None      Specify the start-time and end-time for the analysis.      Only data within this time window will be considered.      Both times have to be specified as string ('01:00', '06:30') or as datetime.time() objects            Returns      -------      df : pandas.Series with DateTimeIndex in the given resolution
+69	Compute the share of the standby power in the total consumption.            Parameters      ----------      df : pandas.DataFrame or pandas.Series      Power (typically electricity, can be anything)      resolution : str, default='d'      Resolution of the computation. Data will be resampled to this resolution (as mean) before computation      of the minimum.      String that can be parsed by the pandas resample function, example ='h', '15min', '6h'      time_window : tuple with start-hour and end-hour, default=None      Specify the start-time and end-time for the analysis.      Only data within this time window will be considered.      Both times have to be specified as string ('01:00', '06:30') or as datetime.time() objects            Returns      -------      fraction : float between 0-1 with the share of the standby consumption
+70	Toggle counter for gas boilers            Counts the number of times the gas consumption increases with more than 3kW            Parameters      ----------      ts: Pandas Series      Gas consumption in minute resolution            Returns      -------      int
+71	Calculate the ratio of input vs. norm over a given interval.            Parameters      ----------      ts : pandas.Series      timeseries      resolution : str, optional      interval over which to calculate the ratio      default: resolution of the input timeseries      norm : int | float, optional      denominator of the ratio      default: the maximum of the input timeseries            Returns      -------      pandas.Series
+72	get top hits after sorting by column number
+73	parse b6 output with sorting
+74	parse b6 output
+75	parse hmm domain table output      this version is faster but does not work unless the table is sorted
+76	convert stockholm to fasta
+77	Return boolean time series following given week schedule.            Parameters      ----------      index : pandas.DatetimeIndex      Datetime index      on_time : str or datetime.time      Daily opening time. Default: '09:00'      off_time : str or datetime.time      Daily closing time. Default: '17:00'      off_days : list of str      List of weekdays. Default: ['Sunday', 'Monday']            Returns      -------      pandas.Series of bool      True when on, False otherwise for given datetime index            Examples      --------      >>> import pandas as pd      >>> from opengrid.library.utils import week_schedule      >>> index = pd.date_range('20170701', '20170710', freq='H')      >>> week_schedule(index)
+78	Draw a carpet plot of a pandas timeseries.            The carpet plot reads like a letter. Every day one line is added to the      bottom of the figure, minute for minute moving from left (morning) to right      (evening).      The color denotes the level of consumption and is scaled logarithmically.      If vmin and vmax are not provided as inputs, the minimum and maximum of the      colorbar represent the minimum and maximum of the (resampled) timeseries.            Parameters      ----------      timeseries : pandas.Series      vmin, vmax : If not None, either or both of these values determine the range      of the z axis. If None, the range is given by the minimum and/or maximum      of the (resampled) timeseries.      zlabel, title : If not None, these determine the labels of z axis and/or      title. If None, the name of the timeseries is used if defined.      cmap : matplotlib.cm instance, default coolwarm            Examples      --------      >>> import numpy as np      >>> import pandas as pd      >>> from opengrid.library import plotting      >>> plt = plotting.plot_style()      >>> index = pd.date_range('2015-1-1','2015-12-31',freq='h')      >>> ser = pd.Series(np.random.normal(size=len(index)), index=index, name='abc')      >>> im = plotting.carpet(ser)
+79	calculate percent identity
+80	skip column if either is a gap
+81	compare pairs of sequences
+82	calculate Levenshtein ratio of sequences
+83	make pairwise sequence comparisons between aligned sequences
+84	print matrix of pidents to stdout
+85	print stats for comparisons
+86	print min. pident within each clade and then matrix of between-clade max.
+87	convert matrix to dictionary of comparisons
+88	Set argument parser option.
+89	Parse argument options.
+90	Execute main processes.
+91	Check key and set default vaule when it does not exists.
+92	Move directory from working directory to output directory.
+93	Initialize VCS repository.
+94	Finds the location of the current Steam installation on Windows machines.      Returns None for any non-Windows machines, or for Windows machines where      Steam is not installed.
+95	Plot PCoA principal coordinates scaled by the relative abundances of      otu_name.
+96	Split up the column data in a biom table by mapping category value.
+97	print line if starts with ...
+98	convert stockholm to single line format
+99	Statics the methods. wut.
