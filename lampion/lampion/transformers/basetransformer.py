@@ -1,12 +1,10 @@
 """
 Contains the "BaseTransformer", a superclass for the other Transformers.
 """
-import random
-from typing import Optional
 from libcst import CSTNode
 
 
-class BaseTransformer:
+class BaseTransformer():
     """Base class for metamorphic transformers, provides methods needed for Engine to work.
 
     This class provides the basic structure of any transformer, inheriting from the CST Transformer.
@@ -20,10 +18,6 @@ class BaseTransformer:
 
     _was_applied: bool = False
     _max_tries: int = 25
-
-    def __init__(self, seed: Optional[int] = None) -> None:
-        self.seed = seed if seed is not None else random.randint(0, 20000)
-        self.node_count = None
 
     def reset(self):
         """Resets the Transformer to be applied again.
@@ -61,7 +55,7 @@ class BaseTransformer:
         raise NotImplementedError()
 
     def postprocessing(self):
-        """Manages all behavior after application, in case it worked(). Also calls reset().
+        """ Manages all behavior after application, in case it worked(). Also calls reset().
 
         :raises NotImplementedError
             Iff the Subclasses do not overwrite the parent method.

@@ -6,7 +6,6 @@ import random
 from abc import ABC
 
 import logging as log
-from typing import Optional
 
 import libcst._nodes.base
 from libcst import CSTNode
@@ -53,15 +52,10 @@ class IfFalseElseTransformer(BaseTransformer, ABC):
     The above added elements have redundant ( ) but I add them intentionally to be careful.
     """
 
-    def __init__(
-        self,
-        max_tries: int = 50,
-        seed: Optional[int] = None,
-    ):
-        super().__init__(seed=seed)
+    def __init__(self, max_tries: int = 50):
         self._worked = False
         self.set_max_tries(max_tries)
-        log.info("IfTrueTransformer created (%d Re-Tries)", self.get_max_tries())
+        log.info("IfFalseElseTransformer created (%d Re-Tries)", self.get_max_tries())
 
     def apply(self, cst_to_alter: CSTNode) -> CSTNode:
         """
@@ -103,20 +97,19 @@ class IfFalseElseTransformer(BaseTransformer, ABC):
         if tries == max_tries and not self.worked():
             log.warning("IfTrueTransformer failed after %i attempts", max_tries)
 
-        self.node_count = transformer.node_count
         return altered_cst
 
     def reset(self) -> None:
         """Resets the Transformer to be applied again.
 
-        after the reset all local state is deleted, the transformer is fully reset.
+           after the reset all local state is deleted, the transformer is fully reset.
 
-        It holds:
-        > a = SomeTransformer()
-        > b = SomeTransformer()
-        > someTree.visit(a)
-        > a.reset()
-        > assert a == b
+           It holds:
+           > a = SomeTransformer()
+           > b = SomeTransformer()
+           > someTree.visit(a)
+           > a.reset()
+           > assert a == b
         """
         self._worked = False
 
@@ -158,35 +151,22 @@ class IfFalseElseTransformer(BaseTransformer, ABC):
         Hence, we first make a small statement with the right condition, and replace the or-else-body.
         """
 
-        def __init__(
-            self,
-            seed: Optional[int] = None,
-        ):
-            self.random = random.Random(seed)
+        def __init__(self):
             super().__init__()
             self.__applied = False
             self.chance = 0.1
-            self.node_count = 0
-
-        def visit_node(self, node):
-            if not self.__applied:
-                self.node_count += 1
 
         def applied(self):
             return self.__applied
 
         def leave_SimpleStatementSuite(
-            self,
-            original_node: "SimpleStatementSuite",
-            updated_node: "SimpleStatementSuite",
+                self,
+                original_node: "SimpleStatementSuite",
+                updated_node: "SimpleStatementSuite",
         ) -> "BaseSuite":
-            if not self.__applied and self.random.random() < self.chance:
-                wrapper = libcst.parse_statement(
-                    "if (False): \n\treturn None\nelse:\n\treturn 1"
-                )
-                wrapper_with_body_changed = wrapper.deep_replace(
-                    wrapper.orelse.body, updated_node
-                )
+            if not self.__applied and random.random() < self.chance:
+                wrapper = libcst.parse_statement("if (False): \n\treturn None\nelse:\n\treturn 1")
+                wrapper_with_body_changed = wrapper.deep_replace(wrapper.orelse.body, updated_node)
 
                 self.__applied = True
                 return wrapper_with_body_changed
@@ -196,15 +176,11 @@ class IfFalseElseTransformer(BaseTransformer, ABC):
                 return updated_node
 
         def leave_IndentedBlock(
-            self, original_node: "IndentedBlock", updated_node: "IndentedBlock"
+                self, original_node: "IndentedBlock", updated_node: "IndentedBlock"
         ) -> "BaseSuite":
-            if not self.__applied and self.random.random() < self.chance:
-                wrapper = libcst.parse_statement(
-                    "if (False): \n\treturn None\nelse:\n\treturn 1"
-                )
-                wrapper_with_body_changed = wrapper.deep_replace(
-                    wrapper.orelse.body, updated_node
-                )
+            if not self.__applied and random.random() < self.chance:
+                wrapper = libcst.parse_statement("if (False): \n\treturn None\nelse:\n\treturn 1")
+                wrapper_with_body_changed = wrapper.deep_replace(wrapper.orelse.body, updated_node)
 
                 self.__applied = True
                 return wrapper_with_body_changed

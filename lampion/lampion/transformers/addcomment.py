@@ -4,7 +4,7 @@ Contains the "AddCommentTransformer" that adds a (random) comment at a random po
 import random
 import logging as log
 from abc import ABC
-from typing import Optional, Union
+from typing import Union
 
 import libcst as cst
 import libcst.codegen.gather
@@ -33,23 +33,15 @@ class AddCommentTransformer(BaseTransformer, ABC):
 
     """
 
-    def __init__(
-        self,
-        string_randomness: str = "pseudo",
-        max_tries: int = 50,
-        seed: Optional[int] = None,
-    ):
-        super().__init__(seed=seed)
-        if string_randomness in ["pseudo", "full"]:
+    def __init__(self, string_randomness: str = "pseudo",max_tries:int = 50):
+        if string_randomness in ["pseudo","full"]:
             self.__string_randomness = string_randomness
         else:
-            raise ValueError(
-                "Unrecognized Value for String Randomness, supported are pseudo and full"
-            )
+            raise ValueError("Unrecognized Value for String Randomness, supported are pseudo and full")
 
         self._worked = False
         self.set_max_tries(max_tries)
-        log.info("AddCommentTransformer created (%d Re-Tries)", self.get_max_tries())
+        log.info("AddCommentTransformer created (%d Re-Tries)",self.get_max_tries())
 
     def apply(self, cst_to_alter: CSTNode) -> CSTNode:
         """
@@ -63,12 +55,12 @@ class AddCommentTransformer(BaseTransformer, ABC):
 
         Also, see the BaseTransformers notes if you want to implement your own.
         """
-        visitor = self.__AddCommentVisitor(self.seed)
+        visitor = self.__AddCommentVisitor()
 
         altered_cst = cst_to_alter
 
         tries: int = 0
-        max_tries: int = self.get_max_tries()
+        max_tries : int = self.get_max_tries()
 
         while (not self._worked) and tries <= max_tries:
             altered_cst = cst_to_alter.visit(visitor)
@@ -76,23 +68,21 @@ class AddCommentTransformer(BaseTransformer, ABC):
             tries = tries + 1
 
         if tries == max_tries:
-            log.warning("Add Comment Transformer failed after %i attempts", max_tries)
-
-        self.node_count = visitor.node_count
+            log.warning("Add Comment Transformer failed after %i attempts",max_tries)
 
         return altered_cst
 
     def reset(self) -> None:
         """Resets the Transformer to be applied again.
 
-        after the reset all local state is deleted, the transformer is fully reset.
+           after the reset all local state is deleted, the transformer is fully reset.
 
-        It holds:
-        > a = SomeTransformer()
-        > b = SomeTransformer()
-        > someTree.visit(a)
-        > a.reset()
-        > assert a == b
+           It holds:
+           > a = SomeTransformer()
+           > b = SomeTransformer()
+           > someTree.visit(a)
+           > a.reset()
+           > assert a == b
         """
         self._worked = False
 
@@ -120,7 +110,7 @@ class AddCommentTransformer(BaseTransformer, ABC):
         Used only for information and maybe later for filter purposes.
         :return: The categories what this transformer can be summarized with.
         """
-        return ["Naming", "Comment"]
+        return ["Naming","Comment"]
 
     class __AddCommentVisitor(cst.CSTTransformer):
         """
@@ -130,31 +120,16 @@ class AddCommentTransformer(BaseTransformer, ABC):
         May is not applied by chance, to see whether it was successfully applied check
         the attribute "finished".
         """
-
-        def __init__(
-            self,
-            string_randomness: str = "pseudo",
-            seed: Optional[int] = None,
-        ):
-            self.random = random.Random(seed)
-            if string_randomness in ["pseudo", "full"]:
+        def __init__(self, string_randomness: str = "pseudo"):
+            if string_randomness in ["pseudo","full"]:
                 self.__string_randomness = string_randomness
             else:
-                raise ValueError[
-                    "Received invalid value for String Randomness, supported values are 'pseud' and 'full'"
-                ]
+                raise ValueError["Received invalid value for String Randomness, supported values are 'pseud' and 'full'"]
 
             self.finished = False
-            self.node_count = 0
-
-        def visit_node(self, node):
-            if not self.finished:
-                self.node_count += 1
 
         def leave_SimpleStatementLine(
-            self,
-            original_node: "SimpleStatementLine",
-            updated_node: "SimpleStatementLine",
+                self, original_node: "SimpleStatementLine", updated_node: "SimpleStatementLine"
         ) -> Union["BaseStatement", FlattenSentinel["BaseStatement"], RemovalSentinel]:
             """
             LibCSTTransformer that adds a random comment at a random place.
@@ -172,14 +147,12 @@ class AddCommentTransformer(BaseTransformer, ABC):
             if self.finished:
                 return updated_node
 
-            added_stmt = _make_snippet(
-                self.random, string_randomness=self.__string_randomness
-            )
+            added_stmt = _make_snippet(string_randomness=self.__string_randomness)
 
             # Case 2: We did not alter yet, at the current (random) statement apply it in 1 of 20 cases.
             # TODO: this has a slight bias towards early nodes if the file is long?
             # TODO: Is there a way to see all nodes and pick one by random.choice(allNodes) ?
-            if self.random.random() < 0.05:
+            if random.random() < 0.05:
                 self.finished = True
                 # FlattenSentinels are what we want to replace 1 existing element (here 1 statement)
                 # with 1 or more statements. It takes care of things like indentation
@@ -189,7 +162,7 @@ class AddCommentTransformer(BaseTransformer, ABC):
             return updated_node
 
 
-def _make_snippet(rand: random.Random, string_randomness: str = "pseudo") -> CSTNode:
+def _make_snippet(string_randomness: str = "pseudo") -> CSTNode:
     """
     Creates a CSTNode of a comment made of random strings.
     Supported randomness are "pseudo" and "full".
@@ -209,45 +182,16 @@ def _make_snippet(rand: random.Random, string_randomness: str = "pseudo") -> CST
     :raises: ValueError in case of unknown string_randomness
     """
     if string_randomness == "full":
-        pieces = [
-            get_random_string(rand.randint(1, 8), rand=rand)
-            for x in range(1, rand.randint(2, 5), rand=rand)
-        ]
+        pieces  = [get_random_string(random.randint(1,8)) for x in range(1,random.randint(2,5))]
     elif string_randomness == "pseudo":
         suppliers = [
-            lambda: get_pseudo_random_string(
-                with_keyword=True,
-                with_job=False,
-                with_animal=False,
-                with_adjective=False,
-                rand=rand,
-            ),
-            lambda: get_pseudo_random_string(
-                with_keyword=False,
-                with_job=True,
-                with_animal=False,
-                with_adjective=False,
-                rand=rand,
-            ),
-            lambda: get_pseudo_random_string(
-                with_keyword=False,
-                with_job=False,
-                with_animal=True,
-                with_adjective=False,
-                rand=rand,
-            ),
-            lambda: get_pseudo_random_string(
-                with_keyword=False,
-                with_job=False,
-                with_animal=False,
-                with_adjective=True,
-                rand=rand,
-            ),
+            lambda: get_pseudo_random_string(with_keyword=True,with_job=False,with_animal=False,with_adjective=False),
+            lambda: get_pseudo_random_string(with_keyword=False,with_job=True,with_animal=False,with_adjective=False),
+            lambda: get_pseudo_random_string(with_keyword=False,with_job=False,with_animal=True,with_adjective=False),
+            lambda: get_pseudo_random_string(with_keyword=False,with_job=False,with_animal=False,with_adjective=True),
         ]
-        pieces = [rand.choice(suppliers)() for x in range(1, rand.randint(3, 8))]
+        pieces  = [random.choice(suppliers)() for x in range(1,random.randint(3,8))]
     else:
-        raise ValueError(
-            "Unrecognized Value for String Randomness, supported are pseudo and full"
-        )
+        raise ValueError("Unrecognized Value for String Randomness, supported are pseudo and full")
     comment = "# " + " ".join(pieces) + " \n"
     return libcst.parse_module(comment)

@@ -4,7 +4,7 @@ Contains the "AddVariableTransformer" that inserts an unused variable with a ran
 import random
 import logging as log
 from abc import ABC
-from typing import Optional, Union
+from typing import Union
 
 import libcst as cst
 import libcst.codegen.gather
@@ -35,23 +35,15 @@ class AddVariableTransformer(BaseTransformer, ABC):
     Adding the type is an optional flag.
     """
 
-    def __init__(
-        self,
-        string_randomness: str = "pseudo",
-        max_tries: int = 50,
-        seed: Optional[int] = None,
-    ):
-        super().__init__(seed=seed)
-        if string_randomness in ["pseudo", "full"]:
+    def __init__(self, string_randomness: str = "pseudo", max_tries : int = 50):
+        if string_randomness in ["pseudo","full"]:
             self.__string_randomness = string_randomness
         else:
-            raise ValueError(
-                "Unrecognized Value for String Randomness, supported are pseudo and full"
-            )
+            raise ValueError("Unrecognized Value for String Randomness, supported are pseudo and full")
 
         self._worked = False
         self.set_max_tries(max_tries)
-        log.info("AddVariableTransformer created (%d Re-Tries)", self.get_max_tries())
+        log.info("AddVariableTransformer created (%d Re-Tries)",self.get_max_tries())
 
     def apply(self, cst_to_alter: CSTNode) -> CSTNode:
         """
@@ -78,23 +70,21 @@ class AddVariableTransformer(BaseTransformer, ABC):
             tries = tries + 1
 
         if tries == max_tries:
-            log.warning("Add Variable Visitor failed after %i attempts", max_tries)
-
-        self.node_count = visitor.node_count
+            log.warning("Add Variable Visitor failed after %i attempts",max_tries)
 
         return altered_cst
 
     def reset(self) -> None:
         """Resets the Transformer to be applied again.
 
-        after the reset all local state is deleted, the transformer is fully reset.
+           after the reset all local state is deleted, the transformer is fully reset.
 
-        It holds:
-        > a = SomeTransformer()
-        > b = SomeTransformer()
-        > someTree.visit(a)
-        > a.reset()
-        > assert a == b
+           It holds:
+           > a = SomeTransformer()
+           > b = SomeTransformer()
+           > someTree.visit(a)
+           > a.reset()
+           > assert a == b
         """
         self._worked = False
 
@@ -125,27 +115,16 @@ class AddVariableTransformer(BaseTransformer, ABC):
         self.reset()
 
     class __AddVarVisitor(cst.CSTTransformer):
-        def __init__(
-            self,
-            string_randomness: str = "pseudo",
-            seed: Optional[int] = None,
-        ):
-            self.random = random.Random(seed)
+
+        def __init__(self, string_randomness: str = "pseudo"):
             log.debug("AddVariableVisitor Created")
             self.finished = False
             self.__string_randomness = string_randomness
-            self.node_count = 0
 
         finished = False
 
-        def visit_node(self, node):
-            if not self.finished:
-                self.node_count += 1
-
         def leave_SimpleStatementLine(
-            self,
-            original_node: "SimpleStatementLine",
-            updated_node: "SimpleStatementLine",
+                self, original_node: "SimpleStatementLine", updated_node: "SimpleStatementLine"
         ) -> Union["BaseStatement", FlattenSentinel["BaseStatement"], RemovalSentinel]:
             """
             LibCSTTransformer that adds random variables at a random place.
@@ -168,7 +147,7 @@ class AddVariableTransformer(BaseTransformer, ABC):
             # Case 2: We did not alter yet, at the current (random) statement apply it in 1 of 20 cases.
             # TODO: this has a slight bias towards early nodes if the file is long?
             # TODO: Is there a way to see all nodes and pick one by random.choice(allNodes) ?
-            if self.random.random() < 0.05:
+            if random.random() < 0.05:
                 self.finished = True
                 # FlattenSentinels are what we want to replace 1 existing element (here 1 statement)
                 # with 1 or more statements. It takes care of things like indentation.
@@ -195,25 +174,24 @@ class AddVariableTransformer(BaseTransformer, ABC):
             :raises: ValueError in case of different strings.
             """
             if string_randomness == "pseudo":
-                name = get_pseudo_random_string(rand=self.random)
+                name = get_pseudo_random_string()
             elif string_randomness == "full":
-                name = get_random_string(5, rand=self.random)
+                name = get_random_string(5)
             else:
                 raise ValueError(
-                    "Something changed the StringRandomness in AddVariableTransformer to an invalid value."
-                )
+                    "Something changed the StringRandomness in AddVariableTransformer to an invalid value.")
 
-            type_str = self.random.choice(self._supported_types)
+            type_str = random.choice(self._supported_types)
 
             if self._add_types:
                 name = f"{name}: {type_str}"
 
             value = ""
             if type_str == "str":
-                value = f'"{get_random_string(self.random.randint(3, 30), rand=self.random)}"'
+                value = f"\"{get_random_string(random.randint(3, 30))}\""
             if type_str == "int":
-                value = self.random.randint(2, 1000)
+                value = random.randint(2, 1000)
             if type_str == "float":
-                value = self.random.random()
+                value = random.random()
 
             return libcst.parse_statement(f"{name} = {value}")

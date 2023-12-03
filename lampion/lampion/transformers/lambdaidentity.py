@@ -1,29 +1,27 @@
 """
-Contains the "AddNeutralElementTransformer" that adds +0 to integers or +"" to strings.
+Contains the "LambdaIdentityTransformer" that wraps literals into lambda functions and calls them.
 """
+import logging as log
 import random
 from abc import ABC
-
-import logging as log
-from typing import Optional
-
-import libcst._nodes.base
-from libcst import CSTNode
 import libcst as cst
+
 import regex as re
 
+from libcst import CSTNode
 from lampion.transformers.basetransformer import BaseTransformer
 from lampion.transformers.literal_helpers import get_all_literals
 
 
-class AddNeutralElementTransformer(BaseTransformer, ABC):
+class LambdaIdentityTransformer(BaseTransformer, ABC):
     """
-    Transformer that adds neutral elements after literals.
-    Currently, this supports strings, ints and doubles.
+    Transformer that wraps literals in a lambda function that is immediately called.
+    This procedure is often called an identity-function, hence the name of the transformer.
     Brackets are added pre-cautiously, even if they might be redundant.
 
     IMPORTANT: This is not identical behaviour to the Java Transformer, as the Python Transformer only works for Literals,
     while Java works on any typed element.
+    TODO: Extend this behaviour for more elements than literals? In theory all expressions are fine.
 
     Before:
     > def example():
@@ -31,7 +29,7 @@ class AddNeutralElementTransformer(BaseTransformer, ABC):
 
     After:
     > def example():
-    >   return (1 + 0)
+    >   return ((lambda: 1)())
 
 
     Before:
@@ -41,25 +39,22 @@ class AddNeutralElementTransformer(BaseTransformer, ABC):
 
     After:
     > def example2():
-    >   name = ("World" + "")
+    >   name = ((lambda:"World")())
     >   print(f"Hello {name}")
 
     The above added elements have redundant ( ) but I add them intentionally,
     so that I do not run into weird bugs about precedence.
     LibCST does not support finding this kind of behaviour afaik.
+
+    Note: For some Transformers we need libcst.the parse_statement,
+    however lambdas and function calls are both expressions, so all elements here are expressions.
+    See: https://docs.python.org/2/reference/expressions.html#
     """
 
-    def __init__(
-        self,
-        max_tries: int = 5,
-        seed: Optional[int] = None,
-    ):
-        super().__init__(seed=seed)
+    def __init__(self, max_tries: int = 5):
         self._worked = False
         self.set_max_tries(max_tries)
-        log.info(
-            "AddNeutralElementTransformer created (%d Re-Tries)", self.get_max_tries()
-        )
+        log.info("LambdaIdentityTransformer created (%d Re-Tries)", self.get_max_tries())
 
     def apply(self, cst_to_alter: CSTNode) -> CSTNode:
         """
@@ -76,64 +71,60 @@ class AddNeutralElementTransformer(BaseTransformer, ABC):
 
         altered_cst = cst_to_alter
 
-        seen_literals = get_all_literals(altered_cst)
-        # Exit early: No Literals to work on!
+        seen_literals = get_all_literals(cst_to_alter)
+        # Exit early if no matching literals exist
         if len(seen_literals) == 0:
             self._worked = False
-            return cst_to_alter
+            return altered_cst
 
         tries: int = 0
         max_tries: int = self.get_max_tries()
 
-        rand = random.Random(self.seed)
-
         while (not self._worked) and tries <= max_tries:
             try:
-                node_count, to_replace = rand.choice(list(enumerate(seen_literals)))
+                to_replace = random.choice(seen_literals)
 
                 replacer = self.__Replacer(to_replace[1], to_replace[0])
 
                 altered_cst = cst_to_alter.visit(replacer)
-
-                altered_code = altered_cst.code
+                altered_code = str(altered_cst.code)
                 reduced_code = _reduce_brackets(altered_code)
 
                 altered_cst = cst.parse_module(reduced_code)
 
                 tries = tries + 1
-                self._worked = replacer.worked
-
-                if self._worked:
-                    self.node_count = node_count
-
-            except libcst._nodes.base.CSTValidationError:
-                # This can happen if we try to add strings and add too many Parentheses
+                self._worked = replacer.replacer_finished
+                return altered_cst
+            except AttributeError:
+                # This case happened when the seen variables were tuples
+                # Seen in OpenVocabCodeNLM Test Data
+                tries = tries + 1
+            except cst._nodes.base.CSTValidationError:
+                # This can happen if we add too many (opening) Parentheses
                 # See https://github.com/Instagram/LibCST/issues/640
                 tries = tries + 1
-            except libcst._exceptions.ParserSyntaxError:
+            except cst._exceptions.ParserSyntaxError:
                 # This can happen in two known cases:
                 # 1. Original Code is buggy
                 # 2. Reduction accidentally kills layout (e.g. removing indents)
                 tries = tries + 1
 
         if tries == max_tries:
-            log.warning(
-                "Add_Neutral_Element Transformer failed after %i attempts", max_tries
-            )
+            log.warning("Lambda Identity Transformer failed after %i attempt", max_tries)
 
         return altered_cst
 
     def reset(self) -> None:
         """Resets the Transformer to be applied again.
 
-        after the reset all local state is deleted, the transformer is fully reset.
+           after the reset all local state is deleted, the transformer is fully reset.
 
-        It holds:
-        > a = SomeTransformer()
-        > b = SomeTransformer()
-        > someTree.visit(a)
-        > a.reset()
-        > assert a == b
+           It holds:
+           > a = SomeTransformer()
+           > b = SomeTransformer()
+           > someTree.visit(a)
+           > a.reset()
+           > assert a == b
         """
         self._worked = False
 
@@ -142,10 +133,9 @@ class AddNeutralElementTransformer(BaseTransformer, ABC):
         Returns whether the transformer was successfully applied since the last reset.
         If the transformer cannot be applied for logical reasons it will return false without attempts.
 
-        returns bool:
+        :returns bool:
             True if the Transformer was successfully applied.
             False otherwise.
-
         """
         return self._worked
 
@@ -165,86 +155,84 @@ class AddNeutralElementTransformer(BaseTransformer, ABC):
 
     class __Replacer(cst.CSTTransformer):
         """
-        The CSTTransformer that traverses the CST and replaces literals with literal+neutral element.
+        The CSTTransformer that traverses the CST and replaces literals with lambda: literal.
         Currently to cover issues with scoping / identity of literals,
         the first instance of the literal will be altered.
+
+        See the tests for an expression of the behaviour.
         """
 
         def __init__(self, to_replace: "CSTNode", replace_type: str):
             self.to_replace = to_replace
             self.replace_type = replace_type
-            self.worked = False
+            self.replacer_finished = False
 
         def leave_Float(
-            self, original_node: "Float", updated_node: "Float"
+                self, original_node: "Float", updated_node: "Float"
         ) -> "BaseExpression":
             """
-            LibCST function to traverse simple strings.
-            If the simple-string to replace is found, it is replaced by
-            > 0.5 -> (0.5+0.0)
+            LibCST function to traverse floats.
+            If the float to replace is found, it is replaced by
+            > 0.5 -> ((lambda: 0.5)())
             :param original_node: The node before change
             :param updated_node: The node after (downstream) changes
             :return: the updated node after our changes
             """
-            if (
-                self.replace_type == "float"
-                and original_node.deep_equals(self.to_replace)
-                and not self.worked
-            ):
+            if self.replace_type == "float" \
+                    and original_node.deep_equals(self.to_replace) \
+                    and not self.replacer_finished:
                 literal = str(original_node.value)
-                replacement = f"({literal} + 0.0)"
+                replacement = f"((lambda: {literal})())"
                 expr = cst.parse_expression(replacement)
                 updated_node = updated_node.deep_replace(updated_node, expr)
-                self.worked = True
+                self.replacer_finished = True
 
                 return updated_node
             return updated_node
 
         def leave_Integer(
-            self, original_node: "Integer", updated_node: "Integer"
+                self, original_node: "Integer", updated_node: "Integer"
         ) -> "BaseExpression":
             """
             LibCST function to traverse integers.
             If the integer to replace is found, it is replaced by
-            > 4 -> (4+0)
+            > 5 -> ((lambda: 5)())
             :param original_node: The node before change
             :param updated_node: The node after (downstream) changes
             :return: the updated node after our changes
             """
-            if (
-                self.replace_type == "integer"
-                and original_node.deep_equals(self.to_replace)
-                and not self.worked
-            ):
+            if self.replace_type == "integer" \
+                    and original_node.deep_equals(self.to_replace) \
+                    and not self.replacer_finished:
                 literal = str(original_node.value)
-                replacement = f"({literal} + 0)"
+                replacement = f"((lambda: {literal})())"
                 expr = cst.parse_expression(replacement)
                 updated_node = updated_node.deep_replace(updated_node, expr)
-                self.worked = True
+                self.replacer_finished = True
+
                 return updated_node
             return updated_node
 
         def leave_SimpleString(
-            self, original_node: "SimpleString", updated_node: "SimpleString"
+                self, original_node: "SimpleString", updated_node: "SimpleString"
         ) -> "BaseExpression":
             """
             LibCST function to traverse simple strings.
             If the simple-string to replace is found, it is replaced by
-            > "hey" -> ("hey"+"")
+            > "hey" -> ((lambda: "hey")())
             :param original_node: The node before change
             :param updated_node: The node after (downstream) changes
             :return: the updated node after our changes
             """
-            if (
-                self.replace_type == "simple_string"
-                and original_node.deep_equals(self.to_replace)
-                and not self.worked
-            ):
+            if self.replace_type == "simple_string" \
+                    and original_node.deep_equals(self.to_replace) \
+                    and not self.replacer_finished:
                 literal = str(original_node.value)
-                replacement = f'({literal} + "")'
+                replacement = f"((lambda: {literal})())"
                 expr = cst.parse_expression(replacement)
                 updated_node = updated_node.deep_replace(updated_node, expr)
-                self.worked = True
+                self.replacer_finished = True
+
                 return updated_node
             return updated_node
 
@@ -254,16 +242,15 @@ def _reduce_brackets(to_reduce: str) -> str:
     Reduces redundant brackets within code.
     As matching parentheses is something regex cannot do (or cannot do well),
     the patterns are hardcoded to the alternations done in the visitors.
-    That is, it only changes found patterns for empty strings, + 0 and + 0.0.
+    That is, it only changes found patterns for double lambdas and changes bracket-order.
+
 
     Examples:
-    >>> _reduce_brackets('(("X" + "") + "")')
-    >>> '("X" + "" + "")'
-    >>> _reduce_brackets('("X" + ("" + ""))')
-    >>> '("X" + "" + "")'
+    >>> _reduce_brackets('((lambda: ((lambda: "Hello World")()))())')
+    >>> '((lambda: lambda: "Hello World")()())'
     or:
-    >>> _reduce_brackets('(("X" + "" + "" + "") + "")')
-    >>> "(\"X\" + \"\" + \"\" + \"\" + \"\")"
+    >>> _reduce_brackets('((lambda: (lambda: 5.2)())())')
+    >>> '((lambda: lambda: 5.2)()())'
     For more tests, see the class-level tests.
 
     This method is intented to be used AFTER the alternation, so that the code never "grows" to big.
@@ -272,32 +259,15 @@ def _reduce_brackets(to_reduce: str) -> str:
     :param to_reduce str: the string to be reduced
     :returns str: the string with less brackets, if no match then the unchanged string
     This method was necessary as there is an issue with LibCST once it reaches too many opening brackets.
+    This does "only" remove one pair of brackets, but there are less "opening" brackets
     See Issue: https://github.com/Instagram/LibCST/issues/640
     """
     # (.*?) matches any character in a greedy way
     # What I would like more is "any Character, a Space, a Plus and Quote-Mark" but I was not able to express it
     # TODO: sharpen regex match
-    string_pattern = r'\(\("(.*?)" \+ ""\) \+ ""\)'
-    string_pattern_2 = r'\("(.*?)" \+ \("" \+ ""\)\)'
-    string_result_pattern = r'("\1" + "" + "")'
 
-    int_pattern = r"\(\((.*?) \+ 0\) \+ 0\)"
-    int_pattern_2 = r"\((.*?) \+ \(0 \+ 0\)\)"
-    int_result_pattern = r"(\1 + 0 + 0)"
-
-    float_pattern = r"\(\((.*?) \+ 0.0\) \+ 0.0\)"
-    float_pattern_2 = r"\((.*?) \+ \(0.0 \+ 0.0\)\)"
-    float_result_pattern = r"(\1 + 0.0 + 0.0)"
-
-    result: str = to_reduce
-
-    result = re.sub(string_pattern, string_result_pattern, result)
-    result = re.sub(string_pattern_2, string_result_pattern, result)
-    result = re.sub(int_pattern, int_result_pattern, result)
-    result = re.sub(int_pattern_2, int_result_pattern, result)
-    result = re.sub(float_pattern, float_result_pattern, result)
-    result = re.sub(float_pattern_2, float_result_pattern, result)
-
-    result = result.replace("  ", " ")
+    pattern = r'\(\(lambda: \(\(lambda: (.*?)\)\(\)\)\)\(\)\)'
+    output_pattern = r'((lambda: lambda: \1)()())'
+    result = re.sub(pattern, output_pattern, to_reduce)
 
     return result
