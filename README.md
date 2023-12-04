@@ -27,7 +27,7 @@
 
 ## PRIORITIES (deadline, end of tuesday?)
 - GET US A TRAINED MODEL (perhaps a big task)
-- WRITE THE SKELETON OF GA (i (Louis) am gona do that tonight)
+- WRITE THE SKELETON OF GA (done? needs testing once everything else is added)
 - PREPARE A THE DATASET (shouldnt be that big a task)
 - GET US SOME MUTATION OPERATORS
 - GET US A FITNESS FUNCTION
