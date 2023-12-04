@@ -35,15 +35,26 @@ class RenameParameterTransformer(BaseTransformer, ABC):
 
     """
 
-    def __init__(self, string_randomness: str = "pseudo", max_tries:int = 25):
+    def __init__(
+        self,
+        string_randomness: str = "pseudo",
+        max_tries: int = 25,
+        seed: Optional[int] = None,
+    ):
+        super().__init__(seed=seed)
         if string_randomness in ["pseudo", "full"]:
             self.__string_randomness = string_randomness
         else:
-            raise ValueError("Unrecognized Value for String Randomness, supported are pseudo and full")
+            raise ValueError(
+                "Unrecognized Value for String Randomness, supported are pseudo and full"
+            )
+        self.node_count = 0
 
         self._worked = False
         self.set_max_tries(max_tries)
-        log.info("RenameParameterTransformer created (%d Re-Tries)",self.get_max_tries())
+        log.info(
+            "RenameParameterTransformer created (%d Re-Tries)", self.get_max_tries()
+        )
 
     def apply(self, cst_to_alter: CSTNode) -> CSTNode:
         """
@@ -64,6 +75,8 @@ class RenameParameterTransformer(BaseTransformer, ABC):
         tries: int = 0
         max_tries: int = self.get_max_tries()
 
+        rand = random.Random(self.seed)
+
         while (not self._worked) and tries <= max_tries:
             try:
                 cst_to_alter.visit(visitor)
@@ -75,12 +88,12 @@ class RenameParameterTransformer(BaseTransformer, ABC):
                     self._worked = False
                     return cst_to_alter
 
-                to_replace = random.choice(seen_names)
+                to_replace = rand.choice(seen_names)
 
                 if self.__string_randomness == "pseudo":
-                    replacement = get_pseudo_random_string()
+                    replacement = get_pseudo_random_string(rand=rand)
                 elif self.__string_randomness == "full":
-                    replacement = get_random_string(5)
+                    replacement = get_random_string(5, rand=rand)
 
                 renamer = self.__Renamer(to_replace, replacement)
 
@@ -93,21 +106,23 @@ class RenameParameterTransformer(BaseTransformer, ABC):
                 tries = tries + 1
 
         if tries == max_tries:
-            log.warning("Rename Variable Transformer failed after %i attempt",max_tries)
+            log.warning(
+                "Rename Variable Transformer failed after %i attempt", max_tries
+            )
 
         return altered_cst
 
     def reset(self) -> None:
         """Resets the Transformer to be applied again.
 
-           after the reset all local state is deleted, the transformer is fully reset.
+        after the reset all local state is deleted, the transformer is fully reset.
 
-           It holds:
-           > a = SomeTransformer()
-           > b = SomeTransformer()
-           > someTree.visit(a)
-           > a.reset()
-           > assert a == b
+        It holds:
+        > a = SomeTransformer()
+        > b = SomeTransformer()
+        > someTree.visit(a)
+        > a.reset()
+        > assert a == b
         """
         self._worked = False
 
@@ -168,7 +183,7 @@ class RenameParameterTransformer(BaseTransformer, ABC):
             self.replacement = replacement
 
         def leave_Name(
-                self, original_node: "Name", updated_node: "Name"
+            self, original_node: "Name", updated_node: "Name"
         ) -> "BaseExpression":
             """
             Renames the parameter if it was the one to be altered.

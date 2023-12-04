@@ -4,6 +4,7 @@ Contains the "LambdaIdentityTransformer" that wraps literals into lambda functio
 import logging as log
 import random
 from abc import ABC
+from typing import Optional
 import libcst as cst
 
 import regex as re
@@ -51,10 +52,17 @@ class LambdaIdentityTransformer(BaseTransformer, ABC):
     See: https://docs.python.org/2/reference/expressions.html#
     """
 
-    def __init__(self, max_tries: int = 5):
+    def __init__(
+        self,
+        max_tries: int = 5,
+        seed: Optional[int] = None,
+    ):
+        super().__init__(seed=seed)
         self._worked = False
         self.set_max_tries(max_tries)
-        log.info("LambdaIdentityTransformer created (%d Re-Tries)", self.get_max_tries())
+        log.info(
+            "LambdaIdentityTransformer created (%d Re-Tries)", self.get_max_tries()
+        )
 
     def apply(self, cst_to_alter: CSTNode) -> CSTNode:
         """
@@ -80,9 +88,13 @@ class LambdaIdentityTransformer(BaseTransformer, ABC):
         tries: int = 0
         max_tries: int = self.get_max_tries()
 
+        rand = random.Random(self.seed)
+
+        replacer = None
+
         while (not self._worked) and tries <= max_tries:
             try:
-                to_replace = random.choice(seen_literals)
+                to_replace = rand.choice(seen_literals)
 
                 replacer = self.__Replacer(to_replace[1], to_replace[0])
 
@@ -110,21 +122,25 @@ class LambdaIdentityTransformer(BaseTransformer, ABC):
                 tries = tries + 1
 
         if tries == max_tries:
-            log.warning("Lambda Identity Transformer failed after %i attempt", max_tries)
+            log.warning(
+                "Lambda Identity Transformer failed after %i attempt", max_tries
+            )
 
+        if replacer is not None:
+            self.node_count = replacer.node_count
         return altered_cst
 
     def reset(self) -> None:
         """Resets the Transformer to be applied again.
 
-           after the reset all local state is deleted, the transformer is fully reset.
+        after the reset all local state is deleted, the transformer is fully reset.
 
-           It holds:
-           > a = SomeTransformer()
-           > b = SomeTransformer()
-           > someTree.visit(a)
-           > a.reset()
-           > assert a == b
+        It holds:
+        > a = SomeTransformer()
+        > b = SomeTransformer()
+        > someTree.visit(a)
+        > a.reset()
+        > assert a == b
         """
         self._worked = False
 
@@ -166,9 +182,14 @@ class LambdaIdentityTransformer(BaseTransformer, ABC):
             self.to_replace = to_replace
             self.replace_type = replace_type
             self.replacer_finished = False
+            self.node_count = 0
+
+        def visit_node(self, node):
+            if not self.replacer_finished:
+                self.node_count += 1
 
         def leave_Float(
-                self, original_node: "Float", updated_node: "Float"
+            self, original_node: "Float", updated_node: "Float"
         ) -> "BaseExpression":
             """
             LibCST function to traverse floats.
@@ -178,9 +199,11 @@ class LambdaIdentityTransformer(BaseTransformer, ABC):
             :param updated_node: The node after (downstream) changes
             :return: the updated node after our changes
             """
-            if self.replace_type == "float" \
-                    and original_node.deep_equals(self.to_replace) \
-                    and not self.replacer_finished:
+            if (
+                self.replace_type == "float"
+                and original_node.deep_equals(self.to_replace)
+                and not self.replacer_finished
+            ):
                 literal = str(original_node.value)
                 replacement = f"((lambda: {literal})())"
                 expr = cst.parse_expression(replacement)
@@ -191,7 +214,7 @@ class LambdaIdentityTransformer(BaseTransformer, ABC):
             return updated_node
 
         def leave_Integer(
-                self, original_node: "Integer", updated_node: "Integer"
+            self, original_node: "Integer", updated_node: "Integer"
         ) -> "BaseExpression":
             """
             LibCST function to traverse integers.
@@ -201,9 +224,11 @@ class LambdaIdentityTransformer(BaseTransformer, ABC):
             :param updated_node: The node after (downstream) changes
             :return: the updated node after our changes
             """
-            if self.replace_type == "integer" \
-                    and original_node.deep_equals(self.to_replace) \
-                    and not self.replacer_finished:
+            if (
+                self.replace_type == "integer"
+                and original_node.deep_equals(self.to_replace)
+                and not self.replacer_finished
+            ):
                 literal = str(original_node.value)
                 replacement = f"((lambda: {literal})())"
                 expr = cst.parse_expression(replacement)
@@ -214,7 +239,7 @@ class LambdaIdentityTransformer(BaseTransformer, ABC):
             return updated_node
 
         def leave_SimpleString(
-                self, original_node: "SimpleString", updated_node: "SimpleString"
+            self, original_node: "SimpleString", updated_node: "SimpleString"
         ) -> "BaseExpression":
             """
             LibCST function to traverse simple strings.
@@ -224,9 +249,11 @@ class LambdaIdentityTransformer(BaseTransformer, ABC):
             :param updated_node: The node after (downstream) changes
             :return: the updated node after our changes
             """
-            if self.replace_type == "simple_string" \
-                    and original_node.deep_equals(self.to_replace) \
-                    and not self.replacer_finished:
+            if (
+                self.replace_type == "simple_string"
+                and original_node.deep_equals(self.to_replace)
+                and not self.replacer_finished
+            ):
                 literal = str(original_node.value)
                 replacement = f"((lambda: {literal})())"
                 expr = cst.parse_expression(replacement)
@@ -266,8 +293,8 @@ def _reduce_brackets(to_reduce: str) -> str:
     # What I would like more is "any Character, a Space, a Plus and Quote-Mark" but I was not able to express it
     # TODO: sharpen regex match
 
-    pattern = r'\(\(lambda: \(\(lambda: (.*?)\)\(\)\)\)\(\)\)'
-    output_pattern = r'((lambda: lambda: \1)()())'
+    pattern = r"\(\(lambda: \(\(lambda: (.*?)\)\(\)\)\)\(\)\)"
+    output_pattern = r"((lambda: lambda: \1)()())"
     result = re.sub(pattern, output_pattern, to_reduce)
 
     return result

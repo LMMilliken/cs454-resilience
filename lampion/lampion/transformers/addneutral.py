@@ -5,6 +5,7 @@ import random
 from abc import ABC
 
 import logging as log
+from typing import Optional
 
 import libcst._nodes.base
 from libcst import CSTNode
@@ -48,10 +49,17 @@ class AddNeutralElementTransformer(BaseTransformer, ABC):
     LibCST does not support finding this kind of behaviour afaik.
     """
 
-    def __init__(self, max_tries: int = 5):
+    def __init__(
+        self,
+        max_tries: int = 5,
+        seed: Optional[int] = None,
+    ):
+        super().__init__(seed=seed)
         self._worked = False
         self.set_max_tries(max_tries)
-        log.info("AddNeutralElementTransformer created (%d Re-Tries)", self.get_max_tries())
+        log.info(
+            "AddNeutralElementTransformer created (%d Re-Tries)", self.get_max_tries()
+        )
 
     def apply(self, cst_to_alter: CSTNode) -> CSTNode:
         """
@@ -77,9 +85,11 @@ class AddNeutralElementTransformer(BaseTransformer, ABC):
         tries: int = 0
         max_tries: int = self.get_max_tries()
 
+        rand = random.Random(self.seed)
+
         while (not self._worked) and tries <= max_tries:
             try:
-                to_replace = random.choice(seen_literals)
+                node_count, to_replace = rand.choice(list(enumerate(seen_literals)))
 
                 replacer = self.__Replacer(to_replace[1], to_replace[0])
 
@@ -92,6 +102,10 @@ class AddNeutralElementTransformer(BaseTransformer, ABC):
 
                 tries = tries + 1
                 self._worked = replacer.worked
+
+                if self._worked:
+                    self.node_count = node_count
+
             except libcst._nodes.base.CSTValidationError:
                 # This can happen if we try to add strings and add too many Parentheses
                 # See https://github.com/Instagram/LibCST/issues/640
@@ -103,21 +117,23 @@ class AddNeutralElementTransformer(BaseTransformer, ABC):
                 tries = tries + 1
 
         if tries == max_tries:
-            log.warning("Add_Neutral_Element Transformer failed after %i attempts", max_tries)
+            log.warning(
+                "Add_Neutral_Element Transformer failed after %i attempts", max_tries
+            )
 
         return altered_cst
 
     def reset(self) -> None:
         """Resets the Transformer to be applied again.
 
-           after the reset all local state is deleted, the transformer is fully reset.
+        after the reset all local state is deleted, the transformer is fully reset.
 
-           It holds:
-           > a = SomeTransformer()
-           > b = SomeTransformer()
-           > someTree.visit(a)
-           > a.reset()
-           > assert a == b
+        It holds:
+        > a = SomeTransformer()
+        > b = SomeTransformer()
+        > someTree.visit(a)
+        > a.reset()
+        > assert a == b
         """
         self._worked = False
 
@@ -160,7 +176,7 @@ class AddNeutralElementTransformer(BaseTransformer, ABC):
             self.worked = False
 
         def leave_Float(
-                self, original_node: "Float", updated_node: "Float"
+            self, original_node: "Float", updated_node: "Float"
         ) -> "BaseExpression":
             """
             LibCST function to traverse simple strings.
@@ -170,7 +186,11 @@ class AddNeutralElementTransformer(BaseTransformer, ABC):
             :param updated_node: The node after (downstream) changes
             :return: the updated node after our changes
             """
-            if self.replace_type == "float" and original_node.deep_equals(self.to_replace) and not self.worked:
+            if (
+                self.replace_type == "float"
+                and original_node.deep_equals(self.to_replace)
+                and not self.worked
+            ):
                 literal = str(original_node.value)
                 replacement = f"({literal} + 0.0)"
                 expr = cst.parse_expression(replacement)
@@ -181,7 +201,7 @@ class AddNeutralElementTransformer(BaseTransformer, ABC):
             return updated_node
 
         def leave_Integer(
-                self, original_node: "Integer", updated_node: "Integer"
+            self, original_node: "Integer", updated_node: "Integer"
         ) -> "BaseExpression":
             """
             LibCST function to traverse integers.
@@ -191,9 +211,11 @@ class AddNeutralElementTransformer(BaseTransformer, ABC):
             :param updated_node: The node after (downstream) changes
             :return: the updated node after our changes
             """
-            if self.replace_type == "integer" \
-                    and original_node.deep_equals(self.to_replace) \
-                    and not self.worked:
+            if (
+                self.replace_type == "integer"
+                and original_node.deep_equals(self.to_replace)
+                and not self.worked
+            ):
                 literal = str(original_node.value)
                 replacement = f"({literal} + 0)"
                 expr = cst.parse_expression(replacement)
@@ -203,7 +225,7 @@ class AddNeutralElementTransformer(BaseTransformer, ABC):
             return updated_node
 
         def leave_SimpleString(
-                self, original_node: "SimpleString", updated_node: "SimpleString"
+            self, original_node: "SimpleString", updated_node: "SimpleString"
         ) -> "BaseExpression":
             """
             LibCST function to traverse simple strings.
@@ -213,11 +235,13 @@ class AddNeutralElementTransformer(BaseTransformer, ABC):
             :param updated_node: The node after (downstream) changes
             :return: the updated node after our changes
             """
-            if self.replace_type == "simple_string" \
-                    and original_node.deep_equals(self.to_replace) \
-                    and not self.worked:
+            if (
+                self.replace_type == "simple_string"
+                and original_node.deep_equals(self.to_replace)
+                and not self.worked
+            ):
                 literal = str(original_node.value)
-                replacement = f"({literal} + \"\")"
+                replacement = f'({literal} + "")'
                 expr = cst.parse_expression(replacement)
                 updated_node = updated_node.deep_replace(updated_node, expr)
                 self.worked = True
@@ -257,15 +281,15 @@ def _reduce_brackets(to_reduce: str) -> str:
     string_pattern_2 = r'\("(.*?)" \+ \("" \+ ""\)\)'
     string_result_pattern = r'("\1" + "" + "")'
 
-    int_pattern = r'\(\((.*?) \+ 0\) \+ 0\)'
-    int_pattern_2 = r'\((.*?) \+ \(0 \+ 0\)\)'
-    int_result_pattern = r'(\1 + 0 + 0)'
+    int_pattern = r"\(\((.*?) \+ 0\) \+ 0\)"
+    int_pattern_2 = r"\((.*?) \+ \(0 \+ 0\)\)"
+    int_result_pattern = r"(\1 + 0 + 0)"
 
-    float_pattern = r'\(\((.*?) \+ 0.0\) \+ 0.0\)'
-    float_pattern_2 = r'\((.*?) \+ \(0.0 \+ 0.0\)\)'
-    float_result_pattern = r'(\1 + 0.0 + 0.0)'
+    float_pattern = r"\(\((.*?) \+ 0.0\) \+ 0.0\)"
+    float_pattern_2 = r"\((.*?) \+ \(0.0 \+ 0.0\)\)"
+    float_result_pattern = r"(\1 + 0.0 + 0.0)"
 
-    result:str = to_reduce
+    result: str = to_reduce
 
     result = re.sub(string_pattern, string_result_pattern, result)
     result = re.sub(string_pattern_2, string_result_pattern, result)
@@ -274,6 +298,6 @@ def _reduce_brackets(to_reduce: str) -> str:
     result = re.sub(float_pattern, float_result_pattern, result)
     result = re.sub(float_pattern_2, float_result_pattern, result)
 
-    result = result.replace("  "," ")
+    result = result.replace("  ", " ")
 
     return result

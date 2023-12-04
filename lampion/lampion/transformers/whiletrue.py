@@ -5,6 +5,7 @@ import random
 from abc import ABC
 
 import logging as log
+from typing import Optional
 
 import libcst._nodes.base
 from libcst import CSTNode
@@ -64,7 +65,12 @@ class WhileTrueTransformer(BaseTransformer, ABC):
     The above added elements have redundant ( ) but I add them intentionally to be careful.
     """
 
-    def __init__(self, max_tries: int = 50):
+    def __init__(
+        self,
+        max_tries: int = 50,
+        seed: Optional[int] = None,
+    ):
+        super().__init__(seed=seed)
         self._worked = False
         self.set_max_tries(max_tries)
         log.info("WhileTrueTransformer created (%d Re-Tries)", self.get_max_tries())
@@ -87,9 +93,11 @@ class WhileTrueTransformer(BaseTransformer, ABC):
         tries: int = 0
         max_tries: int = self.get_max_tries()
 
+        transformer = None
+
         while (not self._worked) and tries <= max_tries:
             try:
-                transformer = self.__WhileTrueWrapper()
+                transformer = self.__WhileTrueWrapper(seed=self.seed)
 
                 altered_cst = altered_cst.visit(transformer)
 
@@ -109,6 +117,8 @@ class WhileTrueTransformer(BaseTransformer, ABC):
         if tries == max_tries and not self.worked():
             log.warning("WhileTrueTransformer failed after %i attempts", max_tries)
 
+        if transformer is not None:
+            self.node_count = transformer.node_count
         return altered_cst
 
     def reset(self) -> None:
@@ -163,10 +173,19 @@ class WhileTrueTransformer(BaseTransformer, ABC):
         Hence, we first make a small statement with the right condition, and replace the if-body.
         """
 
-        def __init__(self):
+        def __init__(
+            self,
+            seed: Optional[int] = None,
+        ):
             super().__init__()
+            self.random = random.Random(seed)
             self.__applied = False
             self.chance = 0.1
+            self.node_count = 0
+
+        def visit_node(self, node):
+            if not self.__applied:
+                self.node_count += 1
 
         def applied(self):
             return self.__applied
@@ -177,8 +196,10 @@ class WhileTrueTransformer(BaseTransformer, ABC):
                 updated_node: "SimpleStatementSuite",
         ) -> "BaseSuite":
             if not self.__applied and random.random() < self.chance:
-                wrapper = libcst.parse_statement("if (True): return 1")
-                wrapper_with_body_changed = wrapper.deep_replace(wrapper.body, updated_node)
+                wrapper = libcst.parse_statement("while (True): \n\t return 1")
+                breaknode = libcst.parse_statement('break')
+                newbody = libcst.Expr(libcst.Module(body = (updated_node, breaknode)))
+                wrapper_with_body_changed = wrapper.deep_replace(wrapper.body, newbody)
 
                 self.__applied = True
                 return wrapper_with_body_changed
