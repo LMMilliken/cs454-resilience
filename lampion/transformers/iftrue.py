@@ -94,7 +94,7 @@ class IfTrueTransformer(BaseTransformer, ABC):
 
         while (not self._worked) and tries <= max_tries:
             try:
-                transformer = self.__IfTrueWrapper()
+                transformer = self.__IfTrueWrapper(seed=self.seed)
 
                 altered_cst = altered_cst.visit(transformer)
 

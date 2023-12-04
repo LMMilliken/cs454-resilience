@@ -65,7 +65,7 @@ class AddVariableTransformer(BaseTransformer, ABC):
 
         Also, see the BaseTransformers notes if you want to implement your own.
         """
-        visitor = self.__AddVarVisitor()
+        visitor = self.__AddVarVisitor(seed=self.seed)
 
         altered_cst = cst_to_alter
 
