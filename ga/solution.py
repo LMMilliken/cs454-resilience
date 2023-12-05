@@ -2,7 +2,18 @@ import random
 from typing import List, Tuple
 from libcst import CSTNode
 from ga import globals
-from lampion.transformers.basetransformer import BaseTransformer
+from lampion.lampion.transformers.addcomment import AddCommentTransformer
+from lampion.lampion.transformers.addneutral import AddNeutralElementTransformer
+from lampion.lampion.transformers.addvar import AddVariableTransformer
+from lampion.lampion.transformers.basetransformer import BaseTransformer
+from lampion.lampion.transformers.iffalseelse import IfFalseElseTransformer
+from lampion.lampion.transformers.iftrue import IfTrueTransformer
+from lampion.lampion.transformers.lambdaidentity import LambdaIdentityTransformer
+from lampion.lampion.transformers.renameparam import RenameParameterTransformer
+from lampion.lampion.transformers.renamevar import RenameVariableTransformer
+from lampion.lampion.transformers.forone import ForOneTransformer
+from lampion.lampion.transformers.whiletrue import WhileTrueTransformer
+
 import copy
 
 
@@ -29,8 +40,38 @@ class Solution:
 
     def mutate(self, temp: float):
         # TODO: implement mutation
-        # JUST DO WHAT THEY SAY IN THE PAPER, EZ
-        pass
+        # temp chance of adding new transformation, and 1-temp chance of deleting a random transformation
+        if random.random() < temp:
+            choice = ["AddUnusedVariableTransformer", "AddCommentTransformer", "RenameVariableTransformer", 
+                      "RenameParameterTransformer", "LambdaIdentityTransformer", "AddNeutralElementTransformer",
+                      "IfTrueTransformer", "IfFalseElseTransformer", "ForOneTransformer", "WhileTrueTransformer"]
+            chosen = random.choice(choice)
+            # bit lengthy and unconcise, but better than initiating 10 transformer every mutation
+            match chosen:
+                case "AddUnusedVariableTransformer":
+                    new = AddVariableTransformer(string_randomness="full")
+                case "AddCommentTransformer":
+                    new = AddCommentTransformer(string_randomness="full")
+                case "RenameVariableTransformer":
+                    new = RenameVariableTransformer(string_randomness="full")
+                case "RenameParameterTransformer":
+                    new = RenameParameterTransformer(string_randomness="full")    
+                case "LambdaIdentityTransformer":
+                    new = LambdaIdentityTransformer()
+                case "AddNeutralElementTransformer":
+                    new = AddNeutralElementTransformer()
+                case "IfTrueTransformer":
+                    new = IfTrueTransformer()
+                case "IfFalseElseTransformer":
+                    new = IfFalseElseTransformer()
+                case "ForOneTransformer":
+                    new = ForOneTransformer()
+                case "WhileTrueTransformer":
+                    new = WhileTrueTransformer()
+            self.transformers.append(new)
+        else:
+            rm = random.randint(0, len(self.transformers)-1)
+            del self.transformers[rm]
 
     def apply(self) -> CSTNode:
         # let each transformer run "apply" once so that we know the index of the node that it changes
