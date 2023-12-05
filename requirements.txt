@@ -1,2 +1,11 @@
-libcst
-tqdm
+click==8.1.7
+colorama==0.4.6
+joblib==1.3.2
+libcst==1.1.0
+mypy-extensions==1.0.0
+nltk==3.8.1
+PyYAML==6.0.1
+regex==2023.10.3
+tqdm==4.66.1
+typing-inspect==0.9.0
+typing_extensions==4.8.0
