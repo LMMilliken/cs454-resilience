@@ -15,7 +15,7 @@ from lampion.transformers.basetransformer import BaseTransformer
 
 class WhileTrueTransformer(BaseTransformer, ABC):
     """
-    Transformer that wraps method-bodies in an If-True Statement.
+    Transformer that wraps method-bodies in an While-True-break Statement.
     To be a bit cautious, while possibly applied everywhere, it is only applied at top-level method-blocks.
 
     IMPORTANT: This is not identical behaviour to the Java Transformer, as the Python Transformer does not need
@@ -170,7 +170,7 @@ class WhileTrueTransformer(BaseTransformer, ABC):
 
         Note: The LibCST Library does not like to create the AST elements by themselves
         (it does not have a lot of constructors etc.)
-        Hence, we first make a small statement with the right condition, and replace the if-body.
+        Hence, we first make a small statement with the right condition, and replace the while-body.
         """
 
         def __init__(
