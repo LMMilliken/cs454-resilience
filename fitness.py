@@ -1,6 +1,6 @@
 import  os
 from openai import OpenAI
-from nltk.translate.bleu_score import sentence_bleu
+from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 
 with open("key.txt", "r") as file: 
     api = file.read()
@@ -20,16 +20,20 @@ def generate_docstring(code):
     )
     return response.choices[0].message.content
 
-def calculate_bleu_score(predictions,references):
+def calculate_bleu_score(predictions, references):
     original_tokens = predictions.split()
     transformed_tokens = references.split()
-    bleu_score = sentence_bleu([original_tokens], transformed_tokens)
+
+    smoothing = SmoothingFunction().method1
+    bleu_score = sentence_bleu([transformed_tokens], original_tokens, smoothing_function=smoothing)
+    
     return bleu_score
 
 if __name__ == "__main__":
-    resp = "def add(a, b): return a + b"
-    references = "def addition(a, b): return a + b"
+    code = "def addition(a, b): return a + b"
+    doc_string = generate_docstring(code)
+    reference = "this function returns the sum of 2 numbers"
 
-    fitness = calculate_bleu_score(resp, references)
+    fitness = calculate_bleu_score(doc_string, reference)
 
     print(f"Fitness: {fitness}")
