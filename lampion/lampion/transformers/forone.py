@@ -167,7 +167,7 @@ class ForOneTransformer(BaseTransformer, ABC):
 
         Note: The LibCST Library does not like to create the AST elements by themselves
         (it does not have a lot of constructors etc.)
-        Hence, we first make a small statement with the right condition, and replace the if-body.
+        Hence, we first make a small statement with the right condition, and replace the for-body.
         """
 
         def __init__(
