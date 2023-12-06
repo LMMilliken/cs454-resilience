@@ -10,8 +10,8 @@ import libcst as cst
 
 from libcst import CSTNode
 
-from lampion.transformers.basetransformer import BaseTransformer
-from lampion.utils.naming import get_random_string, get_pseudo_random_string
+from lampion.lampion.transformers.basetransformer import BaseTransformer
+from lampion.lampion.utils.naming import get_random_string, get_pseudo_random_string
 
 
 class RenameVariableTransformer(BaseTransformer, ABC):
