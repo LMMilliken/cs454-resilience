@@ -1,5 +1,5 @@
 # cs454-resilience
-- that other repo fucking stinks, so we have decided to abandon it
+- that other repo was going nowhere, so we have decided to abandon it
 - we found an experiment by microsoft that was benchmarking different model's ability to generate text descriptions of input code (which should sound familiar :))
 
 # NEW PLAN:
@@ -21,13 +21,7 @@
 
 
 ## THE MODEL
+- For now, the openai GPT3.5/4 models are our only two models, due to them being immediately ready to use through the openai api.
 - The CodeBert model which the experient uses in their examples is actually just an encoder model, there is a training script that they run to create a generation model out of it.
-- So I guess a high priority is to run this script and get us a working CodeBert generation model
+- A high priority for the final report is to run this script and get us a working CodeBert generation model
 
-
-## PRIORITIES (deadline, end of tuesday?)
-- GET US A TRAINED MODEL (perhaps a big task)
-- WRITE THE SKELETON OF GA (done? needs testing once everything else is added)
-- PREPARE A THE DATASET (shouldnt be that big a task)
-- GET US SOME MUTATION OPERATORS
-- GET US A FITNESS FUNCTION
