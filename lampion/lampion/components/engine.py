@@ -20,6 +20,8 @@ from lampion.transformers.iftrue import IfTrueTransformer
 from lampion.transformers.lambdaidentity import LambdaIdentityTransformer
 from lampion.transformers.renameparam import RenameParameterTransformer
 from lampion.transformers.renamevar import RenameVariableTransformer
+from lampion.transformers.forone import ForOneTransformer
+from lampion.transformers.whiletrue import WhileTrueTransformer
 
 
 class Engine:
@@ -338,6 +340,12 @@ def _create_transformers(config: dict) -> [BaseTransformer]:
     if config["IfFalseElseTransformer"]:
         transformers.append(IfFalseElseTransformer())
 
+    if config["ForOneTransformer"]:
+        transformers.append(ForOneTransformer())
+
+    if config["WhileTrueTransformer"]:
+        transformers.append(WhileTrueTransformer())
+
     return transformers
 
 
@@ -374,5 +382,8 @@ def _default_config() -> dict:
 
     default_config["IfTrueTransformer"] = True
     default_config["IfFalseElseTransformer"] = True
+
+    default_config["ForOneTransformer"] = True
+    default_config["WhileTrueTransformer"] = True
 
     return default_config

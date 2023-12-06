@@ -1,6 +1,5 @@
 """
-Contains the "IfFalseElseTransformer" that wraps method-bodys in an if False else statement.
-Twin of "IfTrueTransformer".
+Contains the "IfTrueTransformer" that wraps method-bodys in an if True statement.
 """
 import random
 from abc import ABC
@@ -14,54 +13,64 @@ from libcst import CSTNode
 from lampion.transformers.basetransformer import BaseTransformer
 
 
-class IfFalseElseTransformer(BaseTransformer, ABC):
+class ForOneTransformer(BaseTransformer, ABC):
     """
-    Transformer that wraps method-bodies in an If-False-Else Statement.
-    Can happen at any block-statement, hence it could be at a method body, try-block,
+    Transformer that wraps method-bodies in an forone Statement.
+    To be a bit cautious, while possibly applied everywhere, it is only applied at top-level method-blocks.
+
+    IMPORTANT: This is not identical behaviour to the Java Transformer, as the Python Transformer does not need
+    return statements. The Java Transformer needed some extra-hacks as it would maybe create dead branches
+    (at least, dead on paper).
 
     Before:
-    > def example1():
+    > def example():
+    >   return 1
+
+    After:
+    > def example():
+    >   for i in range (1):
+    >       return 1
+
+
+    Before:
+    > def example2():
     >   name = "World"
     >   print(f"Hello {name}")
 
     After:
-    > def example1():
-    >   if (False):
-    >       return
-    >   else:
+    > def example2():
+    >   for i in range (1):
     >       name = "World"
     >       print(f"Hello {name}")
 
 
     Before:
-    > def example2(num):
+    > def example3(num):
     >   if num % 2 == 0
     >       print("Even!")
     >   else:
     >       print("Odd!")
 
     After:
-    > def example2(num):
+    > def example3(num):
     >   if num % 2 == 0
     >       print("Even!")
     >   else:
-    >       if (False):
-    >           return
-    >       else:
+    >       for i in range (1):
     >           print("Odd!")
 
     The above added elements have redundant ( ) but I add them intentionally to be careful.
     """
 
     def __init__(
-        self,
+        self, 
         max_tries: int = 50,
         seed: Optional[int] = None,
     ):
         super().__init__(seed=seed)
         self._worked = False
         self.set_max_tries(max_tries)
-        log.info("IfTrueTransformer created (%d Re-Tries)", self.get_max_tries())
+        log.info("ForOneTransformer created (%d Re-Tries)", self.get_max_tries())
 
     def apply(self, cst_to_alter: CSTNode) -> CSTNode:
         """
@@ -81,9 +90,11 @@ class IfFalseElseTransformer(BaseTransformer, ABC):
         tries: int = 0
         max_tries: int = self.get_max_tries()
 
+        Transformer = None
+
         while (not self._worked) and tries <= max_tries:
             try:
-                transformer = self.__IfTrueWrapper()
+                transformer = self.__ForOneWrapper(seed=self.seed)
 
                 altered_cst = altered_cst.visit(transformer)
 
@@ -101,22 +112,23 @@ class IfFalseElseTransformer(BaseTransformer, ABC):
                 tries = tries + 1
 
         if tries == max_tries and not self.worked():
-            log.warning("IfTrueTransformer failed after %i attempts", max_tries)
+            log.warning("ForOneTransformer failed after %i attempts", max_tries)
 
-        self.node_count = transformer.node_count
+        if transformer is not None:
+            self.node_count = transformer.node_count
         return altered_cst
 
     def reset(self) -> None:
         """Resets the Transformer to be applied again.
 
-        after the reset all local state is deleted, the transformer is fully reset.
+           after the reset all local state is deleted, the transformer is fully reset.
 
-        It holds:
-        > a = SomeTransformer()
-        > b = SomeTransformer()
-        > someTree.visit(a)
-        > a.reset()
-        > assert a == b
+           It holds:
+           > a = SomeTransformer()
+           > b = SomeTransformer()
+           > someTree.visit(a)
+           > a.reset()
+           > assert a == b
         """
         self._worked = False
 
@@ -146,7 +158,7 @@ class IfFalseElseTransformer(BaseTransformer, ABC):
         """
         self.reset()
 
-    class __IfTrueWrapper(libcst.CSTTransformer):
+    class __ForOneWrapper(libcst.CSTTransformer):
         """
         Covers two options:
 
@@ -155,15 +167,15 @@ class IfFalseElseTransformer(BaseTransformer, ABC):
 
         Note: The LibCST Library does not like to create the AST elements by themselves
         (it does not have a lot of constructors etc.)
-        Hence, we first make a small statement with the right condition, and replace the or-else-body.
+        Hence, we first make a small statement with the right condition, and replace the for-body.
         """
 
         def __init__(
             self,
             seed: Optional[int] = None,
         ):
-            self.random = random.Random(seed)
             super().__init__()
+            self.random = random.Random(seed)
             self.__applied = False
             self.chance = 0.1
             self.node_count = 0
@@ -176,17 +188,13 @@ class IfFalseElseTransformer(BaseTransformer, ABC):
             return self.__applied
 
         def leave_SimpleStatementSuite(
-            self,
-            original_node: "SimpleStatementSuite",
-            updated_node: "SimpleStatementSuite",
+                self,
+                original_node: "SimpleStatementSuite",
+                updated_node: "SimpleStatementSuite",
         ) -> "BaseSuite":
-            if not self.__applied and self.random.random() < self.chance:
-                wrapper = libcst.parse_statement(
-                    "if (False): \n\treturn None\nelse:\n\treturn 1"
-                )
-                wrapper_with_body_changed = wrapper.deep_replace(
-                    wrapper.orelse.body, updated_node
-                )
+            if not self.__applied and random.random() < self.chance:
+                wrapper = libcst.parse_statement("for ynzgcjahqazigtnfvtgavx in range(1): \n\t return 1")
+                wrapper_with_body_changed = wrapper.deep_replace(wrapper.body, updated_node)
 
                 self.__applied = True
                 return wrapper_with_body_changed
@@ -196,15 +204,12 @@ class IfFalseElseTransformer(BaseTransformer, ABC):
                 return updated_node
 
         def leave_IndentedBlock(
-            self, original_node: "IndentedBlock", updated_node: "IndentedBlock"
+                self, original_node: "IndentedBlock", updated_node: "IndentedBlock"
         ) -> "BaseSuite":
-            if not self.__applied and self.random.random() < self.chance:
-                wrapper = libcst.parse_statement(
-                    "if (False): \n\treturn None\nelse:\n\treturn 1"
-                )
-                wrapper_with_body_changed = wrapper.deep_replace(
-                    wrapper.orelse.body, updated_node
-                )
+            if not self.__applied and random.random() < self.chance:
+                #use unusual string to avoid misnaming variable
+                wrapper = libcst.parse_statement("for ynzgcjahqazigtnfvtgavx in range(1): \n\t return 1")
+                wrapper_with_body_changed = wrapper.deep_replace(wrapper.body, updated_node)
 
                 self.__applied = True
                 return wrapper_with_body_changed

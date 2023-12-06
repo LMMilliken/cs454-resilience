@@ -1,5 +1,5 @@
 """
-Contains the "IfTrueTransformer" that wraps method-bodys in an if True statement.
+Contains the "WhileTrueTransformer" that wraps method-bodys in an while True break statement.
 """
 import random
 from abc import ABC
@@ -13,9 +13,9 @@ from libcst import CSTNode
 from lampion.transformers.basetransformer import BaseTransformer
 
 
-class IfTrueTransformer(BaseTransformer, ABC):
+class WhileTrueTransformer(BaseTransformer, ABC):
     """
-    Transformer that wraps method-bodies in an If-True Statement.
+    Transformer that wraps method-bodies in an While-True-break Statement.
     To be a bit cautious, while possibly applied everywhere, it is only applied at top-level method-blocks.
 
     IMPORTANT: This is not identical behaviour to the Java Transformer, as the Python Transformer does not need
@@ -28,8 +28,9 @@ class IfTrueTransformer(BaseTransformer, ABC):
 
     After:
     > def example():
-    >   if (True):
+    >   while (True):
     >       return 1
+    >       break
 
 
     Before:
@@ -39,9 +40,10 @@ class IfTrueTransformer(BaseTransformer, ABC):
 
     After:
     > def example2():
-    >   if (True):
+    >   while (True):
     >       name = "World"
     >       print(f"Hello {name}")
+    >       break
 
 
     Before:
@@ -56,8 +58,9 @@ class IfTrueTransformer(BaseTransformer, ABC):
     >   if num % 2 == 0
     >       print("Even!")
     >   else:
-    >       if (True):
+    >       while (True):
     >           print("Odd!")
+    >           break
 
     The above added elements have redundant ( ) but I add them intentionally to be careful.
     """
@@ -70,7 +73,7 @@ class IfTrueTransformer(BaseTransformer, ABC):
         super().__init__(seed=seed)
         self._worked = False
         self.set_max_tries(max_tries)
-        log.info("IfTrueTransformer created (%d Re-Tries)", self.get_max_tries())
+        log.info("WhileTrueTransformer created (%d Re-Tries)", self.get_max_tries())
 
     def apply(self, cst_to_alter: CSTNode) -> CSTNode:
         """
@@ -94,7 +97,7 @@ class IfTrueTransformer(BaseTransformer, ABC):
 
         while (not self._worked) and tries <= max_tries:
             try:
-                transformer = self.__IfTrueWrapper()
+                transformer = self.__WhileTrueWrapper(seed=self.seed)
 
                 altered_cst = altered_cst.visit(transformer)
 
@@ -112,7 +115,7 @@ class IfTrueTransformer(BaseTransformer, ABC):
                 tries = tries + 1
 
         if tries == max_tries and not self.worked():
-            log.warning("IfTrueTransformer failed after %i attempts", max_tries)
+            log.warning("WhileTrueTransformer failed after %i attempts", max_tries)
 
         if transformer is not None:
             self.node_count = transformer.node_count
@@ -121,14 +124,14 @@ class IfTrueTransformer(BaseTransformer, ABC):
     def reset(self) -> None:
         """Resets the Transformer to be applied again.
 
-        after the reset all local state is deleted, the transformer is fully reset.
+           after the reset all local state is deleted, the transformer is fully reset.
 
-        It holds:
-        > a = SomeTransformer()
-        > b = SomeTransformer()
-        > someTree.visit(a)
-        > a.reset()
-        > assert a == b
+           It holds:
+           > a = SomeTransformer()
+           > b = SomeTransformer()
+           > someTree.visit(a)
+           > a.reset()
+           > assert a == b
         """
         self._worked = False
 
@@ -158,7 +161,7 @@ class IfTrueTransformer(BaseTransformer, ABC):
         """
         self.reset()
 
-    class __IfTrueWrapper(libcst.CSTTransformer):
+    class __WhileTrueWrapper(libcst.CSTTransformer):
         """
         Covers two options:
 
@@ -167,7 +170,7 @@ class IfTrueTransformer(BaseTransformer, ABC):
 
         Note: The LibCST Library does not like to create the AST elements by themselves
         (it does not have a lot of constructors etc.)
-        Hence, we first make a small statement with the right condition, and replace the if-body.
+        Hence, we first make a small statement with the right condition, and replace the while-body.
         """
 
         def __init__(
@@ -188,15 +191,15 @@ class IfTrueTransformer(BaseTransformer, ABC):
             return self.__applied
 
         def leave_SimpleStatementSuite(
-            self,
-            original_node: "SimpleStatementSuite",
-            updated_node: "SimpleStatementSuite",
+                self,
+                original_node: "SimpleStatementSuite",
+                updated_node: "SimpleStatementSuite",
         ) -> "BaseSuite":
-            if not self.__applied and self.random.random() < self.chance:
-                wrapper = libcst.parse_statement("if (True): return 1")
-                wrapper_with_body_changed = wrapper.deep_replace(
-                    wrapper.body, updated_node
-                )
+            if not self.__applied and random.random() < self.chance:
+                wrapper = libcst.parse_statement("while (True): \n\t return 1")
+                breaknode = libcst.parse_statement('break')
+                newbody = libcst.Expr(libcst.Module(body = (updated_node, breaknode)))
+                wrapper_with_body_changed = wrapper.deep_replace(wrapper.body, newbody)
 
                 self.__applied = True
                 return wrapper_with_body_changed
@@ -206,13 +209,13 @@ class IfTrueTransformer(BaseTransformer, ABC):
                 return updated_node
 
         def leave_IndentedBlock(
-            self, original_node: "IndentedBlock", updated_node: "IndentedBlock"
+                self, original_node: "IndentedBlock", updated_node: "IndentedBlock"
         ) -> "BaseSuite":
-            if not self.__applied and self.random.random() < self.chance:
-                wrapper = libcst.parse_statement("if (True): return 1")
-                wrapper_with_body_changed = wrapper.deep_replace(
-                    wrapper.body, updated_node
-                )
+            if not self.__applied and random.random() < self.chance:
+                wrapper = libcst.parse_statement("while (True): \n\t return 1")
+                breaknode = libcst.parse_statement('break')
+                newbody = libcst.Expr(libcst.Module(body = (updated_node, breaknode)))
+                wrapper_with_body_changed = wrapper.deep_replace(wrapper.body, newbody)
 
                 self.__applied = True
                 return wrapper_with_body_changed
