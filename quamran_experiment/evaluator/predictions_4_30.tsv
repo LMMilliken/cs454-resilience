@@ -1,0 +1,91 @@
+0	This function splits a string on a modified level indicator, then returns a concatenation of the first part, the indicator, and the first segment of the second part.
+1	This function attempts to create a directory and handles specific exceptions if the directory creation fails.
+2	This function opens a file for reading, either from a file object or filename, ensuring the file is not already closed.
+3	This function categorizes data based on column headers and specific conditions, returning a structured collection of categorized item sets.
+4	This function reads a file and parses its content based on the version of the Unifrac output indicated by the file's headers.
+5	This function processes tab-separated data, populating a dictionary with principal coordinate data, eigenvalues, and variance explained until an empty line is encountered.
+6	This function processes data from a file to populate eigenvalues and explained variance into a dictionary and adds principal coordinates for each entry.
+7	This function collects and assigns colors to groups based on category mappings, allowing for customized or cyclical color assignments.
+8	This function generates the reverse complement of a given DNA sequence, handling both uppercase and lowercase nucleotide inputs.
+9	This function shuffles and optionally culls fragments of a given genome sequence to produce randomized sequences for further analysis.
+10	This function iteratively removes variables from a statistical model whose p-values exceed a specified threshold and then refits the model.
+11	This function sorts a list of fit objects by their coefficient of determination, returning the object with the highest value.
+12	This function applies a fitted model to predict values based on input data, adjusts for negative predictions, calculates prediction intervals, and returns the augmented dataset.
+13	This function processes a biological observation matrix file (biomf) for the given sample IDs to normalize values and returns a dictionary of relative abundances per sample.
+14	This function calculates and returns the average percentage of each specified ID's occurrence across all sample IDs in a given record dictionary.
+15	This function calculates the mean percentage abundance of OTUs in given samples, optionally applying a transformation to the abundance data.
+16	This function calculates the sum of abundance values for samples or observations from a BIOM file, which can be filtered by specified IDs.
+17	This function processes abundance data from a biological sample, applies a mathematical transform to the total abundance, and returns the results in a dictionary.
+18	This function performs a statistical significance test on two sets of values extracted from a nested dictionary and prints the test results.
+19	This function attempts to organize data for statistical testing, performs a Kruskal-Wallis H-Test, and outputs the test statistic and p-value.
+20	This function parses command-line arguments for calculating and plotting alpha diversity metrics from ecological sample data.
+21	This function creates a BLAST database from a given FASTA file if it doesn't already exist, logging progress to a file.
+22	This function creates a usearch database from a fasta file for local or global alignment, and saves it with a '.udb' extension.
+23	This function iterates over key-value pairs in a dictionary and prints them in a formatted manner, with keys left-aligned in an 11-character field.
+24	This function checks if a 'licenses' attribute exists within a parameter object, processes a metadata description if 'licenses' is true, and exits the program.
+25	This function checks if a directory for a package repository already exists and raises an error if it does.
+26	This function processes package data, constructs a package tree, generates and moves files, and then initializes version control for the package directory.
+27	This function prints formatted FASTQ entries, optionally reversing the sequence and quality scores based on a given flag.
+28	This function processes a SAM formatted file to extract, reverse complement, and yield paired or single-end read sequences based on certain flags.
+29	This function sorts SAM format files based on the first column, either saving the output to disk or sending it to stdout for further processing.
+30	This function takes a sequence alignment map (SAM), downsamples it to a specified percentage, and optionally sorts and buffers the output.
+31	This function converts a FASTQ formatted sequence into a FASTA format by iterating over the lines and constructing the header and sequence components.
+32	This function is a decorator that allows altering the return type of the decorated function based on supplied arguments or defaults.
+33	This function is a decorator that ensures each argument passed to the wrapped function is converted to a set before calling the original function.
+34	This function initializes a new Sphinx documentation setup for a Python project in a specified directory using package data.
+35	This function creates a directory for Bowtie2 index files, runs the indexing process, and returns the index file path. If the index exists and is kept, it returns early.
+36	This function constructs a command line statement for running the Bowtie2 alignment tool, optionally piping the output to shrinksam, with user-specified parameters.
+37	This function performs sequence alignment of reads against multiple reference sequences using Bowtie, handling both single and paired-end data with cluster support for parallel processing.
+38	This function retrieves a single connection from a provided pool if only one exists, otherwise returns the entire list of connections.
+39	This function calculates the reflected CRC value of an initial value by iterating bitwise through its width, applying a polynomial, and adjusting the result.
+40	This function performs bit reflection, reversing the bit order of the input data for a specified number of bits.
+41	This function calculates a checksum from input data, with configurable parameters like polynomial, bit reflection, and output XOR value.
+42	This function generates a lookup table for calculating CRC, considering the reflection and polynomial configurations.
+43	This function calculates a checksum using a specified CRC algorithm based on the input data provided, with options for bit reflection and initialization.
+44	This function processes a sequence, collecting uppercase characters and grouping lowercase ones if they meet a minimum length requirement.
+45	This function processes a FASTA file, removing sequences with masked regions above a specified length and optionally printing the masked sequences.
+46	This function processes a biological observation matrix file to calculate and transform the relative abundance data of microbial communities.
+47	This function searches within a phylogenetic tree structure for a specified taxonomic unit and returns the starting index if the format is correct.
+48	This function replaces OTU identifiers in a Newick-formatted phylogenetic tree with corresponding taxonomy names found in a BIOM-format file.
+49	This function processes genome information, calculating the number of single-copy genes (after subtracting duplicates) and returns this with genome size and name. If an error occurs, it returns available data.
+50	This function generates clusters of genomes based on their average nucleotide identity, including metadata and handling singletons separately.
+51	This function processes a list of tab-delimited genomic tables and organizes the data into a dictionary mapping genomic identifiers to their attributes.
+52	This function parses tab-separated values from multiple files into a dictionary, adjusting header names and converting fields to integers where necessary.
+53	This function processes a list of fasta file paths, extracting genome names, computing their sizes, and counting contigs to populate a dictionary with this information.
+54	This function handles database routing by initializing setup, preprocessing, routing, and post-processing to return database identifiers based on given arguments.
+55	This function initializes the router with provided arguments and keyword arguments, returning a status indicating readiness.
+56	This function returns the keys of a dictionary representing the hosts in a cluster.
+57	This function iterates over a dictionary of database connections marked as down and attempts to reconnect if the retry timeout has passed.
+58	This function iterates over a dictionary of non-operational database connections and marks each one as operational.
+59	This function filters and downsamples time-indexed data to a specified resolution, with optional time window constraints.
+60	This function calculates the proportion of standby power within a total power consumption over a specified resampling resolution and time window.
+61	This function calculates the number of sudden increases (surpassing a threshold of 3000) in a time series data array.
+62	This function calculates a normalized load factor from a time series, optionally resampling the data based on a given resolution.
+63	This function sorts a list of dictionaries based on a specified column, then yields the top 'num' elements in sorted order.
+64	This function processes BLAST output, filters results by e-value and bit score thresholds, and yields a sorted list of top hits per query.
+65	This function processes BLAST output and optionally sorts, filters by evalue and bit score, and limits the number of hits returned per query.
+66	This function yields sorted or unsorted domain matches from a HMMER domtblout file based on specified E-value and bit score thresholds.
+67	This function processes a sequence of strings, extracting and organizing unique identifiers with their associated sequences, ignoring comments and empty lines.
+68	This function creates a schedule indicating on and off periods within a week, depending on given working hours and days off.
+69	This function creates a visual representation of a time series dataset as a carpet plot with custom parameters and formatting options.
+70	This function calculates the percentage of matching characters in two sequences, excluding gaps or missing data represented by '-' or '.' characters.
+71	This function takes two strings, removes specific characters ('-', '.'), and returns the filtered sequences concatenated together.
+72	This function compares two genetic sequences for percentage identity, optionally ignoring gaps, and returns their identifiers with the calculated percentage.
+73	This function compares two nucleotide sequences to calculate their percentage identity after removing any gap characters from them.
+74	This function processes a list of DNA sequences, calculating the pairwise percent identity in parallel, and returns the results in a dictionary.
+75	This function generates a matrix of pairwise values from a nested dictionary, with options for displaying max values or medians. It also handles keys with specific formatting.
+76	This function displays statistical information‚Äîminimum, maximum, and mean‚Äîof a given list or indicates 'n/a' if the list is empty.
+77	This function processes pairwise comparison data to report minimum within-group and maximum/median between-group identity percentages for classified clades at multiple taxonomic levels.
+78	This function converts a matrix from a tab-separated text format into a dictionary of dictionaries, capturing pairwise relationships with numerical values.
+79	This function sets up command-line arguments for a package management tool, with options for creating packages, listing licenses, and specifying package details.
+80	This function constructs a command-line argument parser using provided metadata and attaches it to a parsing framework.
+81	This function manages package updates, handling command-line arguments, validating package and repository existence, generating packages, and dealing with errors.
+82	This function initializes default parameters for attributes like date, version, and description if they are not already set.
+83	This function checks if a specified output directory exists, creates it if not, and then moves a temporary directory into the output directory with a new name.
+84	This function initializes a version control system with a directory path created from output directory and package name, using package data provided.
+85	This function searches for and returns the file path of the Steam application using the Windows Registry, or returns None if the registry is not accessible.
+86	This function generates a Principal Coordinates Analysis (PCoA) plot, customizes the appearance, saves the figure, and closes it after saving.
+87	This function organizes columns into groups based on the specified category, creating a dictionary with category-related lists of column indices and information.
+88	This function checks if a given line starts with specified strings or is empty, returning True if it does.
+89	This function processes a sequence of stock data, removing comments, concatenating sequences with the same ID, and yielding formatted results.
+90	This function decorates another function, ensuring it returns an object of a specified type, applying set operations to iterable arguments.
