@@ -20,22 +20,22 @@ def generate_comment(code):
     Think of it as writing a docstring for the code. Also avoid using the function name. 
     Instead of explaining in details, just provide a high level idea.
     Make sure to keep the responses within 30 words (THIS IS MANDATORY). Start like this:
-    This function ……..\n"""
-
+    This function ........\n"""
+    
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": prompt},
-            {"role": "user", "content": f""},
-        ],
+    model="gpt-3.5-turbo", #gpt-4-1106-preview
+    messages=[
+    {"role": "system", "content": prompt},
+    {"role": "user", "content": f""}
+      ]
     )
     return response.choices[0].message.content
 
 
 # Path to your CSV file
 # Path to your CSV file
-csv_file_path = "../example_input.csv"
-output_file_path = "output_with_comments_GPT4_example_input.csv"  # Output file name
+csv_file_path = 'dataset.csv'
+output_file_path = 'output_with_comments_GPT3.5_(30 words).csv'  # Output file name
 
 # Process the CSV file and write to a new CSV file
 with open(csv_file_path, mode="r", newline="", encoding="utf-8") as csv_file, open(
