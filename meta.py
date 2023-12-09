@@ -3,8 +3,11 @@ from ga.ga import ga
 from ga import globals
 from utils.utils import load_model
 from utils.config import *
+from fitness.fitness import generate_docstring, extract_docstring_and_content
+import csv
 import json
 from tqdm import tqdm
+from libcst._exceptions import ParserSyntaxError
 
 
 def transform_data(in_fname: str, out_fname: str, model_name: str):
@@ -14,7 +17,22 @@ def transform_data(in_fname: str, out_fname: str, model_name: str):
     print("STARTING METAMORPHIC TRANSFORMATIONS")
 
     with open(in_fname, "r") as in_file, open(out_fname, "w") as out_file:
-        for line in tqdm(in_file):
-            adversary = copy.deepcopy(json.loads(line))
-            adversary["code"] = ga(adversary, POP_SIZE, TEMP, BUDGET, EARLY_STOPPING)
-            out_file.write(json.dumps(adversary) + "\n")
+        writer = csv.writer(out_file)
+        for i, line in enumerate(in_file):
+            line_dict = json.loads(line)
+            print(i)
+            target = line_dict["code"]
+            globals.expected_out = line_dict["docstring"]
+            try:
+                adversary = ga(
+                    target, POP_SIZE, TEMP, BUDGET, EARLY_STOPPING, model_name
+                )
+                guess = generate_docstring(adversary, model_name)
+                writer.writerow([adversary, guess])
+            except ParserSyntaxError as e:
+                print("program cant be parsed!")
+
+
+if __name__ == "__main__":
+    # transform_data("example_input.jsonl", "transformed_turbo.csv", "gpt-3.5-turbo")
+    transform_data("example_input.jsonl", "transformed_4.csv", "gpt-4-1106-preview")

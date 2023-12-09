@@ -11,55 +11,62 @@ import sys
 
 from libcst import CSTNode
 
-from lampion.transformers.addcomment import AddCommentTransformer
-from lampion.transformers.addneutral import AddNeutralElementTransformer
-from lampion.transformers.addvar import AddVariableTransformer
-from lampion.transformers.basetransformer import BaseTransformer
-from lampion.transformers.iffalseelse import IfFalseElseTransformer
-from lampion.transformers.iftrue import IfTrueTransformer
-from lampion.transformers.lambdaidentity import LambdaIdentityTransformer
-from lampion.transformers.renameparam import RenameParameterTransformer
-from lampion.transformers.renamevar import RenameVariableTransformer
-from lampion.transformers.forone import ForOneTransformer
-from lampion.transformers.whiletrue import WhileTrueTransformer
+from lampion.lampion.transformers.addcomment import AddCommentTransformer
+from lampion.lampion.transformers.addneutral import AddNeutralElementTransformer
+from lampion.lampion.transformers.addvar import AddVariableTransformer
+from lampion.lampion.transformers.basetransformer import BaseTransformer
+from lampion.lampion.transformers.iffalseelse import IfFalseElseTransformer
+from lampion.lampion.transformers.iftrue import IfTrueTransformer
+from lampion.lampion.transformers.lambdaidentity import LambdaIdentityTransformer
+from lampion.lampion.transformers.renameparam import RenameParameterTransformer
+from lampion.lampion.transformers.renamevar import RenameVariableTransformer
+from lampion.lampion.transformers.forone import ForOneTransformer
+from lampion.lampion.transformers.whiletrue import WhileTrueTransformer
 
 
 class Engine:
-    """ The primary Engine that runs all of the Transformers on a piece of Code.
+    """The primary Engine that runs all of the Transformers on a piece of Code.
 
-        Attributes:
+    Attributes:
 
-        - transformers : :class:[BaseTransformer]
-            A list of the transformers that are ready to be used
-        - failed_transformations : int
-            Number of failed transformations, that is how often transformers were called that did not work.
-        - successful_transformations: int
-            How often transformers were called that worked - used for termination.
-        - config : Dict
-            The configuration
-        - output_dir : Path
-            Where to write the AST after transformations, using the same structure as input_dir
+    - transformers : :class:[BaseTransformer]
+        A list of the transformers that are ready to be used
+    - failed_transformations : int
+        Number of failed transformations, that is how often transformers were called that did not work.
+    - successful_transformations: int
+        How often transformers were called that worked - used for termination.
+    - config : Dict
+        The configuration
+    - output_dir : Path
+        Where to write the AST after transformations, using the same structure as input_dir
 
 
-        It takes a list of transformers and applies them to a given AST.
-        In the end the altered programs are written to files.
+    It takes a list of transformers and applies them to a given AST.
+    In the end the altered programs are written to files.
 
-        The default behaviour is to apply all available transformations evenly distributed.
-        If others are wanted, provide a distribution-function.
+    The default behaviour is to apply all available transformations evenly distributed.
+    If others are wanted, provide a distribution-function.
 
-        The primary method is "run" and has similar comments laying out what's happening.
+    The primary method is "run" and has similar comments laying out what's happening.
 
-        This Engine is intentionally separated from any CLI / call to be better testable.
+    This Engine is intentionally separated from any CLI / call to be better testable.
     """
 
-    def __init__(self, config: dict = None, output_dir: str = "./lampion_output", store_only_changed: bool = False):
+    def __init__(
+        self,
+        config: dict = None,
+        output_dir: str = "./lampion_output",
+        store_only_changed: bool = False,
+    ):
         log.debug("Creating Engine ...")
         self.__config = _default_config()
 
         if config is None or len(config) == 0:
             log.info("Received no Config for Engine - running with default values")
         else:
-            log.info("Received a Config for Engine - overwriting default values for everything found")
+            log.info(
+                "Received a Config for Engine - overwriting default values for everything found"
+            )
             overwrite_config = _default_config()
             overwrite_config.update(config)
             self.__config = overwrite_config
@@ -72,8 +79,11 @@ class Engine:
         self.__successful_transformations: int = 0
         self.__failed_transformations: int = 0
 
-        log.info("Initiated Engine; "
-                 "writing output to %s with %d Transformers", self.__output_dir, len(self.__transformers))
+        log.info(
+            "Initiated Engine; " "writing output to %s with %d Transformers",
+            self.__output_dir,
+            len(self.__transformers),
+        )
 
     def run(self, csts: [(str, CSTNode)]) -> [(str, CSTNode)]:
         """
@@ -109,10 +119,15 @@ class Engine:
         if self.__config["transformationscope"] == "global":
             altered_csts = self._run_transformations_global(altered_csts)
         # The "per_class" is a bit of a legacy writing, and will be removed soon!
-        elif self.__config["transformationscope"] == "perClassEach" or self.__config["transformationscope"] == "per_class":
+        elif (
+            self.__config["transformationscope"] == "perClassEach"
+            or self.__config["transformationscope"] == "per_class"
+        ):
             altered_csts = self._run_transformations_per_class(altered_csts)
         else:
-            log.error("Did not receive valid scope! Supported Scopes are: 'global','perClassEach'. Exiting early.")
+            log.error(
+                "Did not receive valid scope! Supported Scopes are: 'global','perClassEach'. Exiting early."
+            )
             return altered_csts
 
         if self.__output_dir:
@@ -138,8 +153,10 @@ class Engine:
         max_transformations = self.__config["transformations"]
         while self.get_successful_transformations() < max_transformations:
             if self.get_failed_transformations() > max_transformations * 3:
-                log.warning("Reached %d Transformation-Failures (3 times wanted transformations), exiting early",
-                            self.get_failed_transformations())
+                log.warning(
+                    "Reached %d Transformation-Failures (3 times wanted transformations), exiting early",
+                    self.get_failed_transformations(),
+                )
                 return csts
             # 1.1 pick a cst
             cst_index = random.randint(0, len(csts) - 1)
@@ -162,13 +179,23 @@ class Engine:
                 # If the Transformer failed, re-add the unaltered CST
                 csts.append((running_path, running_cst))
             # Print some progress over the run of the engine
-            if self.get_successful_transformations() % 1000 == 0 and self.get_successful_transformations() > 0:
-                log.info("Finished %d Transformations", self.get_successful_transformations())
-                log.debug("Currently failed Transformations: %d", self.get_failed_transformations())
+            if (
+                self.get_successful_transformations() % 1000 == 0
+                and self.get_successful_transformations() > 0
+            ):
+                log.info(
+                    "Finished %d Transformations", self.get_successful_transformations()
+                )
+                log.debug(
+                    "Currently failed Transformations: %d",
+                    self.get_failed_transformations(),
+                )
 
         return csts
 
-    def _run_transformations_per_class(self, csts: [(str, CSTNode)]) -> [(str, CSTNode)]:
+    def _run_transformations_per_class(
+        self, csts: [(str, CSTNode)]
+    ) -> [(str, CSTNode)]:
         """
         This method applied random transformers on a "per_class" scope.
         Every CST will be touched with (exactly) __config["transformations"] transformers.
@@ -186,21 +213,31 @@ class Engine:
         __config["transformations"]
         """
         if self.__config["transformations"] > 20:
-            log.warning("Received a very high number of transformations for per_class mode (%d)!",
-                        self.__config["transformations"])
-        log.info("Running in per_class-mode for %d csts, total of %d transformations to be done", len(csts),
-                 (len(csts) * self.__config["transformations"]))
+            log.warning(
+                "Received a very high number of transformations for per_class mode (%d)!",
+                self.__config["transformations"],
+            )
+        log.info(
+            "Running in per_class-mode for %d csts, total of %d transformations to be done",
+            len(csts),
+            (len(csts) * self.__config["transformations"]),
+        )
 
         altered_csts = []
-        for (running_path, running_cst) in csts:
+        for running_path, running_cst in csts:
             changed_cst = running_cst.deep_clone()
             successes: int = 0
             failures: int = 0
             while successes < self.__config["transformations"]:
                 # Stopping in case of persistent error - three times as much as to be done is failure for this entry
                 if failures > self.__config["transformations"] * 3:
-                    log.warning("Failed %d attempts to alter %s after successfully doing %d transformations. "
-                                "Continuing with next cst.", failures, running_path, successes)
+                    log.warning(
+                        "Failed %d attempts to alter %s after successfully doing %d transformations. "
+                        "Continuing with next cst.",
+                        failures,
+                        running_path,
+                        successes,
+                    )
                     successes = sys.maxsize
                     continue
                 transformer = random.choice(self.__transformers)
@@ -219,9 +256,18 @@ class Engine:
                     transformer.reset()
 
                 # Print some progress over the engine run
-                if self.get_successful_transformations() % 1000 == 0 and self.get_successful_transformations() > 0:
-                    log.info("Finished %d Transformations", self.get_successful_transformations())
-                    log.debug("Currently failed Transformations: %d", self.get_failed_transformations())
+                if (
+                    self.get_successful_transformations() % 1000 == 0
+                    and self.get_successful_transformations() > 0
+                ):
+                    log.info(
+                        "Finished %d Transformations",
+                        self.get_successful_transformations(),
+                    )
+                    log.debug(
+                        "Currently failed Transformations: %d",
+                        self.get_failed_transformations(),
+                    )
             # After doing the inner loop, add the cst back
             altered_csts.append((running_path, changed_cst))
 
@@ -269,7 +315,7 @@ class Engine:
         """
         return self.__touched_files
 
-    def _touch(self,path: str) -> None:
+    def _touch(self, path: str) -> None:
         """
         Adds a path to the touched paths.
         """
@@ -278,10 +324,16 @@ class Engine:
     def _output_to_files(self, csts: [(str, "CSTNode")]) -> None:
         log.info("Starting to write %d files to %s", len(csts), self.__output_dir)
         if self.__store_only_changed:
-            log.info("Only writing files that were touched (%d files) ! ", len(self.__touched_files))
+            log.info(
+                "Only writing files that were touched (%d files) ! ",
+                len(self.__touched_files),
+            )
         else:
-            log.info("Writing all files, even those unchanged. %d files changed", len(self.__touched_files))
-        for (p, cst) in csts:
+            log.info(
+                "Writing all files, even those unchanged. %d files changed",
+                len(self.__touched_files),
+            )
+        for p, cst in csts:
             # Check for condition:
             # Either We "just write stored" and the path must be touched
             # Or: Write all
@@ -302,7 +354,7 @@ class Engine:
 
 
 def _create_transformers(config: dict) -> [BaseTransformer]:
-    """ Creates a set of transformers from a given configuration.
+    """Creates a set of transformers from a given configuration.
 
     :param config:
         The programs configuration, declaring which Transformers are built and how they are configured.
@@ -317,16 +369,32 @@ def _create_transformers(config: dict) -> [BaseTransformer]:
         raise ValueError("Received Empty Configuration")
 
     if config["AddUnusedVariableTransformer"]:
-        transformers.append(AddVariableTransformer(string_randomness=config["UnusedVariableStringRandomness"]))
+        transformers.append(
+            AddVariableTransformer(
+                string_randomness=config["UnusedVariableStringRandomness"]
+            )
+        )
 
     if config["AddCommentTransformer"]:
-        transformers.append(AddCommentTransformer(string_randomness=config["AddCommentStringRandomness"]))
+        transformers.append(
+            AddCommentTransformer(
+                string_randomness=config["AddCommentStringRandomness"]
+            )
+        )
 
     if config["RenameVariableTransformer"]:
-        transformers.append(RenameVariableTransformer(string_randomness=config["RenameParameterStringRandomness"]))
+        transformers.append(
+            RenameVariableTransformer(
+                string_randomness=config["RenameParameterStringRandomness"]
+            )
+        )
 
     if config["RenameParameterTransformer"]:
-        transformers.append(RenameParameterTransformer(string_randomness=config["RenameVariableStringRandomness"]))
+        transformers.append(
+            RenameParameterTransformer(
+                string_randomness=config["RenameVariableStringRandomness"]
+            )
+        )
 
     if config["LambdaIdentityTransformer"]:
         transformers.append(LambdaIdentityTransformer())

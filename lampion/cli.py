@@ -17,11 +17,16 @@ import logging as log
 import libcst as cst
 
 from libcst import CSTNode
-from lampion.components.engine import Engine
+from lampion.lampion.components.engine import Engine
 
 
-def run(path_to_code: str, path_to_config: str = None, output_prefix: str = "lampion_output",
-        store_only_changed:bool = False, print_sample_diff: bool = True) -> None:
+def run(
+    path_to_code: str,
+    path_to_config: str = None,
+    output_prefix: str = "lampion_output",
+    store_only_changed: bool = False,
+    print_sample_diff: bool = True,
+) -> None:
     """
     Primary function to read the files, read the configuration, and run the engine.
     Separated from main for testability, as main() needs sys.args .
@@ -33,7 +38,7 @@ def run(path_to_code: str, path_to_config: str = None, output_prefix: str = "lam
     :param print_sample_diff: Whether to output one CST to Log. Default is true.
     :return: None
     """
-    log.info('Welcome to the Lampion-Python-Transformer')
+    log.info("Welcome to the Lampion-Python-Transformer")
     log.info("Reading File(s) from %s", path_to_code)
 
     csts = read_input_dir(path_to_code)
@@ -43,7 +48,9 @@ def run(path_to_code: str, path_to_config: str = None, output_prefix: str = "lam
     if "seed" in config.keys() and config["seed"] and isinstance(config["seed"], int):
         random.seed(config["seed"])
 
-    engine = Engine(config=config, output_dir=output_prefix,store_only_changed = store_only_changed)
+    engine = Engine(
+        config=config, output_dir=output_prefix, store_only_changed=store_only_changed
+    )
 
     altered_csts = engine.run(csts)
 
@@ -95,7 +102,7 @@ def read_input_dir(path: str) -> [(str, CSTNode)]:
                 if f.endswith(".py"):
                     file_counter += 1
                     if (file_counter % 1000) == 0:
-                        log.info("Parsed %d Files (still running)",file_counter)
+                        log.info("Parsed %d Files (still running)", file_counter)
                     file_path: str = os.path.join(dirpath, f)
                     log.debug("Parsing %s", file_path)
                     try:
@@ -111,7 +118,9 @@ def read_input_dir(path: str) -> [(str, CSTNode)]:
                         fails.append(file_path)
                         log.debug("Failure in Parsing %s", file_path)
         __log_fails(fails)
-        log.info("Found and (successfully) parsed %d of %d files", len(results), file_counter)
+        log.info(
+            "Found and (successfully) parsed %d of %d files", len(results), file_counter
+        )
         return results
     # Case 2: Path is a file
     elif os.path.isfile(path):
@@ -142,14 +151,17 @@ def read_config_file(path: str) -> dict:
     """
     # Shortwire default values
     if path is None:
-        log.info("Received \"None\" as path to config file, going with default values")
+        log.info('Received "None" as path to config file, going with default values')
         return {}
 
     # Check Input-Values
     if not os.path.exists(path) or not os.path.isfile(path):
         raise ValueError("Path to ConfigFile did not exist or was not a file!")
     if ".properties" not in path:
-        log.warning("The configuration-file at %s did not end with the expected .properties", path)
+        log.warning(
+            "The configuration-file at %s did not end with the expected .properties",
+            path,
+        )
 
     # Read in File, check for emptyness
     lines: [str] = []
@@ -207,8 +219,10 @@ def __log_fails(fails: [str]) -> None:
             for e in fails:
                 log.info("\t %s", e)
         else:
-            log.info("More than 50 files failed to be read! %d Failed. To see details, please run in debug.",
-                     len(fails))
+            log.info(
+                "More than 50 files failed to be read! %d Failed. To see details, please run in debug.",
+                len(fails),
+            )
             log.debug("Failed files were:")
             for e in fails:
                 log.debug("\t %s", e)
@@ -242,7 +256,7 @@ def _file_to_string(path: str) -> str:
     :return: the file's content
     :raises: FileNotFoundError if file does not exist
     """
-    with open(path, 'r', encoding="utf-8") as file:
+    with open(path, "r", encoding="utf-8") as file:
         return file.read()
 
 
@@ -256,27 +270,57 @@ def main() -> None:
     """
 
     parser = argparse.ArgumentParser(
-        description='Applies metamorphic transformations to Python Code '
-                    'in Order to make it verbose & different but functionally identical'
+        description="Applies metamorphic transformations to Python Code "
+        "in Order to make it verbose & different but functionally identical"
     )
-    parser.add_argument('config', metavar='config', type=str, nargs=1,
-                        help='The config file to use with the transformer')
-    parser.add_argument('input', metavar='input', type=str, nargs=1,
-                        help='A path to either a folder containing .py files or a path to a .py file')
-    parser.add_argument('output', metavar='output', type=str, nargs=1, default="lampion_output",
-                        help="Prefix for the folder to place output in. "
-                             "Within this new folder, the initial structure will be replicated. "
-                             "Any files will be overwritten.")
+    parser.add_argument(
+        "config",
+        metavar="config",
+        type=str,
+        nargs=1,
+        help="The config file to use with the transformer",
+    )
+    parser.add_argument(
+        "input",
+        metavar="input",
+        type=str,
+        nargs=1,
+        help="A path to either a folder containing .py files or a path to a .py file",
+    )
+    parser.add_argument(
+        "output",
+        metavar="output",
+        type=str,
+        nargs=1,
+        default="lampion_output",
+        help="Prefix for the folder to place output in. "
+        "Within this new folder, the initial structure will be replicated. "
+        "Any files will be overwritten.",
+    )
 
-    parser.add_argument("--output-only-changed",dest='store_only_changed',action="store_true",
-                        help="Whether or not to print only files that changed. Default:False (Print all, even untouched)")
+    parser.add_argument(
+        "--output-only-changed",
+        dest="store_only_changed",
+        action="store_true",
+        help="Whether or not to print only files that changed. Default:False (Print all, even untouched)",
+    )
 
-    parser.add_argument('--loglevel', dest="loglevel", type=str, nargs="?", default="info",
-                        help="The loglevel for printing logs. Default \'info\'. supported: \'warn\',\'info\',\'debug\'")
+    parser.add_argument(
+        "--loglevel",
+        dest="loglevel",
+        type=str,
+        nargs="?",
+        default="info",
+        help="The loglevel for printing logs. Default 'info'. supported: 'warn','info','debug'",
+    )
 
-    parser.add_argument('--example', dest='print_example',action='store_true',
-                        help="Whether or not to print an example of a changed file. ")
-    parser.set_defaults(print_example=False,store_only_changed=False)
+    parser.add_argument(
+        "--example",
+        dest="print_example",
+        action="store_true",
+        help="Whether or not to print an example of a changed file. ",
+    )
+    parser.set_defaults(print_example=False, store_only_changed=False)
 
     args = parser.parse_args()
 
@@ -294,13 +338,25 @@ def main() -> None:
     elif args.loglevel.lower() == "warn":
         loglevel = log.WARNING
     else:
-        print("Received unknown/unsupported format for loglevel - defaulting to info (%s)", args.loglevel.lower())
+        print(
+            "Received unknown/unsupported format for loglevel - defaulting to info (%s)",
+            args.loglevel.lower(),
+        )
 
-    log.basicConfig(level=loglevel, format='%(asctime)s [%(levelname)s] %(message)s',datefmt='%Y-%m-%d %H:%M:%S')
+    log.basicConfig(
+        level=loglevel,
+        format="%(asctime)s [%(levelname)s] %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
 
     random.seed(19961106)
 
-    run(path_to_code=path, path_to_config=config, output_prefix=output,
-        print_sample_diff=example, store_only_changed=store_only_changed)
+    run(
+        path_to_code=path,
+        path_to_config=config,
+        output_prefix=output,
+        print_sample_diff=example,
+        store_only_changed=store_only_changed,
+    )
 
     sys.exit(0)
