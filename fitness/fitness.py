@@ -10,17 +10,16 @@ os.environ["OPENAI_API_KEY"] = api
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
-def generate_docstring(code):
-    prompt = (
-        f"Code: {code}\n\n# You are given a python code. "
-        "Your task is to go through the code and generate natural language comments explaining what the code does. "
-        "Think of it as writing a docstring for the code. However try to keep them short and concise "
-        "and try to give the overall idea of the function does. Also avoid using the function name. "
-        "Start like this: This function ........\n"
-    )
+def generate_docstring(code, model: str = "gpt-3.5-turbo"):
+    prompt = f"""Code: {code}\n\n# You are given a python code. Your task is to go through the code and 
+    generate natural language comments explaining what the code does.
+    Think of it as writing a docstring for the code. Also avoid using the function name. 
+    Instead of explaining in details, just provide a high level idea.
+    Make sure to keep the responses within 30 words (THIS IS MANDATORY). Start like this:
+    This function ……..\n"""
 
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model=model,
         messages=[
             {"role": "system", "content": prompt},
             {"role": "user", "content": f""},

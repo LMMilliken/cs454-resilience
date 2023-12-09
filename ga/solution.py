@@ -43,9 +43,8 @@ class Solution:
         return self._fitness
 
     def calculate_fitness(self) -> float:
-        return random.random()
         _, code = extract_docstring_and_content(file_path="", file_content=str(self))
-        generated_docstring = generated_docstring(code)
+        generated_docstring = generate_docstring(code, model=globals.model)
         return calculate_bleu_score(generated_docstring, globals.expected_out)
 
     def mutate(self, temp: float):
@@ -123,16 +122,20 @@ class Solution:
         transformers_1 = copy.deepcopy(p1.transformers)
         transformers_2 = copy.deepcopy(p2.transformers)
 
-        pivot1 = random.randrange(0, len(transformers_1))
-        pivot2 = random.randrange(0, len(transformers_2))
+        if len(transformers_1) == 0 or len(transformers_2) == 0:
+            child_transformers_1 = transformers_1 + transformers_2
+            child_transformers_2 = transformers_1 + transformers_2
+        else:
+            pivot1 = random.randrange(0, len(transformers_1))
+            pivot2 = random.randrange(0, len(transformers_2))
 
-        child_transformers_1 = transformers_1[:pivot1] + transformers_2[pivot2:]
-        child_transformers_2 = transformers_2[:pivot2] + transformers_1[pivot1:]
-        random.shuffle(child_transformers_1)
-        random.shuffle(child_transformers_2)
+            child_transformers_1 = transformers_1[:pivot1] + transformers_2[pivot2:]
+            child_transformers_2 = transformers_2[:pivot2] + transformers_1[pivot1:]
+            random.shuffle(child_transformers_1)
+            random.shuffle(child_transformers_2)
 
-        c1 = Solution(transformers_1[:pivot1] + transformers_2[pivot2:])
-        c2 = Solution(transformers_2[:pivot2] + transformers_1[pivot1:])
+        c1 = Solution(child_transformers_1)
+        c2 = Solution(child_transformers_2)
         return c1, c2
 
     @staticmethod

@@ -13,13 +13,13 @@ def ga(
     temp: float,
     budget: int,
     early_stopping: int,
+    model: str,
     max_transformations: int = 5,
 ):
     start_time = time.time()
-    code = extract_docstring_and_content(file_path="", file_content=target["code"])[1]
+    code = extract_docstring_and_content(file_path="", file_content=target)[1]
     globals.original = parse_module(code)
-    globals.expected_out = target["docstring"]
-
+    globals.model = model
     population = sorted(
         Solution.generate_population(pop_size, max_transformations),
         key=lambda x: x.fitness,
@@ -43,8 +43,8 @@ def ga(
 def repopulate(population, temp):
     next_gen = []
     while len(next_gen) < len(population):
-        p1 = sorted(random.choices(population, k=4), key=lambda x: x.fitness)[0]
-        p2 = sorted(random.choices(population, k=4), key=lambda x: x.fitness)[0]
+        p1 = sorted(random.choices(population, k=2), key=lambda x: x.fitness)[0]
+        p2 = sorted(random.choices(population, k=2), key=lambda x: x.fitness)[0]
         c1, c2 = Solution.crossover(p1, p2)
         c1.mutate(temp)
         c2.mutate(temp)
