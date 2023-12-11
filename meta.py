@@ -27,8 +27,11 @@ def transform_data(in_fname: str, out_fname: str, model_name: str):
                 adversary = ga(
                     target, POP_SIZE, TEMP, BUDGET, EARLY_STOPPING, model_name
                 )
-                guess = generate_docstring(adversary, model_name)
-                writer.writerow([adversary, guess])
+                mt = ""
+                for s in adversary[1]:
+                    mt += str(type(s))+'/'
+                guess = generate_docstring(adversary[0], model_name)
+                writer.writerow([adversary[0], guess, mt])
             except ParserSyntaxError as e:
                 print("program cant be parsed!")
 
