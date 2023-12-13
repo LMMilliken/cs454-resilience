@@ -1,5 +1,6 @@
 import csv
 import re
+import json
 
 def remove_python_comments_and_triple_quotes(text):
     # Remove triple quoted text
@@ -12,20 +13,30 @@ def remove_python_comments_and_triple_quotes(text):
 
     return text
 
-def process_csv(input_file, output_file, code_column_index):
-    with open(input_file, newline='', encoding='utf-8') as infile, \
-         open(output_file, 'w', newline='', encoding='utf-8') as outfile:
-
+def process_csv(input_file, output_csv, output_json, code_column_index):
+    data = []
+    with open(input_file, newline='', encoding='utf-8') as infile:
         reader = csv.reader(infile)
-        writer = csv.writer(outfile)
+        headers = next(reader)  # Assuming the first row contains headers
 
         for row in reader:
             if len(row) > code_column_index:
                 row[code_column_index] = remove_python_comments_and_triple_quotes(row[code_column_index])
-            writer.writerow(row)
+            data.append(row)
+
+    # Write to CSV
+    with open(output_csv, 'w', newline='', encoding='utf-8') as outfile:
+        writer = csv.writer(outfile)
+        writer.writerow(headers)
+        writer.writerows(data)
+
+    # Write to JSON
+    with open(output_json, 'w', encoding='utf-8') as jsonfile:
+        json.dump([dict(zip(headers, row)) for row in data], jsonfile, indent=4)
 
 # Example usage
-input_csv = 'dataset_beta.csv'  # Replace with your input file name
-output_csv = 'output2.csv' # Replace with your desired output file name
-code_column_index = 1     # Replace with the index of the "code" column
-process_csv(input_csv, output_csv, code_column_index)
+input_csv = 'dataset_beta.csv'      # Replace with your input file name
+output_csv = 'output3.csv'    # Replace with your desired output CSV file name
+output_json = 'output.json'  # Replace with your desired output JSON file name
+code_column_index = 1        # Replace with the index of the "code" column
+process_csv(input_csv, output_csv, output_json, code_column_index)

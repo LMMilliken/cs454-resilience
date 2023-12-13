@@ -1,5 +1,5 @@
 docstring,code
-"
+"str->list
     Convert XML to URL List.
     From Biligrab.","def foo(xml_data):
     rawurl = []
@@ -89,33 +89,6 @@ Detect operating system.,"def foo():
         os = 'bsd'
 
     return os"
-"str->dict
-    Information for CKPlayer API content.","def foo(ckinfo):
-    
-    e = ET.XML(ckinfo)
-    video_dict = {'title': '',
-                  
-                  'links': [],
-                  'size': 0,
-                  'flashvars': '',}
-    dictified = dictify(e)['ckplayer']
-    if 'info' in dictified:
-        if '_text' in dictified['info'][0]['title'][0]:  
-            video_dict['title'] = dictified['info'][0]['title'][0]['_text'].strip()
-
-    
-        
-
-    if '_text' in dictified['video'][0]['size'][0]:  
-        video_dict['size'] = sum([int(i['size'][0]['_text']) for i in dictified['video']])
-
-    if '_text' in dictified['video'][0]['file'][0]:  
-        video_dict['links'] = [i['file'][0]['_text'].strip() for i in dictified['video']]
-
-    if '_text' in dictified['flashvars'][0]:
-        video_dict['flashvars'] = dictified['flashvars'][0]['_text'].strip()
-
-    return video_dict"
 Splicing URLs according to video ID to get video details,"def foo(video_id):
     
     
@@ -161,28 +134,6 @@ Splicing URLs according to video ID to get video details,"def foo(video_id):
         url = tmp()
         if url.split(""="")[-1][0] != ""-"":  
             return url"
-"str->list of str
-        Give you the real URLs.","def foo(url):
-        
-        content = loads(get_content(url))
-        m3u_url = content['info']
-        split = urlsplit(m3u_url)
-        
-        base_url = ""{scheme}://{netloc}{path}/"".format(scheme = split[0],
-                                                      netloc = split[1],
-                                                      path = dirname(split[2]))
-
-        content = get_content(content['info'])  
-        segment_list = []
-        segments_size = 0
-        for i in content.split():
-            if not i.startswith('
-                segment_list.append(base_url + i)
-            
-            elif i.startswith('
-                segments_size += int(i[i.rfind(':')+1:])
-
-        return m3u_url, segments_size, segment_list"
 Converts a string to a valid filename.,"def foo(text, os=detect_os()):
     
 
@@ -294,68 +245,6 @@ Downloads CBS videos by URL.,"def foo(url, output_dir='.', merge=True, info_only
                           'w', encoding='utf-8') as x:
                     x.write(srt)
                 print('Done.')"
-x,"def foo(vid, title, output_dir='.', merge=True, info_only=False, **kwargs):
-    
-
-    
-    info = json.loads(get_content('http://www.acfun.cn/video/getVideo.aspx?id=' + vid))
-
-    sourceType = info['sourceType']
-
-    
-    if 'sourceId' in info: sourceId = info['sourceId']
-    
-
-    
-    if sourceType == 'sina':
-        sina_download_by_vid(sourceId, title, output_dir=output_dir, merge=merge, info_only=info_only)
-    elif sourceType == 'youku':
-        youku_download_by_vid(sourceId, title=title, output_dir=output_dir, merge=merge, info_only=info_only, **kwargs)
-    elif sourceType == 'tudou':
-        tudou_download_by_iid(sourceId, title, output_dir=output_dir, merge=merge, info_only=info_only)
-    elif sourceType == 'qq':
-        qq_download_by_vid(sourceId, title, True, output_dir=output_dir, merge=merge, info_only=info_only)
-    elif sourceType == 'letv':
-        letvcloud_download_by_vu(sourceId, '2d8c027396', title, output_dir=output_dir, merge=merge, info_only=info_only)
-    elif sourceType == 'zhuzhan':
-        
-
-
-        url = 'http://www.acfun.cn/v/ac' + vid
-        yk_streams = youku_acfun_proxy(info['sourceId'], info['encode'], url)
-        seq = ['mp4hd3', 'mp4hd2', 'mp4hd', 'flvhd']
-        for t in seq:
-            if yk_streams.get(t):
-                preferred = yk_streams[t]
-                break
-
-        size = 0
-        for url in preferred[0]:
-            _, _, seg_size = url_info(url)
-            size += seg_size
-
-        if re.search(r'fid=[0-9A-Z\-]*.flv', preferred[0][0]):
-            ext = 'flv'
-        else:
-            ext = 'mp4'
-        print_info(site_info, title, ext, size)
-        if not info_only:
-            download_urls(preferred[0], title, ext, size, output_dir=output_dir, merge=merge)
-    else:
-        raise NotImplementedError(sourceType)
-
-    if not info_only and not dry_run:
-        if not kwargs['caption']:
-            print('Skipping danmaku.')
-            return
-        try:
-            title = get_filename(title)
-            print('Downloading %s ...\n' % (title + '.cmt.json'))
-            cmt = get_srt_json(vid)
-            with open(os.path.join(output_dir, title + '.cmt.json'), 'w', encoding='utf-8') as x:
-                x.write(cmt)
-        except:
-            pass"
 "Scans through a string for substrings matched some patterns.
 
     Args:
@@ -479,59 +368,6 @@ Parses host name and port number from a string.,"def foo(host):
     hostname = o.hostname or ""0.0.0.0""
     port = o.port or 0
     return (hostname, port)"
-x,"def foo(room_url_key):
-    
-    fake_headers_mobile = {
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Charset': 'UTF-8,*;q=0.5',
-        'Accept-Encoding': 'gzip,deflate,sdch',
-        'Accept-Language': 'en-US,en;q=0.8',
-        'User-Agent': 'Mozilla/5.0 (Linux; Android 4.4.2; Nexus 4 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.114 Mobile Safari/537.36'
-    }
-    webpage_url = 'https://www.showroom-live.com/' + room_url_key
-    html = get_content(webpage_url, headers = fake_headers_mobile)
-    roomid = match1(html, r'room\?room_id\=(\d+)')
-    assert roomid
-    return roomid"
-"JSON, int, int, int->str
-    
-    Get a proper title with courseid+topicID+partID.","def foo(json_content, tIndex, pIndex):
-    
-
-    return '_'.join([json_content[0]['name'],
-                    json_content[0]['Topics'][tIndex]['name'],
-                    json_content[0]['Topics'][tIndex]['Parts'][pIndex]['name']])"
-"int->None
-    
-    Download a WHOLE course.
-    Reuse the API call to save time.","def foo(json_api_content, output_dir='.', merge=True, info_only=False, **kwargs):
-    
-
-    for tIndex in range(len(json_api_content[0]['Topics'])):
-        for pIndex in range(len(json_api_content[0]['Topics'][tIndex]['Parts'])):
-            foo_topic_part(json_api_content,
-                                                 tIndex,
-                                                 pIndex,
-                                                 output_dir=output_dir,
-                                                 merge=merge,
-                                                 info_only=info_only,
-                                                 **kwargs)"
-"int, int, int->None
-    
-    Download ONE PART of the course.","def foo(json_api_content, tIndex, pIndex, output_dir='.', merge=True, info_only=False, **kwargs):
-    
-
-    html = json_api_content
-
-    title = _wanmen_get_title_by_json_topic_part(html, 
-                                                  tIndex, 
-                                                  pIndex)
-
-    bokeccID = _wanmen_get_boke_id_by_json_topic_part(html,
-                                                      tIndex, 
-                                                     pIndex)
-
-    bokecc_download_by_id(vid = bokeccID, title = title, output_dir=output_dir, merge=merge, info_only=info_only, **kwargs)"
 "Checks if a task is either queued or running in this executor
 
         :param task_instance: TaskInstance
