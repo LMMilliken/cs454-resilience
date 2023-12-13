@@ -2,25 +2,33 @@ import random
 from typing import List, Tuple
 from libcst import CSTNode
 from ga import globals
-from lampion.lampion.transformers.addcomment import AddCommentTransformer
-from lampion.lampion.transformers.addneutral import AddNeutralElementTransformer
-from lampion.lampion.transformers.addvar import AddVariableTransformer
-from lampion.lampion.transformers.basetransformer import BaseTransformer
-from lampion.lampion.transformers.iffalseelse import IfFalseElseTransformer
-from lampion.lampion.transformers.iftrue import IfTrueTransformer
-from lampion.lampion.transformers.lambdaidentity import LambdaIdentityTransformer
-from lampion.lampion.transformers.renameparam import RenameParameterTransformer
-from lampion.lampion.transformers.renamevar import RenameVariableTransformer
-from lampion.lampion.transformers.forone import ForOneTransformer
-from lampion.lampion.transformers.whiletrue import WhileTrueTransformer
-
+from lampion import (
+    AddVariableTransformer,
+    AddCommentTransformer,
+    RenameVariableTransformer,
+    RenameParameterTransformer,
+    LambdaIdentityTransformer,
+    AddNeutralElementTransformer,
+    IfTrueTransformer,
+    IfFalseElseTransformer,
+    ForOneTransformer,
+    WhileTrueTransformer,
+    BaseTransformer,
+)
+from fitness.fitness import (
+    generate_docstring,
+    calculate_bleu_score,
+    extract_docstring_and_content,
+)
 import copy
 
 
 class Solution:
-    def __init__(self, transformers: List[BaseTransformer]) -> None:
-        self.transformers = transformers
-        # TODO: define structure of solution
+    def __init__(
+        self, transformers: List[BaseTransformer] = [], max_transformations: int = 5
+    ) -> None:
+        self.transformers = transformers[:max_transformations]
+        self.max_transformations = max_transformations
         self._fitness = None
 
     def __str__(self) -> str:
@@ -35,43 +43,56 @@ class Solution:
         return self._fitness
 
     def calculate_fitness(self) -> float:
-        # TODO: implement fitness function
-        pass
+        _, code = extract_docstring_and_content(file_path="", file_content=str(self))
+        generated_docstring = generate_docstring(code, model=globals.model)
+        return calculate_bleu_score(generated_docstring, globals.expected_out)
 
     def mutate(self, temp: float):
         # TODO: implement mutation
         # temp chance of adding new transformation, and 1-temp chance of deleting a random transformation
         if random.random() < temp:
-            choice = ["AddUnusedVariableTransformer", "AddCommentTransformer", "RenameVariableTransformer", 
-                      "RenameParameterTransformer", "LambdaIdentityTransformer", "AddNeutralElementTransformer",
-                      "IfTrueTransformer", "IfFalseElseTransformer", "ForOneTransformer", "WhileTrueTransformer"]
-            chosen = random.choice(choice)
-            # bit lengthy and unconcise, but better than initiating 10 transformer every mutation
-            match chosen:
-                case "AddUnusedVariableTransformer":
-                    new = AddVariableTransformer(string_randomness="full")
-                case "AddCommentTransformer":
-                    new = AddCommentTransformer(string_randomness="full")
-                case "RenameVariableTransformer":
-                    new = RenameVariableTransformer(string_randomness="full")
-                case "RenameParameterTransformer":
-                    new = RenameParameterTransformer(string_randomness="full")    
-                case "LambdaIdentityTransformer":
-                    new = LambdaIdentityTransformer()
-                case "AddNeutralElementTransformer":
-                    new = AddNeutralElementTransformer()
-                case "IfTrueTransformer":
-                    new = IfTrueTransformer()
-                case "IfFalseElseTransformer":
-                    new = IfFalseElseTransformer()
-                case "ForOneTransformer":
-                    new = ForOneTransformer()
-                case "WhileTrueTransformer":
-                    new = WhileTrueTransformer()
-            self.transformers.append(new)
-        else:
-            rm = random.randint(0, len(self.transformers)-1)
-            del self.transformers[rm]
+            if len(self.transformers) <= 1 or (
+                random.random() < 0.8
+                and len(self.transformers) < self.max_transformations
+            ):
+                choice = [
+                    "AddUnusedVariableTransformer",
+                    "AddCommentTransformer",
+                    "RenameVariableTransformer",
+                    "RenameParameterTransformer",
+                    "LambdaIdentityTransformer",
+                    "AddNeutralElementTransformer",
+                    "IfTrueTransformer",
+                    "IfFalseElseTransformer",
+                    "ForOneTransformer",
+                    "WhileTrueTransformer",
+                ]
+                chosen = random.choice(choice)
+                # bit lengthy and unconcise, but better than initiating 10 transformer every mutation
+                match chosen:
+                    case "AddUnusedVariableTransformer":
+                        new = AddVariableTransformer(string_randomness="full")
+                    case "AddCommentTransformer":
+                        new = AddCommentTransformer(string_randomness="full")
+                    case "RenameVariableTransformer":
+                        new = RenameVariableTransformer(string_randomness="full")
+                    case "RenameParameterTransformer":
+                        new = RenameParameterTransformer(string_randomness="full")
+                    case "LambdaIdentityTransformer":
+                        new = LambdaIdentityTransformer()
+                    case "AddNeutralElementTransformer":
+                        new = AddNeutralElementTransformer()
+                    case "IfTrueTransformer":
+                        new = IfTrueTransformer()
+                    case "IfFalseElseTransformer":
+                        new = IfFalseElseTransformer()
+                    case "ForOneTransformer":
+                        new = ForOneTransformer()
+                    case "WhileTrueTransformer":
+                        new = WhileTrueTransformer()
+                self.transformers.append(new)
+            else:
+                self.transformers.pop(random.randrange(0, len(self.transformers)))
 
     def apply(self) -> CSTNode:
         # let each transformer run "apply" once so that we know the index of the node that it changes
@@ -82,13 +103,15 @@ class Solution:
         # Sort the transformrs by largest index to smallest
         self.transformers = sorted(
             list(
-                filter(lambda transformer: transformer.node_count is not None),
-                self.transformers,
+                filter(
+                    (lambda transformer: transformer.node_count is not None),
+                    self.transformers,
+                ),
             ),
             key=lambda transformer: transformer.node_count,
             reverse=True,
         )
-        ret = copy.deepcopy(self.original)
+        ret = copy.deepcopy(globals.original)
         for transformer in self.transformers:
             ret = transformer.apply(ret)
             transformer.reset()
@@ -99,9 +122,27 @@ class Solution:
         transformers_1 = copy.deepcopy(p1.transformers)
         transformers_2 = copy.deepcopy(p2.transformers)
 
-        pivot1 = random.randint(0, len(transformers_1) - 1)
-        pivot2 = random.randint(0, len(transformers_2) - 1)
+        if len(transformers_1) == 0 or len(transformers_2) == 0:
+            child_transformers_1 = transformers_1 + transformers_2
+            child_transformers_2 = transformers_1 + transformers_2
+        else:
+            pivot1 = random.randrange(0, len(transformers_1))
+            pivot2 = random.randrange(0, len(transformers_2))
 
-        c1 = Solution(transformers_1[:pivot1] + transformers_2[pivot2:])
-        c2 = Solution(transformers_2[:pivot2] + transformers_1[pivot1:])
+            child_transformers_1 = transformers_1[:pivot1] + transformers_2[pivot2:]
+            child_transformers_2 = transformers_2[:pivot2] + transformers_1[pivot1:]
+            random.shuffle(child_transformers_1)
+            random.shuffle(child_transformers_2)
+
+        c1 = Solution(child_transformers_1)
+        c2 = Solution(child_transformers_2)
         return c1, c2
+
+    @staticmethod
+    def generate_population(pop_size: int, max_transformations: int):
+        pop = [
+            Solution(max_transformations=max_transformations) for _ in range(pop_size)
+        ]
+        for sol in pop:
+            sol.mutate(1.0)
+        return pop

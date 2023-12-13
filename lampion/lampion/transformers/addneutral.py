@@ -12,8 +12,8 @@ from libcst import CSTNode
 import libcst as cst
 import regex as re
 
-from lampion.transformers.basetransformer import BaseTransformer
-from lampion.transformers.literal_helpers import get_all_literals
+from lampion.lampion.transformers.basetransformer import BaseTransformer
+from lampion.lampion.transformers.literal_helpers import get_all_literals
 
 
 class AddNeutralElementTransformer(BaseTransformer, ABC):

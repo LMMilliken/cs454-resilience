@@ -10,7 +10,7 @@ from typing import Optional
 import libcst._nodes.base
 from libcst import CSTNode
 
-from lampion.transformers.basetransformer import BaseTransformer
+from lampion.lampion.transformers.basetransformer import BaseTransformer
 
 
 class WhileTrueTransformer(BaseTransformer, ABC):
@@ -124,14 +124,14 @@ class WhileTrueTransformer(BaseTransformer, ABC):
     def reset(self) -> None:
         """Resets the Transformer to be applied again.
 
-           after the reset all local state is deleted, the transformer is fully reset.
+        after the reset all local state is deleted, the transformer is fully reset.
 
-           It holds:
-           > a = SomeTransformer()
-           > b = SomeTransformer()
-           > someTree.visit(a)
-           > a.reset()
-           > assert a == b
+        It holds:
+        > a = SomeTransformer()
+        > b = SomeTransformer()
+        > someTree.visit(a)
+        > a.reset()
+        > assert a == b
         """
         self._worked = False
 
@@ -191,14 +191,14 @@ class WhileTrueTransformer(BaseTransformer, ABC):
             return self.__applied
 
         def leave_SimpleStatementSuite(
-                self,
-                original_node: "SimpleStatementSuite",
-                updated_node: "SimpleStatementSuite",
+            self,
+            original_node: "SimpleStatementSuite",
+            updated_node: "SimpleStatementSuite",
         ) -> "BaseSuite":
             if not self.__applied and random.random() < self.chance:
                 wrapper = libcst.parse_statement("while (True): \n\t return 1")
-                breaknode = libcst.parse_statement('break')
-                newbody = libcst.Expr(libcst.Module(body = (updated_node, breaknode)))
+                breaknode = libcst.parse_statement("break")
+                newbody = libcst.Expr(libcst.Module(body=(updated_node, breaknode)))
                 wrapper_with_body_changed = wrapper.deep_replace(wrapper.body, newbody)
 
                 self.__applied = True
@@ -209,12 +209,12 @@ class WhileTrueTransformer(BaseTransformer, ABC):
                 return updated_node
 
         def leave_IndentedBlock(
-                self, original_node: "IndentedBlock", updated_node: "IndentedBlock"
+            self, original_node: "IndentedBlock", updated_node: "IndentedBlock"
         ) -> "BaseSuite":
             if not self.__applied and random.random() < self.chance:
                 wrapper = libcst.parse_statement("while (True): \n\t return 1")
-                breaknode = libcst.parse_statement('break')
-                newbody = libcst.Expr(libcst.Module(body = (updated_node, breaknode)))
+                breaknode = libcst.parse_statement("break")
+                newbody = libcst.Expr(libcst.Module(body=(updated_node, breaknode)))
                 wrapper_with_body_changed = wrapper.deep_replace(wrapper.body, newbody)
 
                 self.__applied = True

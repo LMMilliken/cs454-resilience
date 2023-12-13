@@ -1,16 +1,17 @@
 import csv
 import openai
-import  os
+import os
 from openai import OpenAI
 from tqdm import tqdm
 
 # Set your OpenAI API key
-with open("key.txt", "r") as file: 
+with open("../key.txt", "r") as file:
     api = file.read()
 os.environ["OPENAI_API_KEY"] = api
 
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
 
 # Function to generate comment using OpenAI
 def generate_comment(code):
@@ -30,22 +31,27 @@ def generate_comment(code):
     )
     return response.choices[0].message.content
 
+
 # Path to your CSV file
 # Path to your CSV file
 csv_file_path = 'dataset.csv'
 output_file_path = 'output_with_comments_GPT3.5_(30 words).csv'  # Output file name
 
 # Process the CSV file and write to a new CSV file
-with open(csv_file_path, mode='r', newline='', encoding='utf-8') as csv_file, open(output_file_path, mode='w', newline='', encoding='utf-8') as output_file:
+with open(csv_file_path, mode="r", newline="", encoding="utf-8") as csv_file, open(
+    output_file_path, mode="w", newline="", encoding="utf-8"
+) as output_file:
     reader = csv.DictReader(csv_file)
-    fieldnames = reader.fieldnames + ['generated_comment']  # Add a new field for comments
+    fieldnames = reader.fieldnames + [
+        "generated_comment"
+    ]  # Add a new field for comments
     writer = csv.DictWriter(output_file, fieldnames=fieldnames)
-    
+
     writer.writeheader()
     for row in tqdm(reader):
-        comment = generate_comment( row['code'])
-        row['generated_comment'] = comment
+        comment = generate_comment(row["code"])
+        row["generated_comment"] = comment
         writer.writerow(row)
-        print(row['generated_comment'])
+        print(row["generated_comment"])
 
 print(f"Completed processing the CSV file. Output written to {output_file_path}.")

@@ -11,7 +11,7 @@ from typing import Optional
 import libcst._nodes.base
 from libcst import CSTNode
 
-from lampion.transformers.basetransformer import BaseTransformer
+from lampion.lampion.transformers.basetransformer import BaseTransformer
 
 
 class IfFalseElseTransformer(BaseTransformer, ABC):

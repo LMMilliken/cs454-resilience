@@ -10,8 +10,8 @@ import libcst as cst
 import libcst.codegen.gather
 from libcst import FlattenSentinel, RemovalSentinel, CSTNode
 
-from lampion.transformers.basetransformer import BaseTransformer
-from lampion.utils.naming import get_random_string, get_pseudo_random_string
+from lampion.lampion.transformers.basetransformer import BaseTransformer
+from lampion.lampion.utils.naming import get_random_string, get_pseudo_random_string
 
 
 class AddCommentTransformer(BaseTransformer, ABC):
@@ -63,7 +63,7 @@ class AddCommentTransformer(BaseTransformer, ABC):
 
         Also, see the BaseTransformers notes if you want to implement your own.
         """
-        visitor = self.__AddCommentVisitor(self.seed)
+        visitor = self.__AddCommentVisitor(seed=self.seed)
 
         altered_cst = cst_to_alter
 
@@ -140,9 +140,9 @@ class AddCommentTransformer(BaseTransformer, ABC):
             if string_randomness in ["pseudo", "full"]:
                 self.__string_randomness = string_randomness
             else:
-                raise ValueError[
-                    "Received invalid value for String Randomness, supported values are 'pseud' and 'full'"
-                ]
+                raise ValueError(
+                    f"Received invalid value for String Randomness: {string_randomness}, supported values are 'pseud' and 'full'"
+                )
 
             self.finished = False
             self.node_count = 0

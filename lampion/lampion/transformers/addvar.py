@@ -10,8 +10,8 @@ import libcst as cst
 import libcst.codegen.gather
 from libcst import FlattenSentinel, RemovalSentinel, CSTNode
 
-from lampion.transformers.basetransformer import BaseTransformer
-from lampion.utils.naming import get_random_string, get_pseudo_random_string
+from lampion.lampion.transformers.basetransformer import BaseTransformer
+from lampion.lampion.utils.naming import get_random_string, get_pseudo_random_string
 
 
 class AddVariableTransformer(BaseTransformer, ABC):

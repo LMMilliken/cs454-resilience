@@ -10,7 +10,7 @@ from typing import Optional
 import libcst._nodes.base
 from libcst import CSTNode
 
-from lampion.transformers.basetransformer import BaseTransformer
+from lampion.lampion.transformers.basetransformer import BaseTransformer
 
 
 class ForOneTransformer(BaseTransformer, ABC):
@@ -63,7 +63,7 @@ class ForOneTransformer(BaseTransformer, ABC):
     """
 
     def __init__(
-        self, 
+        self,
         max_tries: int = 50,
         seed: Optional[int] = None,
     ):
@@ -121,14 +121,14 @@ class ForOneTransformer(BaseTransformer, ABC):
     def reset(self) -> None:
         """Resets the Transformer to be applied again.
 
-           after the reset all local state is deleted, the transformer is fully reset.
+        after the reset all local state is deleted, the transformer is fully reset.
 
-           It holds:
-           > a = SomeTransformer()
-           > b = SomeTransformer()
-           > someTree.visit(a)
-           > a.reset()
-           > assert a == b
+        It holds:
+        > a = SomeTransformer()
+        > b = SomeTransformer()
+        > someTree.visit(a)
+        > a.reset()
+        > assert a == b
         """
         self._worked = False
 
@@ -188,13 +188,17 @@ class ForOneTransformer(BaseTransformer, ABC):
             return self.__applied
 
         def leave_SimpleStatementSuite(
-                self,
-                original_node: "SimpleStatementSuite",
-                updated_node: "SimpleStatementSuite",
+            self,
+            original_node: "SimpleStatementSuite",
+            updated_node: "SimpleStatementSuite",
         ) -> "BaseSuite":
             if not self.__applied and random.random() < self.chance:
-                wrapper = libcst.parse_statement("for ynzgcjahqazigtnfvtgavx in range(1): \n\t return 1")
-                wrapper_with_body_changed = wrapper.deep_replace(wrapper.body, updated_node)
+                wrapper = libcst.parse_statement(
+                    "for ynzgcjahqazigtnfvtgavx in range(1): \n\t return 1"
+                )
+                wrapper_with_body_changed = wrapper.deep_replace(
+                    wrapper.body, updated_node
+                )
 
                 self.__applied = True
                 return wrapper_with_body_changed
@@ -204,12 +208,16 @@ class ForOneTransformer(BaseTransformer, ABC):
                 return updated_node
 
         def leave_IndentedBlock(
-                self, original_node: "IndentedBlock", updated_node: "IndentedBlock"
+            self, original_node: "IndentedBlock", updated_node: "IndentedBlock"
         ) -> "BaseSuite":
             if not self.__applied and random.random() < self.chance:
-                #use unusual string to avoid misnaming variable
-                wrapper = libcst.parse_statement("for ynzgcjahqazigtnfvtgavx in range(1): \n\t return 1")
-                wrapper_with_body_changed = wrapper.deep_replace(wrapper.body, updated_node)
+                # use unusual string to avoid misnaming variable
+                wrapper = libcst.parse_statement(
+                    "for ynzgcjahqazigtnfvtgavx in range(1): \n\t return 1"
+                )
+                wrapper_with_body_changed = wrapper.deep_replace(
+                    wrapper.body, updated_node
+                )
 
                 self.__applied = True
                 return wrapper_with_body_changed
