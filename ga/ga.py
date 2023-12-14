@@ -37,7 +37,7 @@ def ga(
             stagnant += 1
         generation += 1
     print(f"FINISHED AFTER {generation} GENERATIONS:")
-    return str(fittest)
+    return str(fittest), fittest.transformers
 
 
 def repopulate(population, temp):
