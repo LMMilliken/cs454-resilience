@@ -10,6 +10,8 @@ def notify(message: str, channel: str = "logs"):
     url = targets[channel]
     headers = {"Content-type": "application/json"}
     data = '{"text": "' + message + '"}'
+    if channel != "logs":
+        notify(message=message, channel="logs")
 
     response = requests.post(url, headers=headers, data=data)
     return str(response)
