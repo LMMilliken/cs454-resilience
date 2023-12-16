@@ -13,7 +13,7 @@ def ga(
     temp: float,
     budget: int,
     early_stopping: int,
-    model: str,
+    model,
     max_transformations: int = 5,
 ):
     start_time = time.time()

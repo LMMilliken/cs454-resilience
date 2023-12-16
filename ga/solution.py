@@ -19,6 +19,7 @@ from fitness.fitness import (
     generate_docstring,
     calculate_bleu_score,
     extract_docstring_and_content,
+    generate_bert_docstring
 )
 import copy
 
@@ -44,7 +45,8 @@ class Solution:
 
     def calculate_fitness(self) -> float:
         _, code = extract_docstring_and_content(file_path="", file_content=str(self))
-        generated_docstring = generate_docstring(code, model=globals.model)
+        #generated_docstring = generate_docstring(code, model=globals.model)
+        generated_docstring = generate_bert_docstring(code, model = globals.model)
         return calculate_bleu_score(generated_docstring, globals.expected_out)
 
     def mutate(self, temp: float):
