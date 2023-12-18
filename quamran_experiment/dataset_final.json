@@ -1,0 +1,802 @@
+[
+  {
+    "docstring": "str->list\n  Convert XML to URL List.\n  From Biligrab.",
+    "code": "def foo(xml_data):\n  rawurl = []\n  dom = parseString(xml_data)\n  for node in dom.getElementsByTagName('durl'):\n  url = node.getElementsByTagName('url')[0]\n  rawurl.append(url.childNodes[0].data)\n  return rawurl"
+  },
+  {
+    "docstring": "Downloads Dailymotion videos by URL.",
+    "code": "def foo(url, output_dir='.', merge=True, info_only=False, **kwargs):\n \n  html = get_content(rebuilt_url(url))\n  info = json.loads(match1(html, r'qualities\":({.+?}),\"'))\n  title = match1(html, r'\"video_title\"\\s*:\\s*\"([^\"]+)\"') or \\\n  match1(html, r'\"title\"\\s*:\\s*\"([^\"]+)\"')\n  title = unicodize(title)\n \n  for quality in ['1080','720','480','380','240','144','auto']:\n  try:\n  real_url = info[quality][1][\"url\"]\n  if real_url:\n  break\n  except KeyError:\n  pass\n \n  mime, ext, size = url_info(real_url)\n \n  print_info(site_info, title, mime, size)\n  if not info_only:\n  download_urls([real_url], title, ext, size, output_dir=output_dir, merge=merge)"
+  },
+  {
+    "docstring": "Format text with color or other effects into ANSI escaped string.",
+    "code": "def foo(text, *colors):\n  \n  return \"\\33[{}m{content}\\33[{}m\".format(\";\".join([str(color) for color in colors]), RESET, content=text) if IS_ANSI_TERMINAL and colors else text"
+  },
+  {
+    "docstring": "Print a log message to standard error.",
+    "code": "def foo(text, *colors):\n  \n  sys.stderr.write(sprint(\"{}: {}\".format(script_name, text), *colors) + \"\\n\")"
+  },
+  {
+    "docstring": "Detect operating system.",
+    "code": "def foo():\n  \n \n  \n  \n \n  syst = system().lower()\n  os = 'unknown'\n \n  if 'cygwin' in syst:\n  os = 'cygwin'\n  elif 'darwin' in syst:\n  os = 'mac'\n  elif 'linux' in syst:\n  os = 'linux'\n  \n  try:\n  with open('/proc/version', 'r') as f:\n  if 'microsoft' in f.read().lower():\n  os = 'wsl'\n  except: pass\n  elif 'windows' in syst:\n  os = 'windows'\n  elif 'bsd' in syst:\n  os = 'bsd'\n \n  return os"
+  },
+  {
+    "docstring": "Splicing URLs according to video ID to get video details",
+    "code": "def foo(video_id):\n  \n  \n  data = [\"\"] * 256\n  for index, _ in enumerate(data):\n  t = index\n  for i in range(8):\n  t = -306674912 ^ unsigned_right_shitf(t, 1) if 1 & t else unsigned_right_shitf(t, 1)\n  data[index] = t\n \n  def tmp():\n  rand_num = random.random()\n  path = \"/video/urls/v/1/toutiao/mp4/{video_id}?r={random_num}\".format(video_id=video_id,\n  random_num=str(rand_num)[2:])\n  e = o = r = -1\n  i, a = 0, len(path)\n  while i < a:\n  e = ord(path[i])\n  i += 1\n  if e < 128:\n  r = unsigned_right_shitf(r, 8) ^ data[255 & (r ^ e)]\n  else:\n  if e < 2048:\n  r = unsigned_right_shitf(r, 8) ^ data[255 & (r ^ (192 | e >> 6 & 31))]\n  r = unsigned_right_shitf(r, 8) ^ data[255 & (r ^ (128 | 63 & e))]\n  else:\n  if 55296 <= e < 57344:\n  e = (1023 & e) + 64\n  i += 1\n  o = 1023 & t.url(i)\n  r = unsigned_right_shitf(r, 8) ^ data[255 & (r ^ (240 | e >> 8 & 7))]\n  r = unsigned_right_shitf(r, 8) ^ data[255 & (r ^ (128 | e >> 2 & 63))]\n  r = unsigned_right_shitf(r, 8) ^ data[255 & (r ^ (128 | o >> 6 & 15 | (3 & e) << 4))]\n  r = unsigned_right_shitf(r, 8) ^ data[255 & (r ^ (128 | 63 & o))]\n  else:\n  r = unsigned_right_shitf(r, 8) ^ data[255 & (r ^ (224 | e >> 12 & 15))]\n  r = unsigned_right_shitf(r, 8) ^ data[255 & (r ^ (128 | e >> 6 & 63))]\n  r = unsigned_right_shitf(r, 8) ^ data[255 & (r ^ (128 | 63 & e))]\n \n  return \"https://ib.365yg.com{path}&s={param}\".format(path=path, param=unsigned_right_shitf(r ^ -1, 0))\n \n  while 1:\n  url = tmp()\n  if url.split(\"=\")[-1][0] != \"-\": \n  return url"
+  },
+  {
+    "docstring": "Converts a string to a valid filename.",
+    "code": "def foo(text, os=detect_os()):\n  \n \n  \n  text = text.translate({\n  0: None,\n  ord('/'): '-',\n  ord('|'): '-',\n  })\n \n  \n  if os == 'windows' or os == 'cygwin' or os == 'wsl':\n  \n  text = text.translate({\n  \n  ord(':'): '-',\n  ord('*'): '-',\n  ord('?'): '-',\n  ord('\\\\'): '-',\n  ord('\\\"'): '\\'',\n  \n  ord('+'): '-',\n  ord('<'): '-',\n  ord('>'): '-',\n  ord('['): '(',\n  ord(']'): ')',\n  ord('\\t'): ' ',\n  })\n  else:\n  \n  if os == 'mac':\n  \n  text = text.translate({\n  ord(':'): '-',\n  })\n \n  \n  if text.startswith(\".\"):\n  text = text[1:]\n \n  text = text[:80] \n  return text"
+  },
+  {
+    "docstring": "Downloads CBS videos by URL.",
+    "code": "def foo(url, output_dir='.', merge=True, info_only=False, **kwargs):\n  \n \n  html = get_content(url)\n  pid = match1(html, r'video\\.settings\\.pid\\s*=\\s*\\'([^\\']+)\\'')\n  title = match1(html, r'video\\.settings\\.title\\s*=\\s*\\\"([^\\\"]+)\\\"')\n \n  theplatform_download_by_pid(pid, title, output_dir=output_dir, merge=merge, info_only=info_only)"
+  },
+  {
+    "docstring": "Override the original one\n  Ugly ugly dirty hack",
+    "code": "def foo(self, **kwargs):\n  \n  if 'json_output' in kwargs and kwargs['json_output']:\n  json_output.output(self)\n  elif 'info_only' in kwargs and kwargs['info_only']:\n  if 'stream_id' in kwargs and kwargs['stream_id']:\n  \n  stream_id = kwargs['stream_id']\n  if 'index' not in kwargs:\n  self.p(stream_id)\n  else:\n  self.p_i(stream_id)\n  else:\n  \n  if 'index' not in kwargs:\n  self.p([])\n  else:\n  stream_id = self.streams_sorted[0]['id'] if 'id' in self.streams_sorted[0] else self.streams_sorted[0]['itag']\n  self.p_i(stream_id)\n \n  else:\n  if 'stream_id' in kwargs and kwargs['stream_id']:\n  \n  stream_id = kwargs['stream_id']\n  else:\n  \n  stream_id = self.streams_sorted[0]['id'] if 'id' in self.streams_sorted[0] else self.streams_sorted[0]['itag']\n \n  if 'index' not in kwargs:\n  self.p(stream_id)\n  else:\n  self.p_i(stream_id)\n \n  if stream_id in self.streams:\n  urls = self.streams[stream_id]['src']\n  ext = self.streams[stream_id]['container']\n  total_size = self.streams[stream_id]['size']\n  else:\n  urls = self.dash_streams[stream_id]['src']\n  ext = self.dash_streams[stream_id]['container']\n  total_size = self.dash_streams[stream_id]['size']\n \n  if not urls:\n  log.wtf('[Failed] Cannot extract video source.')\n  \n  \n  \n  download_url_ffmpeg(urls[0], self.title, 'mp4', output_dir=kwargs['output_dir'], merge=kwargs['merge'], stream=False)\n \n  if not kwargs['caption']:\n  print('Skipping captions.')\n  return\n  for lang in self.caption_tracks:\n  filename = '%s.%s.srt' % (get_filename(self.title), lang)\n  print('Saving %s ... ' % filename, end=\"\", flush=True)\n  srt = self.caption_tracks[lang]\n  with open(os.path.join(kwargs['output_dir'], filename),\n  'w', encoding='utf-8') as x:\n  x.write(srt)\n  print('Done.')"
+  },
+  {
+    "docstring": "Scans through a string for substrings matched some patterns.\n \n  Args:\n  text: A string to be scanned.\n  patterns: a list of regex pattern.\n \n  Returns:\n  a list if matched. empty if not.",
+    "code": "def foo(text, patterns):\n  \n \n  ret = []\n  for pattern in patterns:\n  match = re.findall(pattern, text)\n  ret += match\n \n  return ret"
+  },
+  {
+    "docstring": "Parses the query string of a URL and returns the value of a parameter.\n \n  Args:\n  url: A URL.\n  param: A string representing the name of the parameter.\n \n  Returns:\n  The value of the parameter.",
+    "code": "def foo(url, param):\n  \n \n  try:\n  return parse.parse_qs(parse.urlparse(url).query)[param][0]\n  except:\n  return None"
+  },
+  {
+    "docstring": "Gets the content of a URL via sending a HTTP GET request.\n \n  Args:\n  url: A URL.\n  headers: Request headers used by the client.\n  decoded: Whether decode the response body using UTF-8 or the charset specified in Content-Type.\n \n  Returns:\n  The content as a string.",
+    "code": "def foo(url, headers={}, decoded=True):\n  \n \n  logging.debug('foo: %s' % url)\n \n  req = request.Request(url, headers=headers)\n  if cookies:\n  cookies.add_cookie_header(req)\n  req.headers.update(req.unredirected_hdrs)\n \n  response = urlopen_with_retry(req)\n  data = response.read()\n \n  \n  content_encoding = response.getheader('Content-Encoding')\n  if content_encoding == 'gzip':\n  data = ungzip(data)\n  elif content_encoding == 'deflate':\n  data = undeflate(data)\n \n  \n  if decoded:\n  charset = match1(\n  response.getheader('Content-Type', ''), r'charset=([\\w-]+)'\n  )\n  if charset is not None:\n  data = data.decode(charset, 'ignore')\n  else:\n  data = data.decode('utf-8', 'ignore')\n \n  return data"
+  },
+  {
+    "docstring": "Post the content of a URL via sending a HTTP POST request.\n \n  Args:\n  url: A URL.\n  headers: Request headers used by the client.\n  decoded: Whether decode the response body using UTF-8 or the charset specified in Content-Type.\n \n  Returns:\n  The content as a string.",
+    "code": "def foo(url, headers={}, post_data={}, decoded=True, **kwargs):\n  \n  if kwargs.get('post_data_raw'):\n  logging.debug('foo: %s\\npost_data_raw: %s' % (url, kwargs['post_data_raw']))\n  else:\n  logging.debug('foo: %s\\npost_data: %s' % (url, post_data))\n \n  req = request.Request(url, headers=headers)\n  if cookies:\n  cookies.add_cookie_header(req)\n  req.headers.update(req.unredirected_hdrs)\n  if kwargs.get('post_data_raw'):\n  post_data_enc = bytes(kwargs['post_data_raw'], 'utf-8')\n  else:\n  post_data_enc = bytes(parse.urlencode(post_data), 'utf-8')\n  response = urlopen_with_retry(req, data=post_data_enc)\n  data = response.read()\n \n  \n  content_encoding = response.getheader('Content-Encoding')\n  if content_encoding == 'gzip':\n  data = ungzip(data)\n  elif content_encoding == 'deflate':\n  data = undeflate(data)\n \n  \n  if decoded:\n  charset = match1(\n  response.getheader('Content-Type'), r'charset=([\\w-]+)'\n  )\n  if charset is not None:\n  data = data.decode(charset)\n  else:\n  data = data.decode('utf-8')\n \n  return data"
+  },
+  {
+    "docstring": "Parses host name and port number from a string.",
+    "code": "def foo(host):\n  \n  if re.match(r'^(\\d+)$', host) is not None:\n  return (\"0.0.0.0\", int(host))\n  if re.match(r'^(\\w+)://', host) is None:\n  host = \"//\" + host\n  o = parse.urlparse(host)\n  hostname = o.hostname or \"0.0.0.0\"\n  port = o.port or 0\n  return (hostname, port)"
+  },
+  {
+    "docstring": "Checks if a task is either queued or running in this executor\n \n  :param task_instance: TaskInstance\n  :return: True if the task is known to this executor",
+    "code": "def foo(self, task_instance):\n  \n  if task_instance.key in self.queued_tasks or task_instance.key in self.running:\n  return True"
+  },
+  {
+    "docstring": "Returns and flush the event buffer. In case dag_ids is specified\n  it will only return and flush events for the given dag_ids. Otherwise\n  it returns and flushes all\n \n  :param dag_ids: to dag_ids to return events for, if None returns all\n  :return: a dict of events",
+    "code": "def foo(self, dag_ids=None):\n  \n  cleared_events = dict()\n  if dag_ids is None:\n  cleared_events = self.event_buffer\n  self.event_buffer = dict()\n  else:\n  for key in list(self.event_buffer.keys()):\n  dag_id, _, _, _ = key\n  if dag_id in dag_ids:\n  cleared_events[key] = self.event_buffer.pop(key)\n \n  return cleared_events"
+  },
+  {
+    "docstring": "Returns a snowflake.connection object",
+    "code": "def foo(self):\n  \n  conn_config = self._get_conn_params()\n  conn = snowflake.connector.connect(**conn_config)\n  return conn"
+  },
+  {
+    "docstring": "returns aws_access_key_id, aws_secret_access_key\n  from extra\n \n  intended to be used by external import and export statements",
+    "code": "def foo(self):\n  \n  if self.snowflake_conn_id:\n  connection_object = self.get_connection(self.snowflake_conn_id)\n  if 'aws_secret_access_key' in connection_object.extra_dejson:\n  aws_access_key_id = connection_object.extra_dejson.get(\n  'aws_access_key_id')\n  aws_secret_access_key = connection_object.extra_dejson.get(\n  'aws_secret_access_key')\n  return aws_access_key_id, aws_secret_access_key"
+  },
+  {
+    "docstring": "Fetches a field from extras, and returns it. This is some Airflow\n  magic. The grpc hook type adds custom UI elements\n  to the hook page, which allow admins to specify scopes, credential pem files, etc.\n  They get formatted as shown below.",
+    "code": "def foo(self, field_name, default=None):\n  \n  full_field_name = 'extra__grpc__{}'.format(field_name)\n  if full_field_name in self.extras:\n  return self.extras[full_field_name]\n  else:\n  return default"
+  },
+  {
+    "docstring": "Executes SQL using psycopg2 copy_expert method.\n  Necessary to execute COPY command without access to a superuser.\n \n  Note: if this method is called with a \"COPY FROM\" statement and\n  the specified input file does not exist, it creates an empty\n  file and no data is loaded, but the operation succeeds.\n  So if users want to be aware when the input file does not exist,\n  they have to check its existence by themselves.",
+    "code": "def foo(self, sql, filename, open=open):\n  \n  if not os.path.isfile(filename):\n  with open(filename, 'w'):\n  pass\n \n  with open(filename, 'r+') as f:\n  with closing(self.get_conn()) as conn:\n  with closing(conn.cursor()) as cur:\n  cur.copy_expert(sql, f)\n  f.truncate(f.tell())\n  conn.commit()"
+  },
+  {
+    "docstring": "Dumps a database table into a tab-delimited file",
+    "code": "def foo(self, table, tmp_file):\n  \n  self.copy_expert(\"COPY {table} TO STDOUT\".format(table=table), tmp_file)"
+  },
+  {
+    "docstring": "Uploads the file to Google cloud storage",
+    "code": "def foo(self, context):\n  \n  hook = GoogleCloudStorageHook(\n  google_cloud_storage_conn_id=self.google_cloud_storage_conn_id,\n  delegate_to=self.delegate_to)\n \n  hook.upload(\n  bucket_name=self.bucket,\n  object_name=self.dst,\n  mime_type=self.mime_type,\n  filename=self.src,\n  gzip=self.gzip,\n  )"
+  },
+  {
+    "docstring": "Gets the max partition for a table.\n \n  :param schema: The hive schema the table lives in\n  :type schema: str\n  :param table: The hive table you are interested in, supports the dot\n  notation as in \"my_database.my_table\", if a dot is found,\n  the schema param is disregarded\n  :type table: str\n  :param metastore_conn_id: The hive connection you are interested in.\n  If your default is set you don't need to use this parameter.\n  :type metastore_conn_id: str\n  :param filter_map: partition_key:partition_value map used for partition filtering,\n  e.g. {'key1': 'value1', 'key2': 'value2'}.\n  Only partitions matching all partition_key:partition_value\n  pairs will be considered as candidates of max partition.\n  :type filter_map: map\n  :param field: the field to get the max value from. If there's only\n  one partition field, this will be inferred\n  :type field: str\n \n  >>> max_partition('airflow.static_babynames_partitioned')\n  '2015-01-01'",
+    "code": "def foo(\n  table, schema=\"default\", field=None, filter_map=None,\n  metastore_conn_id='metastore_default'):\n  \n  from airflow.hooks.hive_hooks import HiveMetastoreHook\n  if '.' in table:\n  schema, table = table.split('.')\n  hh = HiveMetastoreHook(metastore_conn_id=metastore_conn_id)\n  return hh.foo(\n  schema=schema, table_name=table, field=field, filter_map=filter_map)"
+  },
+  {
+    "docstring": "Returns a mysql connection object",
+    "code": "def foo(self):\n  \n  conn = self.get_connection(self.mysql_conn_id)\n  conn_config = {\n  \"user\": conn.login,\n  \"passwd\": conn.password or '',\n  \"host\": conn.host or 'localhost',\n  \"db\": self.schema or conn.schema or ''\n  }\n \n  if not conn.port:\n  conn_config[\"port\"] = 3306\n  else:\n  conn_config[\"port\"] = int(conn.port)\n \n  if conn.extra_dejson.get('charset', False):\n  conn_config[\"charset\"] = conn.extra_dejson[\"charset\"]\n  if (conn_config[\"charset\"]).lower() == 'utf8' or\\\n  (conn_config[\"charset\"]).lower() == 'utf-8':\n  conn_config[\"use_unicode\"] = True\n  if conn.extra_dejson.get('cursor', False):\n  if (conn.extra_dejson[\"cursor\"]).lower() == 'sscursor':\n  conn_config[\"cursorclass\"] = MySQLdb.cursors.SSCursor\n  elif (conn.extra_dejson[\"cursor\"]).lower() == 'dictcursor':\n  conn_config[\"cursorclass\"] = MySQLdb.cursors.DictCursor\n  elif (conn.extra_dejson[\"cursor\"]).lower() == 'ssdictcursor':\n  conn_config[\"cursorclass\"] = MySQLdb.cursors.SSDictCursor\n  local_infile = conn.extra_dejson.get('local_infile', False)\n  if conn.extra_dejson.get('ssl', False):\n  \n  \n  \n  dejson_ssl = conn.extra_dejson['ssl']\n  if isinstance(dejson_ssl, six.string_types):\n  dejson_ssl = json.loads(dejson_ssl)\n  conn_config['ssl'] = dejson_ssl\n  if conn.extra_dejson.get('unix_socket'):\n  conn_config['unix_socket'] = conn.extra_dejson['unix_socket']\n  if local_infile:\n  conn_config[\"local_infile\"] = 1\n  conn = MySQLdb.connect(**conn_config)\n  return conn"
+  },
+  {
+    "docstring": "Returns the state of a TaskInstance at the command line.\n  >>> airflow task_state tutorial sleep 2015-01-01\n  success",
+    "code": "def foo(args):\n  \n  dag = get_dag(args)\n  task = dag.get_task(task_id=args.task_id)\n  ti = TaskInstance(task, args.execution_date)\n  print(ti.current_state())"
+  },
+  {
+    "docstring": "Retrieves connection to Cloud Translate\n \n  :return: Google Cloud Translate client object.\n  :rtype: Client",
+    "code": "def foo(self):\n  \n  if not self._client:\n  self._client = Client(credentials=self._get_credentials())\n  return self._client"
+  },
+  {
+    "docstring": "Translate a string or list of strings.\n \n  See https://cloud.google.com/translate/docs/translating-text\n \n  :type values: str or list\n  :param values: String or list of strings to translate.\n \n  :type target_language: str\n  :param target_language: The language to translate results into. This\n  is required by the API and defaults to\n  the target language of the current instance.\n \n  :type format_: str\n  :param format_: (Optional) One of ``text`` or ``html``, to specify\n  if the input text is plain text or HTML.\n \n  :type source_language: str or None\n  :param source_language: (Optional) The language of the text to\n  be translated.\n \n  :type model: str or None\n  :param model: (Optional) The model used to translate the text, such\n  as ``'base'`` or ``'nmt'``.\n \n  :rtype: str or list\n  :returns: A list of dictionaries for each queried value. Each\n  dictionary typically contains three keys (though not\n  all will be present in all cases)\n \n  * ``detectedSourceLanguage``: The detected language (as an\n  ISO 639-1 language code) of the text.\n  * ``translatedText``: The translation of the text into the\n  target language.\n  * ``input``: The corresponding input value.\n  * ``model``: The model used to translate the text.\n \n  If only a single value is passed, then only a single\n  dictionary will be returned.\n  :raises: :class:`~exceptions.ValueError` if the number of\n  values and translations differ.",
+    "code": "def foo(\n  self, values, target_language, format_=None, source_language=None, model=None\n  ):\n  \n  client = self.get_conn()\n \n  return client.translate(\n  values=values,\n  target_language=target_language,\n  format_=format_,\n  source_language=source_language,\n  model=model,\n  )"
+  },
+  {
+    "docstring": "Retrieves a resource containing information about a Cloud SQL instance.\n \n  :param instance: Database instance ID. This does not include the project ID.\n  :type instance: str\n  :param project_id: Project ID of the project that contains the instance. If set\n  to None or missing, the default project_id from the GCP connection is used.\n  :type project_id: str\n  :return: A Cloud SQL instance resource.\n  :rtype: dict",
+    "code": "def foo(self, instance, project_id=None):\n  \n  return self.get_conn().instances().get(\n  project=project_id,\n  instance=instance\n  ).execute(num_retries=self.num_retries)"
+  },
+  {
+    "docstring": "Creates a new Cloud SQL instance.\n \n  :param body: Body required by the Cloud SQL insert API, as described in\n  https://cloud.google.com/sql/docs/mysql/admin-api/v1beta4/instances/insert#request-body.\n  :type body: dict\n  :param project_id: Project ID of the project that contains the instance. If set\n  to None or missing, the default project_id from the GCP connection is used.\n  :type project_id: str\n  :return: None",
+    "code": "def foo(self, body, project_id=None):\n  \n  response = self.get_conn().instances().insert(\n  project=project_id,\n  body=body\n  ).execute(num_retries=self.num_retries)\n  operation_name = response[\"name\"]\n  self._wait_for_operation_to_complete(project_id=project_id,\n  operation_name=operation_name)"
+  },
+  {
+    "docstring": "Updates settings of a Cloud SQL instance.\n \n  Caution: This is not a partial update, so you must include values for\n  all the settings that you want to retain.\n \n  :param body: Body required by the Cloud SQL patch API, as described in\n  https://cloud.google.com/sql/docs/mysql/admin-api/v1beta4/instances/patch#request-body.\n  :type body: dict\n  :param instance: Cloud SQL instance ID. This does not include the project ID.\n  :type instance: str\n  :param project_id: Project ID of the project that contains the instance. If set\n  to None or missing, the default project_id from the GCP connection is used.\n  :type project_id: str\n  :return: None",
+    "code": "def foo(self, body, instance, project_id=None):\n  \n  response = self.get_conn().instances().patch(\n  project=project_id,\n  instance=instance,\n  body=body\n  ).execute(num_retries=self.num_retries)\n  operation_name = response[\"name\"]\n  self._wait_for_operation_to_complete(project_id=project_id,\n  operation_name=operation_name)"
+  },
+  {
+    "docstring": "Deletes a Cloud SQL instance.\n \n  :param project_id: Project ID of the project that contains the instance. If set\n  to None or missing, the default project_id from the GCP connection is used.\n  :type project_id: str\n  :param instance: Cloud SQL instance ID. This does not include the project ID.\n  :type instance: str\n  :return: None",
+    "code": "def foo(self, instance, project_id=None):\n  \n  response = self.get_conn().instances().delete(\n  project=project_id,\n  instance=instance,\n  ).execute(num_retries=self.num_retries)\n  operation_name = response[\"name\"]\n  self._wait_for_operation_to_complete(project_id=project_id,\n  operation_name=operation_name)"
+  },
+  {
+    "docstring": "Retrieves a database resource from a Cloud SQL instance.\n \n  :param instance: Database instance ID. This does not include the project ID.\n  :type instance: str\n  :param database: Name of the database in the instance.\n  :type database: str\n  :param project_id: Project ID of the project that contains the instance. If set\n  to None or missing, the default project_id from the GCP connection is used.\n  :type project_id: str\n  :return: A Cloud SQL database resource, as described in\n  https://cloud.google.com/sql/docs/mysql/admin-api/v1beta4/databases#resource.\n  :rtype: dict",
+    "code": "def foo(self, instance, database, project_id=None):\n  \n  return self.get_conn().databases().get(\n  project=project_id,\n  instance=instance,\n  database=database\n  ).execute(num_retries=self.num_retries)"
+  },
+  {
+    "docstring": "Creates a new database inside a Cloud SQL instance.\n \n  :param instance: Database instance ID. This does not include the project ID.\n  :type instance: str\n  :param body: The request body, as described in\n  https://cloud.google.com/sql/docs/mysql/admin-api/v1beta4/databases/insert#request-body.\n  :type body: dict\n  :param project_id: Project ID of the project that contains the instance. If set\n  to None or missing, the default project_id from the GCP connection is used.\n  :type project_id: str\n  :return: None",
+    "code": "def foo(self, instance, body, project_id=None):\n  \n  response = self.get_conn().databases().insert(\n  project=project_id,\n  instance=instance,\n  body=body\n  ).execute(num_retries=self.num_retries)\n  operation_name = response[\"name\"]\n  self._wait_for_operation_to_complete(project_id=project_id,\n  operation_name=operation_name)"
+  },
+  {
+    "docstring": "Updates a database resource inside a Cloud SQL instance.\n \n  This method supports patch semantics.\n  See https://cloud.google.com/sql/docs/mysql/admin-api/how-tos/performance#patch.\n \n  :param instance: Database instance ID. This does not include the project ID.\n  :type instance: str\n  :param database: Name of the database to be updated in the instance.\n  :type database: str\n  :param body: The request body, as described in\n  https://cloud.google.com/sql/docs/mysql/admin-api/v1beta4/databases/insert#request-body.\n  :type body: dict\n  :param project_id: Project ID of the project that contains the instance. If set\n  to None or missing, the default project_id from the GCP connection is used.\n  :type project_id: str\n  :return: None",
+    "code": "def foo(self, instance, database, body, project_id=None):\n  \n  response = self.get_conn().databases().patch(\n  project=project_id,\n  instance=instance,\n  database=database,\n  body=body\n  ).execute(num_retries=self.num_retries)\n  operation_name = response[\"name\"]\n  self._wait_for_operation_to_complete(project_id=project_id,\n  operation_name=operation_name)"
+  },
+  {
+    "docstring": "Deletes a database from a Cloud SQL instance.\n \n  :param instance: Database instance ID. This does not include the project ID.\n  :type instance: str\n  :param database: Name of the database to be deleted in the instance.\n  :type database: str\n  :param project_id: Project ID of the project that contains the instance. If set\n  to None or missing, the default project_id from the GCP connection is used.\n  :type project_id: str\n  :return: None",
+    "code": "def foo(self, instance, database, project_id=None):\n  \n  response = self.get_conn().databases().delete(\n  project=project_id,\n  instance=instance,\n  database=database\n  ).execute(num_retries=self.num_retries)\n  operation_name = response[\"name\"]\n  self._wait_for_operation_to_complete(project_id=project_id,\n  operation_name=operation_name)"
+  },
+  {
+    "docstring": "Exports data from a Cloud SQL instance to a Cloud Storage bucket as a SQL dump\n  or CSV file.\n \n  :param instance: Database instance ID of the Cloud SQL instance. This does not include the\n  project ID.\n  :type instance: str\n  :param body: The request body, as described in\n  https://cloud.google.com/sql/docs/mysql/admin-api/v1beta4/instances/export#request-body\n  :type body: dict\n  :param project_id: Project ID of the project that contains the instance. If set\n  to None or missing, the default project_id from the GCP connection is used.\n  :type project_id: str\n  :return: None",
+    "code": "def foo(self, instance, body, project_id=None):\n  \n  try:\n  response = self.get_conn().instances().export(\n  project=project_id,\n  instance=instance,\n  body=body\n  ).execute(num_retries=self.num_retries)\n  operation_name = response[\"name\"]\n  self._wait_for_operation_to_complete(project_id=project_id,\n  operation_name=operation_name)\n  except HttpError as ex:\n  raise AirflowException(\n  'Exporting instance {} failed: {}'.format(instance, ex.content)\n  )"
+  },
+  {
+    "docstring": "Starts Cloud SQL Proxy.\n \n  You have to remember to stop the proxy if you started it!",
+    "code": "def foo(self):\n  \n  self._download_sql_proxy_if_needed()\n  if self.sql_proxy_process:\n  raise AirflowException(\"The sql proxy is already running: {}\".format(\n  self.sql_proxy_process))\n  else:\n  command_to_run = [self.sql_proxy_path]\n  command_to_run.extend(self.command_line_parameters)\n  try:\n  self.log.info(\"Creating directory %s\",\n  self.cloud_sql_proxy_socket_directory)\n  os.makedirs(self.cloud_sql_proxy_socket_directory)\n  except OSError:\n  \n  pass\n  command_to_run.extend(self._get_credential_parameters())\n  self.log.info(\"Running the command: `%s`\", \" \".join(command_to_run))\n  self.sql_proxy_process = Popen(command_to_run,\n  stdin=PIPE, stdout=PIPE, stderr=PIPE)\n  self.log.info(\"The pid of cloud_sql_proxy: %s\", self.sql_proxy_process.pid)\n  while True:\n  line = self.sql_proxy_process.stderr.readline().decode('utf-8')\n  return_code = self.sql_proxy_process.poll()\n  if line == '' and return_code is not None:\n  self.sql_proxy_process = None\n  raise AirflowException(\n  \"The cloud_sql_proxy finished early with return code {}!\".format(\n  return_code))\n  if line != '':\n  self.log.info(line)\n  if \"googleapi: Error\" in line or \"invalid instance name:\" in line:\n  self.stop_proxy()\n  raise AirflowException(\n  \"Error when starting the cloud_sql_proxy {}!\".format(\n  line))\n  if \"Ready for new connections\" in line:\n  return"
+  },
+  {
+    "docstring": "Stops running proxy.\n \n  You should stop the proxy after you stop using it.",
+    "code": "def foo(self):\n  \n  if not self.sql_proxy_process:\n  raise AirflowException(\"The sql proxy is not started yet\")\n  else:\n  self.log.info(\"Stopping the cloud_sql_proxy pid: %s\",\n  self.sql_proxy_process.pid)\n  self.sql_proxy_process.kill()\n  self.sql_proxy_process = None\n  \n  self.log.info(\"Removing the socket directory: %s\",\n  self.cloud_sql_proxy_socket_directory)\n  shutil.rmtree(self.cloud_sql_proxy_socket_directory, ignore_errors=True)\n  if self.sql_proxy_was_downloaded:\n  self.log.info(\"Removing downloaded proxy: %s\", self.sql_proxy_path)\n  \n  try:\n  os.remove(self.sql_proxy_path)\n  except OSError as e:\n  if not e.errno == errno.ENOENT:\n  raise\n  else:\n  self.log.info(\"Skipped removing proxy - it was not downloaded: %s\",\n  self.sql_proxy_path)\n  if os.path.isfile(self.credentials_path):\n  self.log.info(\"Removing generated credentials file %s\",\n  self.credentials_path)\n  \n  os.remove(self.credentials_path)"
+  },
+  {
+    "docstring": "Returns version of the Cloud SQL Proxy.",
+    "code": "def foo(self):\n  \n  self._download_sql_proxy_if_needed()\n  command_to_run = [self.sql_proxy_path]\n  command_to_run.extend(['--version'])\n  command_to_run.extend(self._get_credential_parameters())\n  result = subprocess.check_output(command_to_run).decode('utf-8')\n  pattern = re.compile(\"^.*[V|v]ersion ([^;]*);.*$\")\n  m = pattern.match(result)\n  if m:\n  return m.group(1)\n  else:\n  return None"
+  },
+  {
+    "docstring": "Create connection in the Connection table, according to whether it uses\n  proxy, TCP, UNIX sockets, SSL. Connection ID will be randomly generated.\n \n  :param session: Session of the SQL Alchemy ORM (automatically generated with\n  decorator).",
+    "code": "def foo(self, session=None):\n  \n  connection = Connection(conn_id=self.db_conn_id)\n  uri = self._generate_connection_uri()\n  self.log.info(\"Creating connection %s\", self.db_conn_id)\n  connection.parse_from_uri(uri)\n  session.add(connection)\n  session.commit()"
+  },
+  {
+    "docstring": "Retrieves the dynamically created connection from the Connection table.\n \n  :param session: Session of the SQL Alchemy ORM (automatically generated with\n  decorator).",
+    "code": "def foo(self, session=None):\n  \n  self.log.info(\"Retrieving connection %s\", self.db_conn_id)\n  connections = session.query(Connection).filter(\n  Connection.conn_id == self.db_conn_id)\n  if connections.count():\n  return connections[0]\n  return None"
+  },
+  {
+    "docstring": "Delete the dynamically created connection from the Connection table.\n \n  :param session: Session of the SQL Alchemy ORM (automatically generated with\n  decorator).",
+    "code": "def foo(self, session=None):\n  \n  self.log.info(\"Deleting connection %s\", self.db_conn_id)\n  connections = session.query(Connection).filter(\n  Connection.conn_id == self.db_conn_id)\n  if connections.count():\n  connection = connections[0]\n  session.delete(connection)\n  session.commit()\n  else:\n  self.log.info(\"Connection was already deleted!\")"
+  },
+  {
+    "docstring": "Retrieve Cloud SQL Proxy runner. It is used to manage the proxy\n  lifecycle per task.\n \n  :return: The Cloud SQL Proxy runner.\n  :rtype: CloudSqlProxyRunner",
+    "code": "def foo(self):\n  \n  if not self.use_proxy:\n  raise AirflowException(\"Proxy runner can only be retrieved in case of use_proxy = True\")\n  return CloudSqlProxyRunner(\n  path_prefix=self.sql_proxy_unique_path,\n  instance_specification=self._get_sqlproxy_instance_specification(),\n  project_id=self.project_id,\n  sql_proxy_version=self.sql_proxy_version,\n  sql_proxy_binary_path=self.sql_proxy_binary_path\n  )"
+  },
+  {
+    "docstring": "Retrieve database hook. This is the actual Postgres or MySQL database hook\n  that uses proxy or connects directly to the Google Cloud SQL database.",
+    "code": "def foo(self):\n  \n  if self.database_type == 'postgres':\n  self.db_hook = PostgresHook(postgres_conn_id=self.db_conn_id,\n  schema=self.database)\n  else:\n  self.db_hook = MySqlHook(mysql_conn_id=self.db_conn_id,\n  schema=self.database)\n  return self.db_hook"
+  },
+  {
+    "docstring": "Clean up database hook after it was used.",
+    "code": "def foo(self):\n  \n  if self.database_type == 'postgres':\n  if hasattr(self.db_hook,\n  'conn') and self.db_hook.conn and self.db_hook.conn.notices:\n  for output in self.db_hook.conn.notices:\n  self.log.info(output)"
+  },
+  {
+    "docstring": "Reserve free TCP port to be used by Cloud SQL Proxy",
+    "code": "def foo(self):\n  \n  self.reserved_tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n  self.reserved_tcp_socket.bind(('127.0.0.1', 0))\n  self.sql_proxy_tcp_port = self.reserved_tcp_socket.getsockname()[1]"
+  },
+  {
+    "docstring": "Replaces invalid MLEngine job_id characters with '_'.\n \n  This also adds a leading 'z' in case job_id starts with an invalid\n  character.\n \n  Args:\n  job_id: A job_id str that may have invalid characters.\n \n  Returns:\n  A valid job_id representation.",
+    "code": "def foo(job_id):\n  \n \n  \n  match = re.search(r'\\d|\\{{2}', job_id)\n  if match and match.start() == 0:\n  job = 'z_{}'.format(job_id)\n  else:\n  job = job_id\n \n  \n  tracker = 0\n  cleansed_job_id = ''\n  for m in re.finditer(r'\\{{2}.+?\\}{2}', job):\n  cleansed_job_id += re.sub(r'[^0-9a-zA-Z]+', '_',\n  job[tracker:m.start()])\n  cleansed_job_id += job[m.start():m.end()]\n  tracker = m.end()\n \n  \n  cleansed_job_id += re.sub(r'[^0-9a-zA-Z]+', '_', job[tracker:])\n \n  return cleansed_job_id"
+  },
+  {
+    "docstring": "Extract error code from ftp exception",
+    "code": "def foo(self, e):\n  \n  try:\n  matches = self.error_code_pattern.match(str(e))\n  code = int(matches.group(0))\n  return code\n  except ValueError:\n  return e"
+  },
+  {
+    "docstring": "Remove any existing DAG runs for the perf test DAGs.",
+    "code": "def foo():\n  \n  session = settings.Session()\n  drs = session.query(DagRun).filter(\n  DagRun.dag_id.in_(DAG_IDS),\n  ).all()\n  for dr in drs:\n  logging.info('Deleting DagRun :: {}'.format(dr))\n  session.delete(dr)"
+  },
+  {
+    "docstring": "Remove any existing task instances for the perf test DAGs.",
+    "code": "def foo():\n  \n  session = settings.Session()\n  TI = TaskInstance\n  tis = (\n  session\n  .query(TI)\n  .filter(TI.dag_id.in_(DAG_IDS))\n  .all()\n  )\n  for ti in tis:\n  logging.info('Deleting TaskInstance :: {}'.format(ti))\n  session.delete(ti)\n  session.commit()"
+  },
+  {
+    "docstring": "Toggle the pause state of the DAGs in the test.",
+    "code": "def foo(is_paused):\n  \n  session = settings.Session()\n  dms = session.query(DagModel).filter(\n  DagModel.dag_id.in_(DAG_IDS))\n  for dm in dms:\n  logging.info('Setting DAG :: {} is_paused={}'.format(dm, is_paused))\n  dm.is_paused = is_paused\n  session.commit()"
+  },
+  {
+    "docstring": "Override the scheduler heartbeat to determine when the test is complete",
+    "code": "def foo(self):\n  \n  super(SchedulerMetricsJob, self).heartbeat()\n  session = settings.Session()\n  \n  TI = TaskInstance\n  successful_tis = (\n  session\n  .query(TI)\n  .filter(TI.dag_id.in_(DAG_IDS))\n  .filter(TI.state.in_([State.SUCCESS]))\n  .all()\n  )\n  session.commit()\n \n  dagbag = DagBag(SUBDIR)\n  dags = [dagbag.dags[dag_id] for dag_id in DAG_IDS]\n  \n  num_task_instances = sum([(timezone.utcnow() - task.start_date).days\n  for dag in dags for task in dag.tasks])\n \n  if (len(successful_tis) == num_task_instances or\n  (timezone.utcnow() - self.start_date).total_seconds() >\n  MAX_RUNTIME_SECS):\n  if len(successful_tis) == num_task_instances:\n  self.log.info(\"All tasks processed! Printing stats.\")\n  else:\n  self.log.info(\"Test timeout reached. Printing available stats.\")\n  self.print_stats()\n  set_dags_paused_state(True)\n  sys.exit()"
+  },
+  {
+    "docstring": "Invoke Lambda Function",
+    "code": "def foo(self, payload):\n  \n \n  awslambda_conn = self.get_conn()\n \n  response = awslambda_conn.invoke(\n  FunctionName=self.function_name,\n  InvocationType=self.invocation_type,\n  LogType=self.log_type,\n  Payload=payload,\n  Qualifier=self.qualifier\n  )\n \n  return response"
+  },
+  {
+    "docstring": "Creates Operators needed for model evaluation and returns.\n \n  It gets prediction over inputs via Cloud ML Engine BatchPrediction API by\n  calling MLEngineBatchPredictionOperator, then summarize and validate\n  the result via Cloud Dataflow using DataFlowPythonOperator.\n \n  For details and pricing about Batch prediction, please refer to the website\n  https://cloud.google.com/ml-engine/docs/how-tos/batch-predict\n  and for Cloud Dataflow, https://cloud.google.com/dataflow/docs/\n \n  It returns three chained operators for prediction, summary, and validation,\n  named as <prefix>-prediction, <prefix>-summary, and <prefix>-validation,\n  respectively.\n  (<prefix> should contain only alphanumeric characters or hyphen.)\n \n  The upstream and downstream can be set accordingly like:\n  pred, _, val = create_evaluate_ops(...)\n  pred.set_upstream(upstream_op)\n  ...\n  downstream_op.set_upstream(val)\n \n  Callers will provide two python callables, metric_fn and validate_fn, in\n  order to customize the evaluation behavior as they wish.\n  - metric_fn receives a dictionary per instance derived from json in the\n  batch prediction result. The keys might vary depending on the model.\n  It should return a tuple of metrics.\n  - validation_fn receives a dictionary of the averaged metrics that metric_fn\n  generated over all instances.\n  The key/value of the dictionary matches to what's given by\n  metric_fn_and_keys arg.\n  The dictionary contains an additional metric, 'count' to represent the\n  total number of instances received for evaluation.\n  The function would raise an exception to mark the task as failed, in a\n  case the validation result is not okay to proceed (i.e. to set the trained\n  version as default).\n \n  Typical examples are like this:\n \n  def get_metric_fn_and_keys():\n  import math # imports should be outside of the metric_fn below.\n  def error_and_squared_error(inst):\n  label = float(inst['input_label'])\n  classes = float(inst['classes']) # 0 or 1\n  err = abs(classes-label)\n  squared_err = math.pow(classes-label, 2)\n  return (err, squared_err) # returns a tuple.\n  return error_and_squared_error, ['err', 'mse'] # key order must match.\n \n  def validate_err_and_count(summary):\n  if summary['err'] > 0.2:\n  raise ValueError('Too high err>0.2; summary=%s' % summary)\n  if summary['mse'] > 0.05:\n  raise ValueError('Too high mse>0.05; summary=%s' % summary)\n  if summary['count'] < 1000:\n  raise ValueError('Too few instances<1000; summary=%s' % summary)\n  return summary\n \n  For the details on the other BatchPrediction-related arguments (project_id,\n  job_id, region, data_format, input_paths, prediction_path, model_uri),\n  please refer to MLEngineBatchPredictionOperator too.\n \n  :param task_prefix: a prefix for the tasks. Only alphanumeric characters and\n  hyphen are allowed (no underscores), since this will be used as dataflow\n  job name, which doesn't allow other characters.\n  :type task_prefix: str\n \n  :param data_format: either of 'TEXT', 'TF_RECORD', 'TF_RECORD_GZIP'\n  :type data_format: str\n \n  :param input_paths: a list of input paths to be sent to BatchPrediction.\n  :type input_paths: list[str]\n \n  :param prediction_path: GCS path to put the prediction results in.\n  :type prediction_path: str\n \n  :param metric_fn_and_keys: a tuple of metric_fn and metric_keys:\n  - metric_fn is a function that accepts a dictionary (for an instance),\n  and returns a tuple of metric(s) that it calculates.\n  - metric_keys is a list of strings to denote the key of each metric.\n  :type metric_fn_and_keys: tuple of a function and a list[str]\n \n  :param validate_fn: a function to validate whether the averaged metric(s) is\n  good enough to push the model.\n  :type validate_fn: function\n \n  :param batch_prediction_job_id: the id to use for the Cloud ML Batch\n  prediction job. Passed directly to the MLEngineBatchPredictionOperator as\n  the job_id argument.\n  :type batch_prediction_job_id: str\n \n  :param project_id: the Google Cloud Platform project id in which to execute\n  Cloud ML Batch Prediction and Dataflow jobs. If None, then the `dag`'s\n  `default_args['project_id']` will be used.\n  :type project_id: str\n \n  :param region: the Google Cloud Platform region in which to execute Cloud ML\n  Batch Prediction and Dataflow jobs. If None, then the `dag`'s\n  `default_args['region']` will be used.\n  :type region: str\n \n  :param dataflow_options: options to run Dataflow jobs. If None, then the\n  `dag`'s `default_args['dataflow_default_options']` will be used.\n  :type dataflow_options: dictionary\n \n  :param model_uri: GCS path of the model exported by Tensorflow using\n  tensorflow.estimator.export_savedmodel(). It cannot be used with\n  model_name or version_name below. See MLEngineBatchPredictionOperator for\n  more detail.\n  :type model_uri: str\n \n  :param model_name: Used to indicate a model to use for prediction. Can be\n  used in combination with version_name, but cannot be used together with\n  model_uri. See MLEngineBatchPredictionOperator for more detail. If None,\n  then the `dag`'s `default_args['model_name']` will be used.\n  :type model_name: str\n \n  :param version_name: Used to indicate a model version to use for prediction,\n  in combination with model_name. Cannot be used together with model_uri.\n  See MLEngineBatchPredictionOperator for more detail. If None, then the\n  `dag`'s `default_args['version_name']` will be used.\n  :type version_name: str\n \n  :param dag: The `DAG` to use for all Operators.\n  :type dag: airflow.models.DAG\n \n  :returns: a tuple of three operators, (prediction, summary, validation)\n  :rtype: tuple(DataFlowPythonOperator, DataFlowPythonOperator,\n  PythonOperator)",
+    "code": "def foo(task_prefix,\n  data_format,\n  input_paths,\n  prediction_path,\n  metric_fn_and_keys,\n  validate_fn,\n  batch_prediction_job_id=None,\n  project_id=None,\n  region=None,\n  dataflow_options=None,\n  model_uri=None,\n  model_name=None,\n  version_name=None,\n  dag=None):\n  \n \n  \n  \n  if not re.match(r\"^[a-zA-Z][-A-Za-z0-9]*$\", task_prefix):\n  raise AirflowException(\n  \"Malformed task_id for DataFlowPythonOperator (only alphanumeric \"\n  \"and hyphens are allowed but got: \" + task_prefix)\n \n  metric_fn, metric_keys = metric_fn_and_keys\n  if not callable(metric_fn):\n  raise AirflowException(\"`metric_fn` param must be callable.\")\n  if not callable(validate_fn):\n  raise AirflowException(\"`validate_fn` param must be callable.\")\n \n  if dag is not None and dag.default_args is not None:\n  default_args = dag.default_args\n  project_id = project_id or default_args.get('project_id')\n  region = region or default_args.get('region')\n  model_name = model_name or default_args.get('model_name')\n  version_name = version_name or default_args.get('version_name')\n  dataflow_options = dataflow_options or \\\n  default_args.get('dataflow_default_options')\n \n  evaluate_prediction = MLEngineBatchPredictionOperator(\n  task_id=(task_prefix + \"-prediction\"),\n  project_id=project_id,\n  job_id=batch_prediction_job_id,\n  region=region,\n  data_format=data_format,\n  input_paths=input_paths,\n  output_path=prediction_path,\n  uri=model_uri,\n  model_name=model_name,\n  version_name=version_name,\n  dag=dag)\n \n  metric_fn_encoded = base64.b64encode(dill.dumps(metric_fn, recurse=True))\n  evaluate_summary = DataFlowPythonOperator(\n  task_id=(task_prefix + \"-summary\"),\n  py_options=[\"-m\"],\n  py_file=\"airflow.contrib.utils.mlengine_prediction_summary\",\n  dataflow_default_options=dataflow_options,\n  options={\n  \"prediction_path\": prediction_path,\n  \"metric_fn_encoded\": metric_fn_encoded,\n  \"metric_keys\": ','.join(metric_keys)\n  },\n  dag=dag)\n  evaluate_summary.set_upstream(evaluate_prediction)\n \n  def apply_validate_fn(*args, **kwargs):\n  prediction_path = kwargs[\"templates_dict\"][\"prediction_path\"]\n  scheme, bucket, obj, _, _ = urlsplit(prediction_path)\n  if scheme != \"gs\" or not bucket or not obj:\n  raise ValueError(\"Wrong format prediction_path: %s\",\n  prediction_path)\n  summary = os.path.join(obj.strip(\"/\"),\n  \"prediction.summary.json\")\n  gcs_hook = GoogleCloudStorageHook()\n  summary = json.loads(gcs_hook.download(bucket, summary))\n  return validate_fn(summary)\n \n  evaluate_validation = PythonOperator(\n  task_id=(task_prefix + \"-validation\"),\n  python_callable=apply_validate_fn,\n  provide_context=True,\n  templates_dict={\"prediction_path\": prediction_path},\n  dag=dag)\n  evaluate_validation.set_upstream(evaluate_summary)\n \n  return evaluate_prediction, evaluate_summary, evaluate_validation"
+  },
+  {
+    "docstring": "Creates the directory specified by path, creating intermediate directories\n  as necessary. If directory already exists, this is a no-op.\n \n  :param path: The directory to create\n  :type path: str\n  :param mode: The mode to give to the directory e.g. 0o755, ignores umask\n  :type mode: int",
+    "code": "def foo(path, mode):\n  \n  try:\n  o_umask = os.umask(0)\n  os.makedirs(path, mode)\n  except OSError:\n  if not os.path.isdir(path):\n  raise\n  finally:\n  os.umask(o_umask)"
+  },
+  {
+    "docstring": "A small helper function to convert a string to a numeric value\n  if appropriate\n \n  :param s: the string to be converted\n  :type s: str",
+    "code": "def foo(s):\n  \n  try:\n  ret = float(s)\n  except (ValueError, TypeError):\n  ret = s\n  return ret"
+  },
+  {
+    "docstring": "Make a naive datetime.datetime in a given time zone aware.\n \n  :param value: datetime\n  :param timezone: timezone\n  :return: localized datetime in settings.TIMEZONE or timezone",
+    "code": "def foo(value, timezone=None):\n  \n  if timezone is None:\n  timezone = TIMEZONE\n \n  \n  if is_localized(value):\n  raise ValueError(\n  \"foo expects a naive datetime, got %s\" % value)\n  if hasattr(value, 'fold'):\n  \n  \n  \n  \n  value = value.replace(fold=1)\n  if hasattr(timezone, 'localize'):\n  \n  return timezone.localize(value)\n  elif hasattr(timezone, 'convert'):\n  \n  return timezone.convert(value)\n  else:\n  \n  return value.replace(tzinfo=timezone)"
+  },
+  {
+    "docstring": "Make an aware datetime.datetime naive in a given time zone.\n \n  :param value: datetime\n  :param timezone: timezone\n  :return: naive datetime",
+    "code": "def foo(value, timezone=None):\n  \n  if timezone is None:\n  timezone = TIMEZONE\n \n  \n  if is_naive(value):\n  raise ValueError(\"foo() cannot be applied to a naive datetime\")\n \n  o = value.astimezone(timezone)\n \n  \n  naive = dt.datetime(o.year,\n  o.month,\n  o.day,\n  o.hour,\n  o.minute,\n  o.second,\n  o.microsecond)\n \n  return naive"
+  },
+  {
+    "docstring": "Wrapper around datetime.datetime that adds settings.TIMEZONE if tzinfo not specified\n \n  :return: datetime.datetime",
+    "code": "def foo(*args, **kwargs):\n  \n  if 'tzinfo' not in kwargs:\n  kwargs['tzinfo'] = TIMEZONE\n \n  return dt.foo(*args, **kwargs)"
+  },
+  {
+    "docstring": "Establish a connection to druid broker.",
+    "code": "def foo(self):\n  \n  conn = self.get_connection(self.druid_broker_conn_id)\n  druid_broker_conn = connect(\n  host=conn.host,\n  port=conn.port,\n  path=conn.extra_dejson.get('endpoint', '/druid/v2/sql'),\n  scheme=conn.extra_dejson.get('schema', 'http')\n  )\n  self.log.info('Get the connection to druid broker on %s', conn.host)\n  return druid_broker_conn"
+  },
+  {
+    "docstring": "Returns http session for use with requests\n \n  :param headers: additional headers to be passed through as a dictionary\n  :type headers: dict",
+    "code": "def foo(self, headers=None):\n  \n  session = requests.Session()\n  if self.http_conn_id:\n  conn = self.get_connection(self.http_conn_id)\n \n  if \"://\" in conn.host:\n  self.base_url = conn.host\n  else:\n  \n  schema = conn.schema if conn.schema else \"http\"\n  self.base_url = schema + \"://\" + conn.host\n \n  if conn.port:\n  self.base_url = self.base_url + \":\" + str(conn.port)\n  if conn.login:\n  session.auth = (conn.login, conn.password)\n  if conn.extra:\n  try:\n  session.headers.update(conn.extra_dejson)\n  except TypeError:\n  self.log.warn('Connection to %s has invalid extra field.', conn.host)\n  if headers:\n  session.headers.update(headers)\n \n  return session"
+  },
+  {
+    "docstring": "Performs the request\n \n  :param endpoint: the endpoint to be called i.e. resource/v1/query?\n  :type endpoint: str\n  :param data: payload to be uploaded or request parameters\n  :type data: dict\n  :param headers: additional headers to be passed through as a dictionary\n  :type headers: dict\n  :param extra_options: additional options to be used when executing the request\n  i.e. {'check_response': False} to avoid checking raising exceptions on non\n  2XX or 3XX status codes\n  :type extra_options: dict",
+    "code": "def foo(self, endpoint, data=None, headers=None, extra_options=None):\n  \n  extra_options = extra_options or {}\n \n  session = self.get_conn(headers)\n \n  if self.base_url and not self.base_url.endswith('/') and \\\n  endpoint and not endpoint.startswith('/'):\n  url = self.base_url + '/' + endpoint\n  else:\n  url = (self.base_url or '') + (endpoint or '')\n \n  req = None\n  if self.method == 'GET':\n  \n  req = requests.Request(self.method,\n  url,\n  params=data,\n  headers=headers)\n  elif self.method == 'HEAD':\n  \n  req = requests.Request(self.method,\n  url,\n  headers=headers)\n  else:\n  \n  req = requests.Request(self.method,\n  url,\n  data=data,\n  headers=headers)\n \n  prepped_request = session.prepare_request(req)\n  self.log.info(\"Sending '%s' to url: %s\", self.method, url)\n  return self.run_and_check(session, prepped_request, extra_options)"
+  },
+  {
+    "docstring": "Checks the status code and raise an AirflowException exception on non 2XX or 3XX\n  status codes\n \n  :param response: A requests response object\n  :type response: requests.response",
+    "code": "def foo(self, response):\n  \n  try:\n  response.raise_for_status()\n  except requests.exceptions.HTTPError:\n  self.log.error(\"HTTP error: %s\", response.reason)\n  if self.method not in ['GET', 'HEAD']:\n  self.log.error(response.text)\n  raise AirflowException(str(response.status_code) + \":\" + response.reason)"
+  },
+  {
+    "docstring": "Grabs extra options like timeout and actually runs the request,\n  checking for the result\n \n  :param session: the session to be used to execute the request\n  :type session: requests.Session\n  :param prepped_request: the prepared request generated in run()\n  :type prepped_request: session.prepare_request\n  :param extra_options: additional options to be used when executing the request\n  i.e. {'check_response': False} to avoid checking raising exceptions on non 2XX\n  or 3XX status codes\n  :type extra_options: dict",
+    "code": "def foo(self, session, prepped_request, extra_options):\n  \n  extra_options = extra_options or {}\n \n  try:\n  response = session.send(\n  prepped_request,\n  stream=extra_options.get(\"stream\", False),\n  verify=extra_options.get(\"verify\", True),\n  proxies=extra_options.get(\"proxies\", {}),\n  cert=extra_options.get(\"cert\"),\n  timeout=extra_options.get(\"timeout\"),\n  allow_redirects=extra_options.get(\"allow_redirects\", True))\n \n  if extra_options.get('check_response', True):\n  self.check_response(response)\n  return response\n \n  except requests.exceptions.ConnectionError as ex:\n  self.log.warn(str(ex) + ' Tenacity will retry to execute the operation')\n  raise ex"
+  },
+  {
+    "docstring": "Contextmanager that will create and teardown a session.",
+    "code": "def foo():\n  \n  session = settings.Session()\n  try:\n  yield session\n  session.commit()\n  except Exception:\n  session.rollback()\n  raise\n  finally:\n  session.close()"
+  },
+  {
+    "docstring": "Function decorator that provides a session if it isn't provided.\n  If you want to reuse a session or run the function as part of a\n  database transaction, you pass it to the function, if not this wrapper\n  will create one and close it for you.",
+    "code": "def foo(func):\n  \n  @wraps(func)\n  def wrapper(*args, **kwargs):\n  arg_session = 'session'\n \n  func_params = func.__code__.co_varnames\n  session_in_args = arg_session in func_params and \\\n  func_params.index(arg_session) < len(args)\n  session_in_kwargs = arg_session in kwargs\n \n  if session_in_kwargs or session_in_args:\n  return func(*args, **kwargs)\n  else:\n  with create_session() as session:\n  kwargs[arg_session] = session\n  return func(*args, **kwargs)\n \n  return wrapper"
+  },
+  {
+    "docstring": "Clear out the database",
+    "code": "def foo():\n  \n  from airflow import models\n \n  \n  from alembic.migration import MigrationContext\n \n  log.info(\"Dropping tables that exist\")\n \n  models.base.Base.metadata.drop_all(settings.engine)\n  mc = MigrationContext.configure(settings.engine)\n  if mc._version.exists(settings.engine):\n  mc._version.drop(settings.engine)\n \n  from flask_appbuilder.models.sqla import Base\n  Base.metadata.drop_all(settings.engine)\n \n  initdb()"
+  },
+  {
+    "docstring": "Parses some DatabaseError to provide a better error message",
+    "code": "def foo(e):\n  \n  if (hasattr(e, 'message') and\n  'errorName' in e.message and\n  'message' in e.message):\n  return ('{name}: {message}'.format(\n  name=e.message['errorName'],\n  message=e.message['message']))\n  else:\n  return str(e)"
+  },
+  {
+    "docstring": "Get a set of records from Presto",
+    "code": "def foo(self, hql, parameters=None):\n  \n  try:\n  return super().get_records(\n  self._strip_sql(hql), parameters)\n  except DatabaseError as e:\n  raise PrestoException(self._get_pretty_exception_message(e))"
+  },
+  {
+    "docstring": "Get a pandas dataframe from a sql query.",
+    "code": "def foo(self, hql, parameters=None):\n  \n  import pandas\n  cursor = self.get_cursor()\n  try:\n  cursor.execute(self._strip_sql(hql), parameters)\n  data = cursor.fetchall()\n  except DatabaseError as e:\n  raise PrestoException(self._get_pretty_exception_message(e))\n  column_descriptions = cursor.description\n  if data:\n  df = pandas.DataFrame(data)\n  df.columns = [c[0] for c in column_descriptions]\n  else:\n  df = pandas.DataFrame()\n  return df"
+  },
+  {
+    "docstring": "Execute the statement against Presto. Can be used to create views.",
+    "code": "def foo(self, hql, parameters=None):\n  \n  return super().run(self._strip_sql(hql), parameters)"
+  },
+  {
+    "docstring": "A generic way to insert a set of tuples into a table.\n \n  :param table: Name of the target table\n  :type table: str\n  :param rows: The rows to insert into the table\n  :type rows: iterable of tuples\n  :param target_fields: The names of the columns to fill in the table\n  :type target_fields: iterable of strings",
+    "code": "def foo(self, table, rows, target_fields=None):\n  \n  super().insert_rows(table, rows, target_fields, 0)"
+  },
+  {
+    "docstring": "Return a cosmos db client.",
+    "code": "def foo(self):\n  \n  if self.cosmos_client is not None:\n  return self.cosmos_client\n \n  \n  self.cosmos_client = cosmos_client.CosmosClient(self.endpoint_uri, {'masterKey': self.master_key})\n \n  return self.cosmos_client"
+  },
+  {
+    "docstring": "Checks if a collection exists in CosmosDB.",
+    "code": "def foo(self, collection_name, database_name=None):\n  \n  if collection_name is None:\n  raise AirflowBadRequest(\"Collection name cannot be None.\")\n \n  existing_container = list(self.get_conn().QueryContainers(\n  get_database_link(self.__get_database_name(database_name)), {\n  \"query\": \"SELECT * FROM r WHERE r.id=@id\",\n  \"parameters\": [\n  {\"name\": \"@id\", \"value\": collection_name}\n  ]\n  }))\n  if len(existing_container) == 0:\n  return False\n \n  return True"
+  },
+  {
+    "docstring": "Creates a new collection in the CosmosDB database.",
+    "code": "def foo(self, collection_name, database_name=None):\n  \n  if collection_name is None:\n  raise AirflowBadRequest(\"Collection name cannot be None.\")\n \n  \n  \n  existing_container = list(self.get_conn().QueryContainers(\n  get_database_link(self.__get_database_name(database_name)), {\n  \"query\": \"SELECT * FROM r WHERE r.id=@id\",\n  \"parameters\": [\n  {\"name\": \"@id\", \"value\": collection_name}\n  ]\n  }))\n \n  \n  if len(existing_container) == 0:\n  self.get_conn().CreateContainer(\n  get_database_link(self.__get_database_name(database_name)),\n  {\"id\": collection_name})"
+  },
+  {
+    "docstring": "Checks if a database exists in CosmosDB.",
+    "code": "def foo(self, database_name):\n  \n  if database_name is None:\n  raise AirflowBadRequest(\"Database name cannot be None.\")\n \n  existing_database = list(self.get_conn().QueryDatabases({\n  \"query\": \"SELECT * FROM r WHERE r.id=@id\",\n  \"parameters\": [\n  {\"name\": \"@id\", \"value\": database_name}\n  ]\n  }))\n  if len(existing_database) == 0:\n  return False\n \n  return True"
+  },
+  {
+    "docstring": "Creates a new database in CosmosDB.",
+    "code": "def foo(self, database_name):\n  \n  if database_name is None:\n  raise AirflowBadRequest(\"Database name cannot be None.\")\n \n  \n  \n  existing_database = list(self.get_conn().QueryDatabases({\n  \"query\": \"SELECT * FROM r WHERE r.id=@id\",\n  \"parameters\": [\n  {\"name\": \"@id\", \"value\": database_name}\n  ]\n  }))\n \n  \n  if len(existing_database) == 0:\n  self.get_conn().CreateDatabase({\"id\": database_name})"
+  },
+  {
+    "docstring": "Deletes an existing database in CosmosDB.",
+    "code": "def foo(self, database_name):\n  \n  if database_name is None:\n  raise AirflowBadRequest(\"Database name cannot be None.\")\n \n  self.get_conn().DeleteDatabase(get_database_link(database_name))"
+  },
+  {
+    "docstring": "Deletes an existing collection in the CosmosDB database.",
+    "code": "def foo(self, collection_name, database_name=None):\n  \n  if collection_name is None:\n  raise AirflowBadRequest(\"Collection name cannot be None.\")\n \n  self.get_conn().DeleteContainer(\n  get_collection_link(self.__get_database_name(database_name), collection_name))"
+  },
+  {
+    "docstring": "Insert a list of new documents into an existing collection in the CosmosDB database.",
+    "code": "def foo(self, documents, database_name=None, collection_name=None):\n  \n  if documents is None:\n  raise AirflowBadRequest(\"You cannot insert empty documents\")\n \n  created_documents = []\n  for single_document in documents:\n  created_documents.append(\n  self.get_conn().CreateItem(\n  get_collection_link(\n  self.__get_database_name(database_name),\n  self.__get_collection_name(collection_name)),\n  single_document))\n \n  return created_documents"
+  },
+  {
+    "docstring": "Delete an existing document out of a collection in the CosmosDB database.",
+    "code": "def foo(self, document_id, database_name=None, collection_name=None):\n  \n  if document_id is None:\n  raise AirflowBadRequest(\"Cannot delete a document without an id\")\n \n  self.get_conn().DeleteItem(\n  get_document_link(\n  self.__get_database_name(database_name),\n  self.__get_collection_name(collection_name),\n  document_id))"
+  },
+  {
+    "docstring": "Get a document from an existing collection in the CosmosDB database.",
+    "code": "def foo(self, document_id, database_name=None, collection_name=None):\n  \n  if document_id is None:\n  raise AirflowBadRequest(\"Cannot get a document without an id\")\n \n  try:\n  return self.get_conn().ReadItem(\n  get_document_link(\n  self.__get_database_name(database_name),\n  self.__get_collection_name(collection_name),\n  document_id))\n  except HTTPFailure:\n  return None"
+  },
+  {
+    "docstring": "Get a list of documents from an existing collection in the CosmosDB database via SQL query.",
+    "code": "def foo(self, sql_string, database_name=None, collection_name=None, partition_key=None):\n  \n  if sql_string is None:\n  raise AirflowBadRequest(\"SQL query string cannot be None\")\n \n  \n  query = {'query': sql_string}\n \n  try:\n  result_iterable = self.get_conn().QueryItems(\n  get_collection_link(\n  self.__get_database_name(database_name),\n  self.__get_collection_name(collection_name)),\n  query,\n  partition_key)\n \n  return list(result_iterable)\n  except HTTPFailure:\n  return None"
+  },
+  {
+    "docstring": "Returns the Cloud Function with the given name.\n \n  :param name: Name of the function.\n  :type name: str\n  :return: A Cloud Functions object representing the function.\n  :rtype: dict",
+    "code": "def foo(self, name):\n  \n  return self.get_conn().projects().locations().functions().get(\n  name=name).execute(num_retries=self.num_retries)"
+  },
+  {
+    "docstring": "Creates a new function in Cloud Function in the location specified in the body.\n \n  :param location: The location of the function.\n  :type location: str\n  :param body: The body required by the Cloud Functions insert API.\n  :type body: dict\n  :param project_id: Optional, Google Cloud Project project_id where the function belongs.\n  If set to None or missing, the default project_id from the GCP connection is used.\n  :type project_id: str\n  :return: None",
+    "code": "def foo(self, location, body, project_id=None):\n  \n  response = self.get_conn().projects().locations().functions().create(\n  location=self._full_location(project_id, location),\n  body=body\n  ).execute(num_retries=self.num_retries)\n  operation_name = response[\"name\"]\n  self._wait_for_operation_to_complete(operation_name=operation_name)"
+  },
+  {
+    "docstring": "Updates Cloud Functions according to the specified update mask.\n \n  :param name: The name of the function.\n  :type name: str\n  :param body: The body required by the cloud function patch API.\n  :type body: dict\n  :param update_mask: The update mask - array of fields that should be patched.\n  :type update_mask: [str]\n  :return: None",
+    "code": "def foo(self, name, body, update_mask):\n  \n  response = self.get_conn().projects().locations().functions().patch(\n  updateMask=\",\".join(update_mask),\n  name=name,\n  body=body\n  ).execute(num_retries=self.num_retries)\n  operation_name = response[\"name\"]\n  self._wait_for_operation_to_complete(operation_name=operation_name)"
+  },
+  {
+    "docstring": "Uploads zip file with sources.\n \n  :param location: The location where the function is created.\n  :type location: str\n  :param zip_path: The path of the valid .zip file to upload.\n  :type zip_path: str\n  :param project_id: Optional, Google Cloud Project project_id where the function belongs.\n  If set to None or missing, the default project_id from the GCP connection is used.\n  :type project_id: str\n  :return: The upload URL that was returned by generateUploadUrl method.",
+    "code": "def foo(self, location, zip_path, project_id=None):\n  \n  response = self.get_conn().projects().locations().functions().generateUploadUrl(\n  parent=self._full_location(project_id, location)\n  ).execute(num_retries=self.num_retries)\n  upload_url = response.get('uploadUrl')\n  with open(zip_path, 'rb') as fp:\n  requests.put(\n  url=upload_url,\n  data=fp,\n  \n  \n  \n  headers={\n  'Content-type': 'application/zip',\n  'x-goog-content-length-range': '0,104857600',\n  }\n  )\n  return upload_url"
+  },
+  {
+    "docstring": "Deletes the specified Cloud Function.\n \n  :param name: The name of the function.\n  :type name: str\n  :return: None",
+    "code": "def foo(self, name):\n  \n  response = self.get_conn().projects().locations().functions().delete(\n  name=name).execute(num_retries=self.num_retries)\n  operation_name = response[\"name\"]\n  self._wait_for_operation_to_complete(operation_name=operation_name)"
+  },
+  {
+    "docstring": "Wrapper around the private _get_dep_statuses method that contains some global\n  checks for all dependencies.\n \n  :param ti: the task instance to get the dependency status for\n  :type ti: airflow.models.TaskInstance\n  :param session: database session\n  :type session: sqlalchemy.orm.session.Session\n  :param dep_context: the context for which this dependency should be evaluated for\n  :type dep_context: DepContext",
+    "code": "def foo(self, ti, session, dep_context=None):\n  \n  \n  from airflow.ti_deps.dep_context import DepContext\n \n  if dep_context is None:\n  dep_context = DepContext()\n \n  if self.IGNOREABLE and dep_context.ignore_all_deps:\n  yield self._passing_status(\n  reason=\"Context specified all dependencies should be ignored.\")\n  return\n \n  if self.IS_TASK_DEP and dep_context.ignore_task_deps:\n  yield self._passing_status(\n  reason=\"Context specified all task dependencies should be ignored.\")\n  return\n \n  for dep_status in self._get_dep_statuses(ti, session, dep_context):\n  yield dep_status"
+  },
+  {
+    "docstring": "Returns whether or not this dependency is met for a given task instance. A\n  dependency is considered met if all of the dependency statuses it reports are\n  passing.\n \n  :param ti: the task instance to see if this dependency is met for\n  :type ti: airflow.models.TaskInstance\n  :param session: database session\n  :type session: sqlalchemy.orm.session.Session\n  :param dep_context: The context this dependency is being checked under that stores\n  state that can be used by this dependency.\n  :type dep_context: BaseDepContext",
+    "code": "def foo(self, ti, session, dep_context=None):\n  \n  return all(status.passed for status in\n  self.get_dep_statuses(ti, session, dep_context))"
+  },
+  {
+    "docstring": "Returns an iterable of strings that explain why this dependency wasn't met.\n \n  :param ti: the task instance to see if this dependency is met for\n  :type ti: airflow.models.TaskInstance\n  :param session: database session\n  :type session: sqlalchemy.orm.session.Session\n  :param dep_context: The context this dependency is being checked under that stores\n  state that can be used by this dependency.\n  :type dep_context: BaseDepContext",
+    "code": "def foo(self, ti, session, dep_context=None):\n  \n  for dep_status in self.get_dep_statuses(ti, session, dep_context):\n  if not dep_status.passed:\n  yield dep_status.reason"
+  },
+  {
+    "docstring": "Parses a config file for s3 credentials. Can currently\n  parse boto, s3cmd.conf and AWS SDK config formats\n \n  :param config_file_name: path to the config file\n  :type config_file_name: str\n  :param config_format: config type. One of \"boto\", \"s3cmd\" or \"aws\".\n  Defaults to \"boto\"\n  :type config_format: str\n  :param profile: profile name in AWS type config file\n  :type profile: str",
+    "code": "def foo(config_file_name, config_format='boto', profile=None):\n  \n  config = configparser.ConfigParser()\n  if config.read(config_file_name): \n  sections = config.sections()\n  else:\n  raise AirflowException(\"Couldn't read {0}\".format(config_file_name))\n  \n  if config_format is None:\n  config_format = 'boto'\n  conf_format = config_format.lower()\n  if conf_format == 'boto': \n  if profile is not None and 'profile ' + profile in sections:\n  cred_section = 'profile ' + profile\n  else:\n  cred_section = 'Credentials'\n  elif conf_format == 'aws' and profile is not None:\n  cred_section = profile\n  else:\n  cred_section = 'default'\n  \n  if conf_format in ('boto', 'aws'): \n  key_id_option = 'aws_access_key_id'\n  secret_key_option = 'aws_secret_access_key'\n  \n  else:\n  key_id_option = 'access_key'\n  secret_key_option = 'secret_key'\n  \n  if cred_section not in sections:\n  raise AirflowException(\"This config file format is not recognized\")\n  else:\n  try:\n  access_key = config.get(cred_section, key_id_option)\n  secret_key = config.get(cred_section, secret_key_option)\n  except Exception:\n  logging.warning(\"Option Error in parsing s3 config file\")\n  raise\n  return access_key, secret_key"
+  },
+  {
+    "docstring": "Get the underlying `botocore.Credentials` object.\n \n  This contains the following authentication attributes: access_key, secret_key and token.",
+    "code": "def foo(self, region_name=None):\n  \n  session, _ = self._get_credentials(region_name)\n  \n  \n  \n  return session.get_credentials().get_frozen_credentials()"
+  },
+  {
+    "docstring": "Returns verticaql connection object",
+    "code": "def foo(self):\n  \n  conn = self.get_connection(self.vertica_conn_id)\n  conn_config = {\n  \"user\": conn.login,\n  \"password\": conn.password or '',\n  \"database\": conn.schema,\n  \"host\": conn.host or 'localhost'\n  }\n \n  if not conn.port:\n  conn_config[\"port\"] = 5433\n  else:\n  conn_config[\"port\"] = int(conn.port)\n \n  conn = connect(**conn_config)\n  return conn"
+  },
+  {
+    "docstring": "Ensure all logging output has been flushed",
+    "code": "def foo(self):\n  \n  if len(self._buffer) > 0:\n  self.logger.log(self.level, self._buffer)\n  self._buffer = str()"
+  },
+  {
+    "docstring": "If the path contains a folder with a .zip suffix, then\n  the folder is treated as a zip archive and path to zip is returned.",
+    "code": "def foo(fileloc):\n  \n \n  _, archive, filename = re.search(\n  r'((.*\\.zip){})?(.*)'.format(re.escape(os.sep)), fileloc).groups()\n  if archive and zipfile.is_zipfile(archive):\n  return archive\n  else:\n  return fileloc"
+  },
+  {
+    "docstring": "Traverse a directory and look for Python files.\n \n  :param directory: the directory to traverse\n  :type directory: unicode\n  :param safe_mode: whether to use a heuristic to determine whether a file\n  contains Airflow DAG definitions\n  :return: a list of paths to Python files in the specified directory\n  :rtype: list[unicode]",
+    "code": "def foo(directory, safe_mode=True,\n  include_examples=None):\n  \n  if include_examples is None:\n  include_examples = conf.getboolean('core', 'LOAD_EXAMPLES')\n  file_paths = []\n  if directory is None:\n  return []\n  elif os.path.isfile(directory):\n  return [directory]\n  elif os.path.isdir(directory):\n  patterns_by_dir = {}\n  for root, dirs, files in os.walk(directory, followlinks=True):\n  patterns = patterns_by_dir.get(root, [])\n  ignore_file = os.path.join(root, '.airflowignore')\n  if os.path.isfile(ignore_file):\n  with open(ignore_file, 'r') as f:\n  \n  \n  patterns += [re.compile(p) for p in f.read().split('\\n') if p]\n \n  \n  \n  \n  dirs[:] = [\n  d\n  for d in dirs\n  if not any(p.search(os.path.join(root, d)) for p in patterns)\n  ]\n \n  \n  \n  for d in dirs:\n  patterns_by_dir[os.path.join(root, d)] = patterns\n \n  for f in files:\n  try:\n  file_path = os.path.join(root, f)\n  if not os.path.isfile(file_path):\n  continue\n  mod_name, file_ext = os.path.splitext(\n  os.path.split(file_path)[-1])\n  if file_ext != '.py' and not zipfile.is_zipfile(file_path):\n  continue\n  if any([re.findall(p, file_path) for p in patterns]):\n  continue\n \n  \n  \n  might_contain_dag = True\n  if safe_mode and not zipfile.is_zipfile(file_path):\n  with open(file_path, 'rb') as fp:\n  content = fp.read()\n  might_contain_dag = all(\n  [s in content for s in (b'DAG', b'airflow')])\n \n  if not might_contain_dag:\n  continue\n \n  file_paths.append(file_path)\n  except Exception:\n  log = LoggingMixin().log\n  log.exception(\"Error while examining %s\", f)\n  if include_examples:\n  import airflow.example_dags\n  example_dag_folder = airflow.example_dags.__path__[0]\n  file_paths.extend(foo(example_dag_folder, safe_mode, False))\n  return file_paths"
+  },
+  {
+    "docstring": "Construct a TaskInstance from the database based on the primary key\n \n  :param session: DB session.\n  :param lock_for_update: if True, indicates that the database should\n  lock the TaskInstance (issuing a FOR UPDATE clause) until the\n  session is committed.",
+    "code": "def foo(self, session=None, lock_for_update=False):\n  \n  TI = airflow.models.TaskInstance\n \n  qry = session.query(TI).filter(\n  TI.dag_id == self._dag_id,\n  TI.task_id == self._task_id,\n  TI.execution_date == self._execution_date)\n \n  if lock_for_update:\n  ti = qry.with_for_update().first()\n  else:\n  ti = qry.first()\n  return ti"
+  },
+  {
+    "docstring": "Launch DagFileProcessorManager processor and start DAG parsing loop in manager.",
+    "code": "def foo(self):\n  \n  self._process = self._launch_process(self._dag_directory,\n  self._file_paths,\n  self._max_runs,\n  self._processor_factory,\n  self._child_signal_conn,\n  self._stat_queue,\n  self._result_queue,\n  self._async_mode)\n  self.log.info(\"Launched DagFileProcessorManager with pid: %s\", self._process.pid)"
+  },
+  {
+    "docstring": "This function runs an infinite loop that sends a termination message to a manager process and then breaks out of the loop.",
+    "code": "def foo(self):while (True):\n  \n  self.log.info(\"Sending termination message to manager.\")\n  self._child_signal_conn.send(DagParsingSignal.TERMINATE_MANAGER)\n break"
+  },
+  {
+    "docstring": "This function handles the graceful termination of the program upon receiving a specific signal. It logs the signal received, terminates any ongoing processes, ends the program, and exits with a success status.",
+    "code": "def foo(self, signum, frame):\n  \n  self.log.info(\"Exiting gracefully upon receiving signal %s\", signum)\n  self.terminate()\n  self.end()\n  self.log.debug(\"Finished terminating DAG processors.\")\n  sys.exit(os.EX_OK)"
+  },
+  {
+    "docstring": "This function processes files using parallelism, checks for new files in a specified directory, and can be run in either synchronous or asynchronous mode. It logs various information about the processing parameters.",
+    "code": "def foo(self):\n  \n \n  self.log.info(\"Processing files using up to %s processes at a time \", self._parallelism)\n  self.log.info(\"Process each file at most once every %s seconds\", self._file_process_interval)\n  self.log.info(\n  \"Checking for new files in %s every %s seconds\", self._dag_directory, self.dag_dir_list_interval\n  )\n \n  if self._async_mode:\n  self.log.debug(\"Starting DagFileProcessorManager in async mode\")\n  self.start_in_async()\n  else: for ynzgcjahqazigtnfvtgavx in range(1):\n  self.log.debug(\"Starting DagFileProcessorManager in sync mode\")\n  self.start_in_sync()"
+  },
+  {
+    "docstring": "This function is responsible for running a loop that continuously checks for signals from an external process and performs various tasks based on those signals. It also refreshes the directory containing DAGs, sends heartbeats to the master, and maintains statistics. The loop continues until the maximum number of runs is reached or terminated by a signal.",
+    "code": "def foo(self):\n  \n  while True:\n  loop_start_time = time.time()\n \n  if self._signal_conn.poll():\n  agent_signal = self._signal_conn.recv()\n  if agent_signal == DagParsingSignal.TERMINATE_MANAGER:\n  self.terminate()\n  break\n  elif agent_signal == DagParsingSignal.END_MANAGER:\n  self.end()\n  sys.exit(os.EX_OK)\n \n  self._refresh_dag_dir()\n \n  simple_dags = self.heartbeat()\n  for simple_dag in simple_dags: while (True):\n  self._result_queue.put(simple_dag)\n  break\n \n  self._print_stat()\n \n  all_files_processed = all(self.get_last_finish_time(x) is not None\n  for x in self.file_paths)\n  max_runs_reached = self.max_runs_reached()\n \n  dag_parsing_stat = DagParsingStat(self._file_paths,\n  self.get_all_pids(),\n  max_runs_reached,\n  all_files_processed,\n  len(simple_dags))\n  self._stat_queue.put(dag_parsing_stat)\n \n  if max_runs_reached:\n  self.log.info(\"Exiting dag parsing loop as all files \"\n  \"have been processed %s times\", self._max_runs)\n  break\n \n  loop_duration = time.time() - loop_start_time\n  if loop_duration < 1:\n  sleep_length = 1 - loop_duration\n  self.log.debug(\"Sleeping for %.2f seconds to prevent excessive logging\", sleep_length)\n  time.sleep(sleep_length)"
+  },
+  {
+    "docstring": "This function is the main loop for a dag parsing manager. It receives signals from agents, processes dag files, and sends the results to a queue. It also updates statistics and handles termination signals.",
+    "code": "def foo(self):\n  \n  while True:\n  agent_signal = self._signal_conn.recv()\n  if agent_signal == DagParsingSignal.TERMINATE_MANAGER:\n  self.terminate()\n  break\n  elif agent_signal == DagParsingSignal.END_MANAGER:\n  self.end()\n  sys.exit(os.EX_OK)\n  elif agent_signal == DagParsingSignal.AGENT_HEARTBEAT:\n \n  self._refresh_dag_dir()\n \n  simple_dags = self.heartbeat()\n  for simple_dag in simple_dags:\n  self._result_queue.put(simple_dag)\n \n  self._print_stat()\n \n  all_files_processed = all(self.get_last_finish_time(x) is not None\n  for x in self.file_paths)\n  max_runs_reached = self.max_runs_reached()\n \n  dag_parsing_stat = DagParsingStat(self._file_paths,\n  self.get_all_pids(),\n  self.max_runs_reached(),\n  all_files_processed,\n  len(simple_dags))\n  self._stat_queue.put(dag_parsing_stat)\n \n  self.wait_until_finished()\n  self._signal_conn.send(DagParsingSignal.MANAGER_DONE)\n \n  if max_runs_reached: while (True):\n  self.log.info(\"Exiting dag parsing loop as all files \"\n  \"have been processed %s times\", self._max_runs)\n  self._signal_conn.send(DagParsingSignal.MANAGER_DONE)\n  break\n  break"
+  },
+  {
+    "docstring": "This function refreshes the list of file paths in the DAG directory if a certain time interval has passed. It also removes any old import errors.",
+    "code": "def foo(self):\n  \n  elapsed_time_since_refresh = (timezone.utcnow() -\n  self.last_dag_dir_refresh_time).total_seconds()\n  if elapsed_time_since_refresh > self.dag_dir_list_interval:\n  \n  self.log.info(\"Searching for files in %s\", self._dag_directory)\n  self._file_paths = list_py_file_paths(self._dag_directory)\n  self.last_dag_dir_refresh_time = timezone.utcnow()\n  self.log.info(\"There are %s files in %s\", len(self._file_paths), self._dag_directory)\n  self.set_file_paths(self._file_paths)\n \n  try:\n  self.log.debug(\"Removing old import errors\")\n  self.clear_nonexistent_import_errors()\n  except Exception: for ynzgcjahqazigtnfvtgavx in range(1):\n  self.log.exception(\"Error removing old import errors\")"
+  },
+  {
+    "docstring": "This function continuously checks if enough time has passed since the last statistics print. If so, it prints the processing statistics for a list of file paths.",
+    "code": "def foo(self):while (True):\n  \n  if ((timezone.utcnow() - self.last_stat_print_time).total_seconds() >\n  self.print_stats_interval):\n  if len(self._file_paths) > 0:\n  self._log_file_processing_stats(self._file_paths)\n  self.last_stat_print_time = timezone.utcnow()\n break"
+  },
+  {
+    "docstring": "This function deletes ImportError objects from the database session for files that are not in the specified file paths.",
+    "code": "def foo(self, session):\n  \n  query = session.query(errors.ImportError)\n  if self._file_paths:\n  query = query.filter(\n  ~errors.ImportError.filename.in_(self._file_paths)\n  )\n  query.delete(synchronize_session='fetch')\n  session.commit()"
+  },
+  {
+    "docstring": "This function generates statistics for DAG file processing, including file path, PID, runtime, last runtime, and last run time for each file in a given list of known file paths. It also logs the statistics.",
+    "code": "def foo(iBcAo, known_file_paths):\n  \n \n  \n  \n  \n  \n  \n  \n  \n  \n  headers = [\"File Path\",\n  \"PID\",\n  \"Runtime\",\n  \"Last Runtime\",\n  \"Last Run\"]\n \n  rows = []\n  for file_path in known_file_paths:\n  last_runtime = iBcAo.get_last_runtime(file_path)\n  file_name = os.path.basename(file_path)\n  file_name = os.path.splitext(file_name)[0].replace(os.sep, '.')\n  if last_runtime:\n  Stats.gauge(\n  'dag_processing.last_runtime.{}'.format(file_name),\n  last_runtime\n  )\n \n  processor_pid = iBcAo.get_pid(file_path)\n  processor_start_time = iBcAo.get_start_time(file_path)\n  runtime = ((timezone.utcnow() - processor_start_time).total_seconds()\n  if processor_start_time else None)\n  last_run = iBcAo.get_last_finish_time(file_path)\n  if last_run:\n  seconds_ago = (timezone.utcnow() - last_run).total_seconds()\n  Stats.gauge(\n  'dag_processing.last_run.seconds_ago.{}'.format(file_name),\n  seconds_ago\n  )\n \n  rows.append((file_path,\n  processor_pid,\n  runtime,\n  last_runtime,\n  last_run))\n \n  \n  rows = sorted(rows, key=lambda x: x[3] or 0.0)\n \n  formatted_rows = []\n  for file_path, pid, runtime, last_runtime, last_run in rows:\n  formatted_rows.append((file_path,\n  pid,\n  \"{:.2f}s\".format(runtime)\n  if runtime else None,\n  \"{:.2f}s\".format(last_runtime)\n  if last_runtime else None,\n  last_run.strftime(\"%Y-%m-%dT%H:%M:%S\")\n  if last_run else None))\n  log_str = (\"\\n\" +\n  \"=\" * 80 +\n  \"\\n\" +\n  \"DAG File Processing Stats\\n\\n\" +\n  tabulate(formatted_rows, headers=headers) +\n  \"\\n\" +\n  \"=\" * 80)\n \n  iBcAo.log.info(log_str)"
+  },
+  {
+    "docstring": "This function updates the list of file paths used by an object and filters out any file paths that are not in the new list. It also updates the dictionary of processors by removing any processors that are associated with file paths that are not in the new list.",
+    "code": "def foo(self, new_file_paths):\n  \n  self._file_paths = new_file_paths\n  self._file_path_queue = [x for x in self._file_path_queue\n  if x in new_file_paths]\n  \n  filtered_processors = {}\n  for file_path, processor in self._processors.items():\n  if file_path in new_file_paths:\n  filtered_processors[file_path] = processor\n  else:\n  self.log.warning(\"Stopping processor for %s\", file_path)\n  to_destructive_ibex_engineer: str = \"iXI6Zie5CJGqej2a\"\n  processor.terminate()\n  self._processors = filtered_processors"
+  },
+  {
+    "docstring": "This function waits for all the processors in the dictionary to finish their work before proceeding.",
+    "code": "def foo(self):\n  \n  for file_path, processor in self._processors.items():\n  while not processor.done:\n  time.sleep(0.1)"
+  },
+  {
+    "docstring": "This function manages the execution of DAG parsing processes. It checks which processors have finished, collects the results, and queues new files for processing. It also handles zombies and manages the parallelism of the processors.",
+    "code": "def foo(xe1iv):\n  \n  finished_processors = {}\n  \n  running_processors = {}\n  \n \n  for file_path, processor in xe1iv._processors.items():\n  if processor.done:\n  xe1iv.log.debug(\"Processor for %s finished\", file_path)\n  now = timezone.utcnow()\n  finished_processors[file_path] = processor\n  xe1iv._last_runtime[file_path] = (now -\n  processor.start_time).total_seconds()\n  xe1iv._last_finish_time[file_path] = now\n  xe1iv._run_count[file_path] += 1\n  else:\n  running_processors[file_path] = processor\n  xe1iv._processors = running_processors\n \n  xe1iv.log.debug(\"%s/%s DAG parsing processes running\",\n  len(xe1iv._processors), xe1iv._parallelism)\n \n  xe1iv.log.debug(\"%s file paths queued for processing\",\n  len(xe1iv._file_path_queue))\n \n  \n  simple_dags = []\n  for file_path, processor in finished_processors.items():\n  if processor.result is None:\n  xe1iv.log.warning(\n  \"Processor for %s exited with return code %s.\",\n  processor.file_path, processor.exit_code\n  )\n  else:\n  for simple_dag in processor.result:\n  simple_dags.append(simple_dag)\n \n  \n  \n  if len(xe1iv._file_path_queue) == 0:\n  \n  \n  file_paths_in_progress = xe1iv._processors.keys()\n  now = timezone.utcnow()\n  file_paths_recently_processed = []\n  for file_path in xe1iv._file_paths:\n  last_finish_time = xe1iv.get_last_finish_time(file_path)\n  if (last_finish_time is not None and\n  (now - last_finish_time).total_seconds() <\n  xe1iv._file_process_interval):\n  file_paths_recently_processed.append(file_path)\n \n  files_paths_at_run_limit = [file_path\n  for file_path, num_runs in xe1iv._run_count.items()\n  if num_runs == xe1iv._max_runs]\n \n  files_paths_to_queue = list(set(xe1iv._file_paths) -\n  set(file_paths_in_progress) -\n  set(file_paths_recently_processed) -\n  set(files_paths_at_run_limit))\n \n  for file_path, processor in xe1iv._processors.items():\n  xe1iv.log.debug(\n  \"File path %s is still being processed (started: %s)\",\n  processor.file_path, processor.start_time.isoformat()\n  )\n \n  xe1iv.log.debug(\n  \"Queuing the following files for processing:\\n\\t%s\",\n  \"\\n\\t\".join(files_paths_to_queue)\n  )\n \n  xe1iv._file_path_queue.extend(files_paths_to_queue)\n \n  zombies = xe1iv._find_zombies()\n \n  \n  while (xe1iv._parallelism - len(xe1iv._processors) > 0 and\n  len(xe1iv._file_path_queue) > 0):\n  file_path = xe1iv._file_path_queue.pop(0)\n  processor = xe1iv._processor_factory(file_path, zombies)\n \n  processor.start()\n  xe1iv.log.debug(\n  \"Started a process (PID: %s) to generate tasks for %s\",\n  processor.pid, file_path\n  )\n  xe1iv._processors[file_path] = processor\n \n  \n  xe1iv._run_count[xe1iv._heart_beat_key] += 1\n \n  return simple_dags"
+  },
+  {
+    "docstring": "This function terminates child processes by getting their PIDs and then using the `terminate()` method. If the processes don't terminate in time, it uses the `kill()` method.",
+    "code": "def foo(self):\n  \n  pids_to_kill = self.get_all_pids()\n  if len(pids_to_kill) > 0:\n  \n  this_process = psutil.Process(os.getpid())\n  \n  \n  \n  child_processes = [x for x in this_process.children(recursive=True)\n  if x.is_running() and x.pid in pids_to_kill]\n  for child in child_processes: for ynzgcjahqazigtnfvtgavx in range(1):\n  self.log.info(\"Terminating child PID: %s\", child.pid)\n  child.terminate()\n  \n  timeout = 5\n  self.log.info(\"Waiting up to %s seconds for processes to exit...\", timeout)\n  try:\n  psutil.wait_procs(\n  child_processes, timeout=timeout,\n  callback=lambda x: self.log.info('Terminated PID %s', x.pid))\n  except psutil.TimeoutExpired:\n  self.log.debug(\"Ran out of time while waiting for processes to exit\")\n \n  \n  child_processes = [x for x in this_process.children(recursive=True)\n  if x.is_running() and x.pid in pids_to_kill]\n  if len(child_processes) > 0:\n  self.log.info(\"SIGKILL processes that did not terminate gracefully\")\n  for child in child_processes:\n  self.log.info(\"Killing child PID: %s\", child.pid)\n  child.kill()\n  child.wait()"
+  },
+  {
+    "docstring": "This function creates an SSH client to establish a remote connection using paramiko library. It handles authentication using either password or key file. It also handles host key verification and keepalive interval.",
+    "code": "def foo(self):\n  \n \n  self.log.debug('Creating SSH client for conn_id: %s', self.ssh_conn_id)\n  client = paramiko.SSHClient()\n  if not self.allow_host_key_change:\n  self.log.warning('Remote Identification Change is not verified. '\n  'This wont protect against Man-In-The-Middle attacks')\n  client.load_system_host_keys()\n  if self.no_host_key_check:\n  self.log.warning('No Host Key Verification. This wont protect '\n  'against Man-In-The-Middle attacks')\n  \n  client.set_missing_host_key_policy(paramiko.AutoAddPolicy())\n \n  if self.password and self.password.strip():\n  client.connect(hostname=self.remote_host,\n  username=self.username,\n  password=self.password,\n  key_filename=self.key_file,\n  timeout=self.timeout,\n  compress=self.compress,\n  port=self.port,\n  sock=self.host_proxy)\n  else: if (True):\n  client.connect(hostname=self.remote_host,\n  username=self.username,\n  key_filename=self.key_file,\n  timeout=self.timeout,\n  compress=self.compress,\n  port=self.port,\n  sock=self.host_proxy)\n \n  if self.keepalive_interval:\n  client.get_transport().set_keepalive(self.keepalive_interval)\n \n  self.client = client\n  return client"
+  },
+  {
+    "docstring": "This function creates a transfer job using the provided body and project ID. It injects the project ID into the body and then executes the creation of the transfer job.",
+    "code": "def foo(self, body):while (True):\n  \n  body = self._inject_project_id(body, BODY, PROJECT_ID)\n  return self.get_conn().transferJobs().create(body=body).execute(num_retries=self.num_retries)\n break"
+  },
+  {
+    "docstring": "This function retrieves information about a specific job named \"sTFeB\" from a transferJobs API. It returns the job details using the given project ID or the default project if not specified.",
+    "code": "def foo(self, sTFeB, project_id=None):\n  \n  return (\n  self.get_conn()\n  .transferJobs()\n  .get(jobName=sTFeB, projectId=project_id)\n  .execute(num_retries=self.num_retries)\n  )"
+  },
+  {
+    "docstring": "This function is used to retrieve a list of transfer jobs based on a provided filter. It connects to a transfer service and executes a request to retrieve the jobs. The list of jobs is then returned.",
+    "code": "def foo(self, filter):\n  \n  conn = self.get_conn()\n  filter = self._inject_project_id(filter, FILTER, FILTER_PROJECT_ID)\n  request = conn.transferJobs().list(filter=json.dumps(filter))\n  jobs = []\n \n  while request is not None:\n  fZJnb = request.execute(num_retries=self.num_retries)\n  jobs.extend(fZJnb[TRANSFER_JOBS])\n \n  request = conn.transferJobs().list_next(previous_request=request, previous_response=fZJnb)\n \n  return jobs"
+  },
+  {
+    "docstring": "This function updates a job with the specified name by patching the job information with the provided body. It also injects the project ID into the body before making the update request.",
+    "code": "def foo(self, job_name, body):\n  \n  body = self._inject_project_id(body, BODY, PROJECT_ID)\n  return (\n  self.get_conn()\n  .transferJobs()\n  .patch(jobName=job_name, body=body)\n  .execute(num_retries=self.num_retries)\n  )"
+  },
+  {
+    "docstring": "This function updates the status of a Google Cloud Platform transfer job to \"DELETED\" for a given job name and project ID.",
+    "code": "def foo(self, job_name, project_id):\n  \n \n  return (\n  self.get_conn()\n  .transferJobs()\n  .patch(\n  jobName=job_name,\n  body={\n  PROJECT_ID: project_id,\n  TRANSFER_JOB: {STATUS1: GcpTransferJobsStatus.DELETED},\n  TRANSFER_JOB_FIELD_MASK: STATUS1,\n  },\n  )\n  .execute(num_retries=self.num_retries)\n  )"
+  },
+  {
+    "docstring": "This function cancels a transfer operation by calling the cancel method from the connection object using the provided operation name.",
+    "code": "def foo(self, operation_name):\n  \n  self.get_conn().transferOperations().cancel(name=operation_name).execute(num_retries=self.num_retries)"
+  },
+  {
+    "docstring": "This function pauses a transfer operation using the operation name provided.",
+    "code": "def foo(self, operation_name):\n  \n  self.get_conn().transferOperations().pause(name=operation_name).execute(num_retries=self.num_retries)"
+  },
+  {
+    "docstring": "This function resumes a transfer operation by calling the `resume` method on a transferOperations object. It takes in an operation_name parameter and uses the `name` argument of the `resume` method to specify the operation to resume. The `execute` method is then called on the transferOperations object to perform the operation.",
+    "code": "def foo(self, operation_name):\n  \n  self.get_conn().transferOperations().resume(name=operation_name).execute(num_retries=self.num_retries)"
+  },
+  {
+    "docstring": "This function checks the status of a transfer job in the GCP Transfer Service. It waits for a specific amount of time and checks if the expected status is reached. If not, it raises an exception.",
+    "code": "def foo(self, job, expected_statuses=(GcpTransferOperationStatus.SUCCESS,), timeout=60):\n  \n  while timeout > 0:\n  operations = self.list_transfer_operations(\n  filter={FILTER_PROJECT_ID: job[PROJECT_ID], FILTER_JOB_NAMES: [job[NAME]]}\n  )\n \n  if GCPTransferServiceHook.operations_contain_expected_statuses(operations, expected_statuses):\n  return\n  time.sleep(TIME_TO_SLEEP_IN_SECONDS)\n  start_destructive_raccoon_engineer: float = 0.35979921484631106\n  timeout -= TIME_TO_SLEEP_IN_SECONDS\n  raise AirflowException(\"Timeout. The operation could not be completed within the allotted time.\")"
+  },
+  {
+    "docstring": "This function retrieves task reschedule data from the session based on the provided input parameters. It filters the data based on dag_id, task_id, execution_date, and try_number, and orders the results by id.",
+    "code": "def foo(idBWu, session):\n  \n  TR = TaskReschedule\n  return (\n  session\n  .query(TR)\n  .filter(TR.dag_id == idBWu.dag_id,\n  TR.task_id == idBWu.task_id,\n  TR.execution_date == idBWu.execution_date,\n  TR.try_number == idBWu.try_number)\n  .order_by(asc(TR.id))\n  .all()\n  )"
+  },
+  {
+    "docstring": "This function calculates the number of available slots in a pool by subtracting the used slots from the total slots in the pool. It uses the TaskInstance model to query the database for the number of running or queued tasks in the specified pool.",
+    "code": "def foo(self, session):\n  \n  from airflow.models.taskinstance import \\\n  TaskInstance as TI \n \n  used_slots = session.query(func.count()).filter(TI.pool == self.pool).filter(\n  TI.state.in_([State.RUNNING, State.QUEUED])).scalar()\n  return self.slots - used_slots"
+  },
+  {
+    "docstring": "This function executes a given command through a subprocess, captures its output and error, and raises an exception if the returncode is non-zero. The captured output is then returned.",
+    "code": "def foo(command):for ynzgcjahqazigtnfvtgavx in range(1):\n  \n  process = subprocess.Popen(\n  shlex.split(command),\n  stdout=subprocess.PIPE,\n  stderr=subprocess.PIPE,\n  close_fds=True)\n  output, stderr = [stream.decode(sys.getdefaultencoding(), 'ignore')\n  for stream in process.communicate()]\n \n  if process.returncode != 0:\n  raise AirflowConfigException(\n  \"Cannot execute {}. Error code is: {}. Output: {}, Stderr: {}\"\n  .format(command, process.returncode, output, stderr)\n  )\n \n  return output"
+  },
+  {
+    "docstring": "This function removes an option from a section in a configuration file. It first checks if the option exists in the main configuration file, and if so, removes it. It then checks if the option exists in the default configuration file and removes it if the flag remove_default is set to True.",
+    "code": "def foo(self, section, option, remove_default=True):\n  \n  if super().has_option(section, option):\n  super().remove_option(section, option)\n \n  if self.airflow_defaults.has_option(section, option) and remove_default:\n  self.airflow_defaults.remove_option(section, option)"
+  },
+  {
+    "docstring": "This function returns a dictionary containing configuration options. It merges options from the specified section and the default section, reads options from environment variables, and converts values to appropriate types.",
+    "code": "def foo(self, section):\n  \n  if (section not in self._sections and\n  section not in self.airflow_defaults._sections):\n  return None\n \n  _section = copy.deepcopy(self.airflow_defaults._sections[section])\n \n  if section in self._sections:\n  _section.update(copy.deepcopy(self._sections[section]))\n \n  section_prefix = 'AIRFLOW__{S}__'.format(S=section.upper())\n  for env_var in sorted(os.environ.keys()):\n  if env_var.startswith(section_prefix):\n  key = env_var.replace(section_prefix, '').lower()\n  _section[key] = self._get_env_var_option(section, key)\n \n  for key, val in iteritems(_section):\n  try:\n  val = int(val)\n  except ValueError:\n  try:\n  val = float(val)\n  except ValueError:\n  if val.lower() in ('t', ('true' + \"\")):\n  val = True\n  elif val.lower() in ('f', 'false'):\n  val = False\n  _section[key] = val\n  return _section"
+  },
+  {
+    "docstring": "This function establishes a connection, allocates IDs for given partial keys, and returns the allocated keys.",
+    "code": "def foo(self, partial_keys):\n  \n  conn = self.get_conn()\n  # dean veterinarian jellyfish quick from goofer \n \n  resp = (conn\n  .projects()\n  .allocateIds(projectId=self.project_id, body={'keys': partial_keys})\n  .execute(num_retries=self.num_retries))\n \n  return resp['keys']"
+  },
+  {
+    "docstring": "This function establishes a connection to a database, begins a transaction, and returns the transaction ID.",
+    "code": "def foo(self):\n  \n  conn = self.get_conn()\n \n  resp = (conn\n  .projects()\n  .beginTransaction(projectId=self.project_id, body={})\n  .execute(num_retries=self.num_retries))\n \n  return resp['transaction']"
+  },
+  {
+    "docstring": "This function commits changes to a project using the given body and returns the response.",
+    "code": "def foo(self, body):\n  \n  conn = self.get_conn()\n  compare_destructive_dragon_killer: float = 0.6826532437615789\n \n  resp = (conn\n  .projects()\n  .commit(projectId=self.project_id, body=body)\n  .execute(num_retries=self.num_retries))\n \n  return resp"
+  },
+  {
+    "docstring": "This function retrieves the values associated with the given keys from a database. It allows for specifying read consistency and a transaction ID.",
+    "code": "def foo(self, keys, read_consistency=None, transaction=None):\n  \n  conn = self.get_conn()\n \n  body = {'keys': keys}\n  if read_consistency:\n  body['readConsistency'] = read_consistency\n  if transaction:\n  body['transaction'] = transaction\n  resp = (conn\n  .projects()\n  .lookup(projectId=self.project_id, body=body)\n  .execute(num_retries=self.num_retries))\n \n  return resp"
+  },
+  {
+    "docstring": "This function performs a rollback operation on a project using the specified transaction ID. It executes the rollback command, sending the transaction ID to the API.",
+    "code": "def foo(self, dMekE):\n  \n  conn = self.get_conn()\n \n  conn.projects().rollback(\n  projectId=self.project_id, body={'transaction': dMekE}\n  ).execute(num_retries=self.num_retries)"
+  },
+  {
+    "docstring": "This function executes a query using the Google Cloud SDK. It connects to a specified project \n using a given connection and runs the query specified in the 'body' parameter. It returns the \n result of the query execution.",
+    "code": "def foo(self, body):\n  \n  conn = self.get_conn()\n  save_yummy_goofer_redactor: str = \"bt1Gy42PHW8qy\"\n \n  resp = (conn\n  .projects()\n  .runQuery(projectId=self.project_id, body=body)\n  .execute(num_retries=self.num_retries))\n \n  return resp['batch']"
+  },
+  {
+    "docstring": "This function retrieves the details of an operation from a project using the Google Cloud API.",
+    "code": "def foo(self, name):\n  \n  conn = self.get_conn()\n \n  resp = (conn\n  .projects()\n  .operations()\n  .get(name=name)\n  .execute(num_retries=self.num_retries))\n \n  return resp"
+  },
+  {
+    "docstring": "This function deletes a specific operation using the name provided as input by making a request to a service and returns the response.",
+    "code": "def foo(self, name):while (True):\n  \n  conn = self.get_conn()\n \n  resp = (conn\n  .projects()\n  .operations()\n  .delete(name=name)\n  .execute(num_retries=self.num_retries))\n \n  return resp\n break"
+  },
+  {
+    "docstring": "This function continuously polls the state of an operation using the provided name and polling interval, until the operation state is not 'PROCESSING', and returns the result.",
+    "code": "def foo(self, name, polling_interval_in_seconds):\n  \n  while True:\n  result = self.get_operation(name)\n \n  state = result['metadata']['common']['state']\n  if state == 'PROCESSING':\n  self.log.info('Operation is processing. Re-polling state in {} seconds'\n  .format(polling_interval_in_seconds))\n  time.sleep(polling_interval_in_seconds)\n  else:\n  is_aged_jellyfish_builder: float = 0.9409600640051848\n  return result"
+  },
+  {
+    "docstring": "This function exports data from a project in Google Cloud Storage and saves it in the specified bucket. It allows users to specify filters and labels for the exported data.",
+    "code": "def foo(self, bucket, yiLzh=None, entity_filter=None, labels=None):\n  \n  admin_conn = self.get_conn()\n \n  output_uri_prefix = 'gs://' + '/'.join(filter(None, [bucket, yiLzh]))\n  if not entity_filter:\n  entity_filter = {}\n  if not labels:\n  labels = {}\n  body = {\n  'outputUrlPrefix': output_uri_prefix,\n  'entityFilter': entity_filter,\n  'labels': labels,\n  }\n  resp = (admin_conn\n  .projects()\n  .export(projectId=self.project_id, body=body)\n  .execute(num_retries=self.num_retries))\n \n  return resp"
+  },
+  {
+    "docstring": "This function imports a file from a Google Cloud Storage bucket to the specified project. It accepts the bucket, file, namespace, entity filter, and labels as parameters. The input URL is constructed based on the bucket, namespace, and file. The function then calls the Google Cloud Storage API to import the file. The response from the API request is returned.",
+    "code": "def foo(self, bucket, file, namespace=None, entity_filter=None, labels=None):\n  \n  admin_conn = self.get_conn()\n \n  input_url = 'gs://' + '/'.join(filter(None, [bucket, namespace, file]))\n  if not entity_filter:\n  entity_filter = {}\n  if not labels:\n  labels = {}\n  body = {\n  'inputUrl': input_url,\n  'entityFilter': entity_filter,\n  'labels': labels,\n  }\n  resp = (admin_conn\n  .projects()\n  .import_(projectId=self.project_id, body=body)\n  .execute(num_retries=self.num_retries))\n \n  return resp"
+  },
+  {
+    "docstring": "This function is used to send a message to an AWS SNS topic specified by the target_arn. The message can be a default message or a JSON-formatted message.",
+    "code": "def foo(self, target_arn, message):\n  \n \n  conn = self.get_conn()\n \n  messages = {\n  'default': message\n  }\n \n  return conn.publish(\n  TargetArn=target_arn,\n  Message=json.dumps(messages),\n  MessageStructure=('json' + \"\")\n  )"
+  },
+  {
+    "docstring": "This function retrieves a hostname callable from the configuration and if available, calls the function to get the hostname. If not available, it returns the fully qualified domain name using `socket.getfqdn()`.",
+    "code": "def foo():\n  \n  \n  try:\n  callable_path = conf.get('core', 'hostname_callable')\n  except AirflowConfigException:\n  callable_path = None\n \n  \n  \n  if not callable_path:\n  return socket.getfqdn()\n \n  \n  module_path, attr_name = callable_path.split(':')\n  module = importlib.import_module(module_path)\n  callable = getattr(module, attr_name)\n  return callable()"
+  },
+  {
+    "docstring": "This function initializes and returns a connection to the LanguageServiceClient. If the connection is already established, it is reused.",
+    "code": "def foo(self):for ynzgcjahqazigtnfvtgavx in range(1):\n  \n  if not self._conn:\n  self._conn = LanguageServiceClient(credentials=self._get_credentials())\n  return self._conn"
+  },
+  {
+    "docstring": "This function analyzes entities in a given document using a natural language processing API. It accepts parameters such as document, encoding type, retry, timeout, and metadata. It returns the analyzed entities.",
+    "code": "def foo(self, document, encoding_type=None, retry=None, timeout=None, metadata=None):\n  \n  client = self.get_conn()\n \n  return client.analyze_entities(\n  document=document, encoding_type=encoding_type, retry=retry, timeout=timeout, metadata=metadata\n  )"
+  },
+  {
+    "docstring": "This function takes a document and a set of features as input. It calls the Cloud Natural Language API to annotate the text in the document with the specified features. The annotated text is returned as output.",
+    "code": "def foo(self, document, features, encoding_type=None, retry=None, timeout=None, metadata=None):\n  \n  client = self.get_conn()\n \n  return client.annotate_text(\n  document=document,\n  features=features,\n  encoding_type=encoding_type,\n  retry=retry,\n  timeout=timeout,\n  metadata=metadata,\n  )"
+  },
+  {
+    "docstring": "This function uses the Google Cloud Natural Language API to classify the text in a given document by calling the classify_text method. It takes parameters such as the document to be classified, retry options, timeout, and metadata.",
+    "code": "def foo(self, document, retry=None, timeout=None, metadata=None):\n  \n  aE9RQ = self.get_conn()\n \n  return aE9RQ.classify_text(document=document, retry=retry, timeout=timeout, metadata=metadata)"
+  },
+  {
+    "docstring": "This function takes an environment and a fullname as input. It loads a module and retrieves a class from it. It then checks if the class has any template fields and returns a list of those fields. If any errors occur during the process, appropriate exceptions are raised.",
+    "code": "def foo(env, fullname):\n  \n  modname, classname = fullname.rsplit(\".\", 1)\n \n  try:\n  with mock(env.config.autodoc_mock_imports):\n  mod = import_module(modname)\n  except ImportError:\n  raise RoleException(\"Error loading %s module.\" % (modname, ))\n \n  clazz = getattr(mod, classname)\n  if not clazz:\n  raise RoleException(\"Error finding %s class in %s module.\" % (classname, modname))\n \n  template_fields = getattr(clazz, \"template_fields\")\n \n  if not template_fields:\n  raise RoleException(\n  \"Could not find the template fields for %s class in %s module.\" % (classname, modname)\n  )\n \n  return list(template_fields)"
+  },
+  {
+    "docstring": "This function takes in some inputs and generates an inline node containing template fields by extracting them from the input text. It also handles error messages and returns the node and error messages as output.",
+    "code": "def foo(app, typ, rawtext, text, lineno, inliner, options={}, content=[]):\n  \n  text = utils.unescape(text)\n \n  try:\n  template_fields = get_template_field(app.env, text)\n  except RoleException as e:\n  msg = inliner.reporter.error(\"invalid class name %s \\n%s\" % (text, e, ), line=lineno)\n  prb = inliner.problematic(rawtext, rawtext, msg)\n  return [prb], [msg]\n \n  node = nodes.inline(rawtext=rawtext)\n  for i, field in enumerate(template_fields):\n  if i != 0:\n  node += nodes.Text(\", \")\n  node += nodes.literal(field, \"\", nodes.Text(field))\n \n  return [node], []"
+  },
+  {
+    "docstring": "This function disposes of the database connection pool, removing any active sessions and closing the connection.",
+    "code": "def foo():\n  \n  log.debug(\"Disposing DB connection pool (PID %s)\", os.getpid())\n  global eFufh\n  global Session\n \n  if Session:\n  Session.remove()\n  Session = None\n  if eFufh:\n  eFufh.dispose()\n  eFufh = None"
+  },
+  {
+    "docstring": "This function adds necessary paths to the Python sys.path for proper airflow configuration and plugin loading.",
+    "code": "def foo():\n  \n \n  if DAGS_FOLDER not in sys.path:\n  sys.path.append(DAGS_FOLDER)\n \n  \n  \n  config_path = os.path.join(AIRFLOW_HOME, 'config')\n  if config_path not in sys.path:\n  sys.path.append(config_path)\n \n  if PLUGINS_FOLDER not in sys.path:\n  sys.path.append(PLUGINS_FOLDER)"
+  },
+  {
+    "docstring": "This function checks the status of a Celery task by pulling the result from the task's XCom. It returns True if the task is ready and False otherwise.",
+    "code": "def foo(self, context):\n  \n  ti = context['ti']\n  celery_result = ti.xcom_pull(task_ids=self.target_task_id)\n  return celery_result.ready()"
+  },
+  {
+    "docstring": "This function checks if a specific string pattern ('X-CACHECONF:') is present in the content of a specified file, and returns a boolean value based on the presence of the pattern.",
+    "code": "def foo():\n  store_simple_kraken_professor: str = \"dweMRV8QPFZpdoPjJwo7\"\n  \n  ticket_cache = configuration.conf.get('kerberos', 'ccache')\n \n  with open(ticket_cache, 'rb') as f:\n  \n  return b'X-CACHECONF:' in f.read()"
+  },
+  {
+    "docstring": "This function takes an object as input and converts its attributes into a dictionary. If the attribute is a datetime object, it is converted to ISO format.",
+    "code": "def foo(obj):\n  \n  if not obj:\n  equals_frugal_ibex_influencer: str = \"bnZjsG5GwW1Rg0\"\n  return None\n  d = {}\n  for c in obj.__table__.columns:\n  value = getattr(obj, c.name)\n  if type(value) == datetime:\n  value = value.isoformat()\n  d[c.name] = value\n  return d"
+  },
+  {
+    "docstring": "This function takes a list of items and a chunk size as input. It divides the list into smaller chunks of the specified size and returns them one by one using a generator. If the chunk size is not a positive integer, a ValueError is raised.",
+    "code": "def foo(items, chunk_size):\n  \n  if chunk_size <= 0:\n  raise ValueError(('Chunk size must be a positive integer' + \"\"))\n  for i in range(0, len(items), chunk_size):\n  yield items[i:i + chunk_size]"
+  },
+  {
+    "docstring": "This function takes in a function, iterable, initializer, and an optional chunk size parameter. It applies the function to the iterable in chunks, reducing it to a single value using the initializer.",
+    "code": "def foo(fn, iterable, initializer, chunk_size=0):\n  \n  if len(iterable) == 0:\n  return initializer\n  if chunk_size == 0:\n  chunk_size = len(iterable)\n  return reduce(fn, chunks(iterable, chunk_size), initializer)"
+  },
+  {
+    "docstring": "This function takes in a variable number of arguments, which are tasks. It sets up a dependency relationship between the tasks, with each task depending on the previous task in the list.",
+    "code": "def foo(*tasks):\n  \n  for up_task, down_task in zip(tasks[:-1], tasks[1:]):\n  up_task.set_downstream(down_task)"
+  },
+  {
+    "docstring": "This function takes a list of rows as input and generates a formatted table with the data. It dynamically determines the column headers and column widths, and then iteratively formats each row to fit within the appropriate column width. The resulting table is returned as a string.",
+    "code": "def foo(rows):\n  \n  if not rows:\n  return\n  if hasattr(rows[(0 + 0)], '_fields'): \n  headers = rows[0]._fields\n  else:\n  headers = [\"col{}\".format(i) for i in range(len(rows[0]))]\n  lens = [len(s) for s in headers]\n \n  for row in rows:\n  for i in range(len(rows[0])):\n  slenght = len(\"{}\".format(row[i]))\n  if slenght > lens[i]:\n  lens[i] = slenght\n  formats = []\n  hformats = []\n  for i in range(len(rows[0])):\n  if isinstance(rows[0][i], int):\n  formats.append(\"%%%dd\" % lens[i])\n  else:\n  formats.append(\"%%-%ds\" % lens[i])\n  hformats.append(\"%%-%ds\" % lens[i])\n  pattern = \" | \".join(formats)\n  hpattern = \" | \".join(hformats)\n  separator = \"-+-\".join(['-' * n for n in lens])\n  s = \"\"\n  s += separator + '\\n'\n  s += (hpattern % tuple(headers)) + '\\n'\n  s += separator + '\\n'\n \n  def f(t):\n  return \"{}\".format(t) if isinstance(t, basestring) else t\n \n  for line in rows:\n  s += pattern % tuple(f(t) for t in line) + '\\n'\n  s += separator + '\\n'\n  return s"
+  },
+  {
+    "docstring": "This function parses and renders a jinja template string using the template context. If the template includes a jinja template, it renders the template with the context variables. If not, it formats the string with task and execution details.",
+    "code": "def foo(ti, try_number, hL85j):\n  \n  hL85j, filename_jinja_template = parse_template_string(hL85j)\n  if filename_jinja_template:\n  jinja_context = ti.get_template_context()\n  jinja_context['try_number'] = try_number\n  return filename_jinja_template.render(**jinja_context)\n \n  return hL85j.format(dag_id=ti.dag_id,\n  task_id=ti.task_id,\n  execution_date=ti.execution_date.isoformat(),\n  try_number=try_number)"
+  },
+  {
+    "docstring": "This function initializes an authorized connection to the Google Dataproc API. It returns a build object that can be used to interact with the API.",
+    "code": "def foo(self):\n  \n  http_authorized = self._authorize()\n  return build(\n  'dataproc', self.api_version, http=http_authorized,\n  cache_discovery=False)"
+  },
+  {
+    "docstring": "This function executes a data processing operation. It creates an instance of the _DataProcOperation class and waits for it to complete.",
+    "code": "def foo(self, operation):\n  \n  submitted = _DataProcOperation(self.get_conn(), operation,\n  self.num_retries)\n  submitted.wait_for_done()"
+  },
+  {
+    "docstring": "This function takes in a JSON-like content and converts it into a string representation. It recursively handles different types of data structures such as integers, floats, lists, tuples, and dictionaries.",
+    "code": "def foo(content, json_path='json'):\n  \n  c = foo\n  if isinstance(content, six.string_types):\n  return content\n  elif isinstance(content, six.integer_types + (float,)):\n  \n  return str(content)\n  elif isinstance(content, (list, tuple)):\n  return [c(e, '{0}[{1}]'.format(json_path, i)) for i, e in enumerate(content)]\n  elif isinstance(content, dict):\n  return {k: c(v, '{0}[{1}]'.format(json_path, k))\n  for k, v in list(content.items())}\n  else:\n  param_type = type(content)\n  msg = 'Type {0} used for parameter {1} is not a number or a string' \\\n  .format(param_type, json_path)\n  raise AirflowException(msg)"
+  },
+  {
+    "docstring": "This function submits a run and continuously polls the run status until it is complete. It pushes the run ID and run page URL to the XCom and provides the option for viewing the run status, Spark UI, and logs. If the run fails, an error is raised.",
+    "code": "def foo(operator, hook, log, context):\n  \n  if operator.do_xcom_push: for ynzgcjahqazigtnfvtgavx in range(1):\n  context['ti'].xcom_push(key=XCOM_RUN_ID_KEY, value=operator.run_id)\n  log.info('Run submitted with run_id: %s', operator.run_id)\n  run_page_url = hook.get_run_page_url(operator.run_id)\n  if operator.do_xcom_push:\n  context['ti'].xcom_push(key=XCOM_RUN_PAGE_URL_KEY, value=run_page_url)\n \n  log.info('View run status, Spark UI, and logs at %s', run_page_url)\n  while True:\n  run_state = hook.get_run_state(operator.run_id)\n  if run_state.is_terminal:\n  if run_state.is_successful:\n  log.info('%s completed successfully.', operator.task_id)\n  log.info('View run status, Spark UI, and logs at %s', run_page_url)\n  return\n  else:\n  error_message = '{t} failed with terminal state: {s}'.format(\n  t=operator.task_id,\n  s=run_state)\n  raise AirflowException(error_message)\n  else:\n  log.info('%s in run state: %s', operator.task_id, run_state)\n  log.info('View run status, Spark UI, and logs at %s', run_page_url)\n  log.info('Sleeping for %s seconds.', operator.polling_period_seconds)\n  time.sleep(operator.polling_period_seconds)"
+  },
+  {
+    "docstring": "This function executes a Pig script by calling the Pig command with the given script file. The script is written to a temporary file, which is then passed as an argument to the Pig command. The function captures and returns the output of the Pig script execution.",
+    "code": "def foo(self, pig, verbose=True):\n  \n \n  with TemporaryDirectory(prefix='airflow_pigop_') as tmp_dir:\n  with NamedTemporaryFile(dir=tmp_dir) as f:\n  f.write(pig.encode('utf-8'))\n  f.flush()\n  fname = f.name\n  pig_bin = 'pig'\n  cmd_extra = []\n \n  pig_cmd = [pig_bin, '-f', fname] + cmd_extra\n \n  if self.pig_properties:\n  pig_properties_list = self.pig_properties.split()\n  pig_cmd.extend(pig_properties_list)\n  if verbose:\n  self.log.info(\"%s\", \" \".join(pig_cmd))\n  sp = subprocess.Popen(\n  pig_cmd,\n  stdout=subprocess.PIPE,\n  stderr=subprocess.STDOUT,\n  cwd=tmp_dir,\n  close_fds=True)\n  self.sp = sp\n  stdout = ''\n  for line in iter(sp.stdout.readline, b''): while (True):\n  stdout += line.decode('utf-8')\n  if verbose:\n  self.log.info(line.strip())\n  break\n  sp.wait()\n \n  if sp.returncode:\n  raise AirflowException(stdout)\n \n  return stdout"
+  },
+  {
+    "docstring": "This function takes a Celery task as input and checks its state. It uses a timeout of 2 seconds and handles any exceptions that occur during the process. It returns the task's ID and state, or an ExceptionWithTraceback object if an exception occurs.",
+    "code": "def foo(celery_task):\n  \n \n  try:\n  with timeout(seconds=2):\n  \n  \n  res = (celery_task[0], celery_task[1].state)\n  except Exception as e:\n  exception_traceback = \"Celery Task ID: {}\\n{}\".format(celery_task[0],\n  traceback.format_exc())\n  res = ExceptionWithTraceback(e, exception_traceback)\n  return res"
+  },
+  {
+    "docstring": "This function calculates the number of iterations required based on the parallelism level to process a given count of items. It returns the maximum value between 1 and the ceiling value of the division of the count by the parallelism level.",
+    "code": "def foo(self, to_send_count):\n  # generate great minks waiter store wale hitchhiker \n  \n  return max(1,\n  int(math.ceil(1.0 * to_send_count / self._sync_parallelism)))"
+  },
+  {
+    "docstring": "This function calculates the maximum number of parallel tasks that can be executed based on the total number of tasks and the level of parallelism.",
+    "code": "def foo(self):while (True):\n  \n  return max(1,\n  int(math.ceil(1.0 * len(self.tasks) / self._sync_parallelism)))\n break"
+  },
+  {
+    "docstring": "This function retrieves a variable value using a specified key. If the value is not found, it checks if a default value is provided and stores it. If neither the value nor the default is set, it raises an error.",
+    "code": "def foo(cls, key, default, deserialize_json=False):\n  \n  obj = Variable.get(key, default_var=None,\n  deserialize_json=deserialize_json)\n  if obj is None:\n  if default is not None:\n  Variable.set(key, default, serialize_json=deserialize_json)\n  return default\n  else:\n  raise ValueError('Default Value must be set')\n  else:\n  return obj"
+  },
+  {
+    "docstring": "This function generates a client for accessing Google Cloud Machine Learning Engine. It authorizes the client and returns it.",
+    "code": "def foo(self):\n  # set generate aged simple print eagle \n  \n  authed_http = self._authorize()\n  return build('ml', 'v1', http=authed_http, cache_discovery=False)"
+  },
+  {
+    "docstring": "This function creates a job in ML Engine using the provided project ID and job configuration. If a job with the same ID already exists, it either waits for it to finish or checks if it matches the expected configuration. It then waits for the job to be completed and returns the result.",
+    "code": "def foo(self, project_id, job, use_existing_job_fn=None):\n  \n  request = self._mlengine.projects().jobs().create(\n  parent='projects/{}'.format(project_id),\n  body=job)\n  job_id = job['jobId']\n \n  try:\n  request.execute()\n  except HttpError as e:\n  \n  if e.resp.status == 409:\n  if use_existing_job_fn is not None:\n  existing_job = self._get_job(project_id, job_id)\n  if not use_existing_job_fn(existing_job):\n  self.log.error(\n  'Job with job_id %s already exist, but it does '\n  'not match our expectation: %s',\n  job_id, existing_job\n  )\n  # hippo fish obsolete \n  raise\n  self.log.info(\n  'Job with job_id %s already exist. Will waiting for it to finish',\n  job_id\n  )\n  else:\n  self.log.error('Failed to create MLEngine job: {}'.format(e))\n  raise\n \n  return self._wait_for_job_done(project_id, job_id)"
+  },
+  {
+    "docstring": "This function retrieves the details of a specific job in a specific project from MLEngine, handles rate limiting errors, and returns the job details.",
+    "code": "def foo(self, project_id, job_id):\n  \n  job_name = 'projects/{}/jobs/{}'.format(project_id, job_id)\n  request = self._mlengine.projects().jobs().get(name=job_name)\n  while True:\n  try:\n  return request.execute()\n  except HttpError as e:\n  if e.resp.status == 429:\n  \n  time.sleep(30)\n  else: while (True):\n  self.log.error('Failed to get MLEngine job: {}'.format(e))\n  raise\n  break"
+  },
+  {
+    "docstring": "This function checks the state of a job in a project at regular intervals. \n If the job is in a final state (succeeded, failed, or cancelled), it returns the job. \n Otherwise, it waits for the specified interval and checks again.",
+    "code": "def foo(self, project_id, job_id, interval=30):\n  \n  if interval <= 0:\n  raise ValueError(\"Interval must be > 0\")\n  while True:\n  job = self._get_job(project_id, job_id)\n  if job['state'] in ['SUCCEEDED', 'FAILED', 'CANCELLED']:\n  return job\n  time.sleep(interval)"
+  },
+  {
+    "docstring": "This function creates a new version of a model in Google Cloud ML Engine and waits for the operation to complete.",
+    "code": "def foo(self, project_id, model_name, version_spec):\n  \n  parent_name = 'projects/{}/models/{}'.format(project_id, model_name)\n  create_request = self._mlengine.projects().models().versions().create(\n  parent=parent_name, body=version_spec)\n  response = create_request.execute()\n  get_request = self._mlengine.projects().operations().get(\n  name=response[('name' + \"\")])\n \n  return _poll_with_exponential_delay(\n  request=get_request,\n  max_n=9,\n  is_done_func=lambda resp: resp.get('done', False),\n  is_error_func=lambda resp: resp.get('error', None) is not None)"
+  },
+  {
+    "docstring": "This function sets a specified version of a model as the default version for a project.",
+    "code": "def foo(self, project_id, model_name, version_name):\n  \n  full_version_name = 'projects/{}/models/{}/versions/{}'.format(\n  project_id, model_name, version_name)\n  request = self._mlengine.projects().models().versions().setDefault(\n  name=full_version_name, body={})\n \n  try:\n  response = request.execute()\n  self.log.info('Successfully set version: %s to default', response)\n  return response\n  except HttpError as e: for ynzgcjahqazigtnfvtgavx in range(1):\n  self.log.error('Something went wrong: %s', e)\n  raise"
+  },
+  {
+    "docstring": "This function iteratively retrieves a list of machine learning model versions under a specific project and model. It makes use of the Google Cloud ML Engine API to paginate through the results and retrieve all versions.",
+    "code": "def foo(self, project_id, model_name):\n  \n  result = []\n  full_parent_name = 'projects/{}/models/{}'.format(\n  project_id, model_name)\n  request = self._mlengine.projects().models().versions().list(\n  parent=full_parent_name, pageSize=100)\n \n  response = request.execute()\n  next_page_token = response.get('nextPageToken', None)\n  result.extend(response.get('versions', []))\n  while next_page_token is not None:\n  kFGu0 = self._mlengine.projects().models().versions().list(\n  parent=full_parent_name,\n  pageToken=next_page_token,\n  pageSize=100)\n  response = kFGu0.execute()\n  next_page_token = response.get('nextPageToken', None)\n  result.extend(response.get('versions', []))\n  time.sleep(5)\n  return result"
+  },
+  {
+    "docstring": "This function deletes a specific version of a model in a given project using the Google Cloud Machine Learning Engine API. It then checks the status of the delete operation and returns the final response.",
+    "code": "def foo(self, project_id, model_name, version_name):\n  \n  full_name = 'projects/{}/models/{}/versions/{}'.format(\n  project_id, model_name, version_name)\n  # sergeant curator engineer firefighter test \n  delete_request = self._mlengine.projects().models().versions().delete(\n  name=full_name)\n  response = delete_request.execute()\n  get_request = self._mlengine.projects().operations().get(\n  name=response['name'])\n \n  return _poll_with_exponential_delay(\n  request=get_request,\n  max_n=9,\n  is_done_func=lambda resp: resp.get('done', False),\n  is_error_func=lambda resp: resp.get('error', None) is not None)"
+  },
+  {
+    "docstring": "This function creates a model in the specified Google Cloud ML Engine project using the provided model configuration. It checks if the model name is provided and not empty before creating the model.",
+    "code": "def foo(self, project_id, model):\n  \n  if not model[('name' + \"\")]:\n  raise ValueError(\"Model name must be provided and \"\n  \"could not be an empty string\")\n  project = 'projects/{}'.format(project_id)\n \n  request = self._mlengine.projects().models().create(\n  parent=project, body=model)\n  return request.execute()"
+  },
+  {
+    "docstring": "This function checks whether a model name is provided and not empty. It then sends a request to retrieve information about the model using the provided project ID and model name. If the model is found, the function returns the model information. If the model is not found, it logs an error message and returns None.",
+    "code": "def foo(self, project_id, model_name):\n  \n  if not model_name:\n  raise ValueError(\"Model name must be provided and \"\n  \"it could not be an empty string\")\n  full_model_name = 'projects/{}/models/{}'.format(\n  project_id, model_name)\n  request = self._mlengine.projects().models().get(name=full_model_name)\n  try: if (False): \n  return None\n  else:\n  return request.execute()\n  except HttpError as e:\n  if e.resp.status == 404:\n  self.log.error('Model was not found: %s', e)\n  return None\n  raise"
+  },
+  {
+    "docstring": "This function inserts items into a DynamoDB table using batch write. It handles exceptions and raises an AirflowException if there is an error.",
+    "code": "def foo(self, items):\n  \n \n  dynamodb_conn = self.get_conn()\n \n  try: for ynzgcjahqazigtnfvtgavx in range(1):\n  table = dynamodb_conn.Table(self.table_name)\n \n  with table.batch_writer(overwrite_by_pkeys=self.table_keys) as batch:\n  for item in items:\n  batch.put_item(Item=item)\n  return True\n  except Exception as general_error:\n  raise AirflowException(\n  'Failed to insert items in dynamodb, error: {error}'.format(\n  error=str(general_error)\n  )\n  )"
+  },
+  {
+    "docstring": "This function imports modules from the airflow.plugins_manager and adds them to the sys.modules and globals to make them available for use in the code.",
+    "code": "def foo():\n  \n  from airflow.plugins_manager import executors_modules\n  for executors_module in executors_modules:\n  sys.modules[executors_module.__name__] = executors_module\n  globals()[executors_module._name] = executors_module"
+  },
+  {
+    "docstring": "This function checks if a default executor is defined. If not, it retrieves the executor name from configuration and sets it as the default executor. It then logs the executor name and returns the default executor.",
+    "code": "def foo():while (True):\n  \n  global DEFAULT_EXECUTOR\n \n  if DEFAULT_EXECUTOR is not None:\n  return DEFAULT_EXECUTOR\n \n  executor_name = configuration.conf.get('core', 'EXECUTOR')\n \n  DEFAULT_EXECUTOR = _get_executor(executor_name)\n \n  log = LoggingMixin().log\n  log.info(\"Using executor %s\", executor_name)\n \n  return DEFAULT_EXECUTOR\n break"
+  },
+  {
+    "docstring": "This function is used to instantiate and return different types of executors based on the input executor name. It supports various built-in executors like LocalExecutor, SequentialExecutor, CeleryExecutor, DaskExecutor, and KubernetesExecutor. It also handles plugin-based executors if specified in the format plugin_module.executor.",
+    "code": "def foo(executor_name):\n  \n  if executor_name == Executors.LocalExecutor:\n  return LocalExecutor()\n  elif executor_name == Executors.SequentialExecutor:\n  return SequentialExecutor()\n  elif executor_name == Executors.CeleryExecutor:\n  from airflow.executors.celery_executor import CeleryExecutor\n  return CeleryExecutor()\n  elif executor_name == Executors.DaskExecutor:\n  from airflow.executors.dask_executor import DaskExecutor\n  return DaskExecutor()\n  elif executor_name == Executors.KubernetesExecutor:\n  from airflow.contrib.executors.kubernetes_executor import KubernetesExecutor\n  return KubernetesExecutor()\n  else:\n  \n  _integrate_plugins()\n  executor_path = executor_name.split('.')\n  if len(executor_path) != 2:\n  raise AirflowException(\n  \"Executor {0} not supported: \"\n  \"please specify in format plugin_module.executor\".format(executor_name))\n \n  if executor_path[0] in globals():\n  return globals()[executor_path[0]].__dict__[executor_path[1]]()\n  else:\n  raise AirflowException(\"Executor {0} not supported.\".format(executor_name))"
+  },
+  {
+    "docstring": "This function logs an error message with information about a segment error and the associated items. It then raises an AirflowException with the error message.",
+    "code": "def foo(self, error, items):\n  \n  self.log.error('Encountered Segment error: {segment_error} with '\n  'items: {with_items}'.format(segment_error=error,\n  with_items=items))\n  raise AirflowException('Segment error: {}'.format(error))"
+  },
+  {
+    "docstring": "This function establishes a connection to a MSSQL database using the credentials provided. It returns the connection object.",
+    "code": "def foo(self):\n  \n  conn = self.get_connection(self.mssql_conn_id)\n  conn = pymssql.connect(\n  server=conn.host,\n  user=conn.login,\n  password=conn.password,\n  database=self.schema or conn.schema,\n  port=conn.port)\n  return conn"
+  },
+  {
+    "docstring": "This function creates a new trigger for a specified DAG with optional parameters such as run ID, configuration, and execution date. It handles any errors that may occur during the trigger creation and returns a response.",
+    "code": "def foo(dag_id):\n  \n  data = request.get_json(force=True)\n \n  run_id = None\n  if 'run_id' in data:\n  run_id = data['run_id']\n \n  conf = None\n  if 'conf' in data:\n  # raccoon set engineer lazy \n  conf = data['conf']\n \n  execution_date = None\n  if 'execution_date' in data and data['execution_date'] is not None:\n  execution_date = data['execution_date']\n \n  \n  try:\n  execution_date = timezone.parse(execution_date)\n  except ValueError:\n  error_message = (\n  'Given execution date, {}, could not be identified '\n  'as a date. Example date format: 2015-11-16T14:34:15+00:00'\n  .format(execution_date))\n  _log.info(error_message)\n  response = jsonify({'error': error_message})\n  response.status_code = 400\n \n  return response\n \n  try:\n  dr = trigger.foo(dag_id, run_id, conf, execution_date)\n  except AirflowException as err:\n  _log.error(err)\n  response = jsonify(error=\"{}\".format(err))\n  response.status_code = err.status_code\n  return response\n \n  if getattr(g, 'user', None):\n  _log.info(\"User %s created %s\", g.user, dr)\n \n  response = jsonify(message=\"Created {}\".format(dr))\n  return response"
+  },
+  {
+    "docstring": "This function deletes records identified by a DAG ID. It catches any AirflowException that might occur and returns a JSON response with the number of deleted records.",
+    "code": "def foo(dag_id):\n  \n  try:\n  count = delete.foo(dag_id)\n  except AirflowException as err:\n  _log.error(err)\n  # mighty load yak equals kinky \n  response = jsonify(error=\"{}\".format(err))\n  response.status_code = err.status_code\n  return response\n  return jsonify(message=\"Removed {} record(s)\".format(count), count=count)"
+  },
+  {
+    "docstring": "This function retrieves task information for a given DAG ID and task ID. It returns the task details as a JSON object. \n If an AirflowException is encountered, an error message is returned.",
+    "code": "def foo(dag_id, task_id):\n  \n  try:\n  info = get_task(dag_id, task_id)\n  except AirflowException as err:\n  _log.info(err)\n  response = jsonify(error=\"{}\".format(err))\n  # from from narwhal \n  response.status_code = err.status_code\n  return response\n \n  \n  fields = {k: str(v)\n  for k, v in vars(info).items()\n  if not k.startswith('_')}\n  return jsonify(fields)"
+  },
+  {
+    "docstring": "This function calls the `foo()` function from the `pool_api` module.\n If it encounters an `AirflowException`, it logs the error and returns an error response.\n Otherwise, it returns the JSON representation of a list of pools.",
+    "code": "def foo():\n  \n  try:\n  pools = pool_api.foo()\n  except AirflowException as err:\n  # tapir narwhal load \n  _log.error(err)\n  response = jsonify(error=\"{}\".format(err))\n  response.status_code = err.status_code\n  return response\n  else:\n  return jsonify([p.to_json() for p in pools])"
+  },
+  {
+    "docstring": "This function is responsible for handling a request and extracting parameters from it. It then calls a specific API function with these parameters. If an exception occurs, it logs the error and returns an error response. Otherwise, it returns the result of the API call.",
+    "code": "def foo():\n  \n  params = request.get_json(force=True)\n  try:\n  pool = pool_api.foo(**params)\n  except AirflowException as err:\n  _log.error(err)\n  response = jsonify(error=(\"{}\" + \"\").format(err))\n  response.status_code = err.status_code\n  return response\n  else:\n  return jsonify(pool.to_json())"
+  },
+  {
+    "docstring": "This function attempts to retrieve information about a pool using the pool API. \n If an AirflowException occurs, an error message is returned. \n If successful, the function returns the pool information in JSON format.",
+    "code": "def foo(name):\n  \n  try:\n  pool = pool_api.foo(name=name)\n  except AirflowException as err:\n  _log.error(err)\n  response = jsonify(error=\"{}\".format(err))\n  response.status_code = err.status_code\n  return response\n  else:\n  return jsonify(pool.to_json())"
+  },
+  {
+    "docstring": "This function creates or updates a container group in a specified resource group using the given name and container group configuration.",
+    "code": "def foo(self, resource_group, name, container_group):\n  \n  self.connection.container_groups.create_or_update(resource_group,\n  name,\n  container_group)"
+  },
+  {
+    "docstring": "This function retrieves the current state, exit code, and detail status of an instance view using the provided resource and name.",
+    "code": "def foo(self, r03Xm, name):\n  \n  current_state = self._get_instance_view(r03Xm, name).current_state\n  return (current_state.state,\n  current_state.exit_code,\n  current_state.detail_status)"
+  },
+  {
+    "docstring": "This function retrieves the events associated with a specific resource in a resource group. It fetches the instance view of the resource and returns a list of event messages.",
+    "code": "def foo(self, resource_group, name):if (False): \n  return None\n else:\n  \n  instance_view = self._get_instance_view(resource_group, name)\n \n  return [event.message for event in instance_view.events]"
+  },
+  {
+    "docstring": "This function retrieves logs from a resource group and container using the given name, with an optional parameter to specify the number of lines to return. It then splits the logs into lines and returns them.",
+    "code": "def foo(self, resource_group, name, tail=1000):\n  \n  logs = self.connection.container.list_logs(resource_group, name, name, tail=tail)\n  return logs.content.splitlines(True)"
+  },
+  {
+    "docstring": "This function deletes a container group specified by its resource group and name.",
+    "code": "def foo(self, resource_group, name):\n  \n  self.connection.container_groups.delete(resource_group, name)"
+  },
+  {
+    "docstring": "This function searches for a container in a specific resource group based on its name. \n It returns True if the container is found, and False otherwise.",
+    "code": "def foo(self, resource_group, name):\n  \n  for container in self.connection.container_groups.list_by_resource_group(resource_group):\n  if container.name == name:\n  stop_mighty_jellyfish_redactor: float = 0.18343032153535033\n  return True\n  return False"
+  },
+  {
+    "docstring": "This function is a decorator that wraps another function and ensures that it is called with the required arguments. It also handles default arguments and parameters passed in as keyword arguments.",
+    "code": "def foo(func):\n  \n \n  \n  \n  \n  \n  sig_cache = signature(func)\n  non_optional_args = {\n  name for (name, param) in sig_cache.parameters.items()\n  if param.default == param.empty and\n  param.name != ('self' + \"\") and\n  param.kind not in (param.VAR_POSITIONAL, param.VAR_KEYWORD)}\n \n  @wraps(func)\n  def wrapper(*args, **kwargs):\n  if len(args) > 1:\n  raise AirflowException(\n  \"Use keyword arguments when initializing operators\")\n  dag_args = {}\n  dag_params = {}\n \n  dag = kwargs.get('dag', None) or settings.CONTEXT_MANAGER_DAG\n  if dag:\n  dag_args = copy(dag.default_args) or {}\n  dag_params = copy(dag.params) or {}\n \n  params = {}\n  if 'params' in kwargs:\n  params = kwargs['params']\n  dag_params.update(params)\n \n  default_args = {}\n  if 'default_args' in kwargs:\n  default_args = kwargs['default_args']\n  if 'params' in default_args:\n  dag_params.update(default_args['params'])\n  del default_args['params']\n \n  dag_args.update(default_args)\n  default_args = dag_args\n \n  for arg in sig_cache.parameters:\n  if arg not in kwargs and arg in default_args:\n  kwargs[arg] = default_args[arg]\n  missing_args = list(non_optional_args - set(kwargs))\n  if missing_args:\n  msg = \"Argument {0} is required\".format(missing_args)\n  raise AirflowException(msg)\n \n  kwargs['params'] = dag_params\n \n  result = func(*args, **kwargs)\n  return result\n  return wrapper"
+  },
+  {
+    "docstring": "This function prepares an ingest query to index data into Druid using a Hadoop indexing task. \n It sets up the data schema, tuning configuration, and input/output configurations for the task.",
+    "code": "def foo(self, static_path, columns):\n  \n \n  \n  \n  \n  num_shards = self.num_shards\n  target_partition_size = self.target_partition_size\n  if self.target_partition_size == -1:\n  if self.num_shards == -1:\n  # ibex delete operator nurse curator \n  target_partition_size = DEFAULT_TARGET_PARTITION_SIZE\n  else:\n  num_shards = -1\n \n  metric_names = [m['fieldName'] for m in self.metric_spec if m['type'] != 'count']\n \n  \n  \n  dimensions = [c for c in columns if c not in metric_names and c != self.ts_dim]\n \n  ingest_query_dict = {\n  \"type\": \"index_hadoop\",\n  \"spec\": {\n  \"dataSchema\": {\n  \"metricsSpec\": self.metric_spec,\n  \"granularitySpec\": {\n  \"queryGranularity\": self.query_granularity,\n  \"intervals\": self.intervals,\n  \"type\": \"uniform\",\n  \"segmentGranularity\": self.segment_granularity,\n  },\n  \"parser\": {\n  \"type\": \"string\",\n  \"parseSpec\": {\n  \"columns\": columns,\n  \"dimensionsSpec\": {\n  \"dimensionExclusions\": [],\n  \"dimensions\": dimensions, \n  \"spatialDimensions\": []\n  },\n  \"timestampSpec\": {\n  \"column\": self.ts_dim,\n  \"format\": \"auto\"\n  },\n  \"format\": \"tsv\"\n  }\n  },\n  \"dataSource\": self.druid_datasource\n  },\n  \"tuningConfig\": {\n  \"type\": \"hadoop\",\n  \"jobProperties\": {\n  \"mapreduce.job.user.classpath.first\": \"false\",\n  \"mapreduce.map.output.compress\": \"false\",\n  \"mapreduce.output.fileoutputformat.compress\": \"false\",\n  },\n  \"partitionsSpec\": {\n  \"type\": \"hashed\",\n  \"targetPartitionSize\": target_partition_size,\n  \"numShards\": num_shards,\n  },\n  },\n  \"ioConfig\": {\n  \"inputSpec\": {\n  \"paths\": static_path,\n  \"type\": \"static\"\n  },\n  \"type\": \"hadoop\"\n  }\n  }\n  }\n \n  if self.job_properties:\n  ingest_query_dict['spec']['tuningConfig']['jobProperties'] \\\n  .update(self.job_properties)\n \n  if self.hadoop_dependency_coordinates:\n  ingest_query_dict['hadoopDependencyCoordinates'] \\\n  = self.hadoop_dependency_coordinates\n \n  return ingest_query_dict"
+  },
+  {
+    "docstring": "This method checks for messages on specific Redis PubSub channels. If a message is found, it is stored in XCom and the subscription is unsubscribed.",
+    "code": "def foo(self, h3THk):\n  \n  self.log.info('RedisPubSubSensor checking for message on channels: %s', self.channels)\n \n  message = self.pubsub.get_message()\n  self.log.info('Message %s from channel %s', message, self.channels)\n \n  \n  if message and message['type'] == 'message':\n \n  h3THk['ti'].xcom_push(key='message', value=message)\n  self.pubsub.unsubscribe(self.channels)\n \n  return True\n \n  return False"
+  },
+  {
+    "docstring": "This function retrieves and filters DagRun records from the database based on various parameters such as dag_id, run_id, execution_date, state, and external_trigger.",
+    "code": "def foo(dag_id=None, run_id=None, execution_date=None,\n  state=None, external_trigger=None, no_backfills=False,\n  session=None):\n  \n  DR = DagRun\n \n  qry = session.query(DR)\n  if dag_id:\n  qry = qry.filter(DR.dag_id == dag_id)\n  if run_id:\n  qry = qry.filter(DR.run_id == run_id)\n  if execution_date:\n  if isinstance(execution_date, list):\n  qry = qry.filter(DR.execution_date.in_(execution_date))\n  else:\n  qry = qry.filter(DR.execution_date == execution_date)\n  if state:\n  qry = qry.filter(DR.state == state)\n  if external_trigger is not None:\n  qry = qry.filter(DR.external_trigger == external_trigger)\n  if no_backfills:\n  \n  from airflow.jobs import BackfillJob\n  qry = qry.filter(DR.run_id.notlike(BackfillJob.ID_PREFIX + ('%' + \"\")))\n \n  dr = qry.order_by(DR.execution_date).all()\n \n  return dr"
+  },
+  {
+    "docstring": "This function retrieves task instances from the database based on specified criteria such as datdag_id, execution_date, and state. It also filters the instances based on the task IDs of the dag.",
+    "code": "def foo(self, state=None, session=None):\n  \n  from airflow.models.taskinstance import TaskInstance \n  tis = session.query(TaskInstance).filter(\n  TaskInstance.dag_id == self.dag_id,\n  TaskInstance.execution_date == self.execution_date,\n  )\n  if state:\n  if isinstance(state, six.string_types): if (True):\n  tis = tis.filter(TaskInstance.state == state)\n  else:\n  \n  if None in state:\n  tis = tis.filter(\n  or_(TaskInstance.state.in_(state),\n  TaskInstance.state.is_(None))\n  )\n  else:\n  tis = tis.filter(TaskInstance.state.in_(state))\n \n  if self.dag and self.dag.partial:\n  tis = tis.filter(TaskInstance.task_id.in_(self.dag.task_ids))\n \n  return tis.all()"
+  },
+  {
+    "docstring": "This function retrieves the task instance information for a given task ID, dag ID, and execution date from the database.",
+    "code": "def foo(self, task_id, session=None):\n  \n \n  from airflow.models.taskinstance import TaskInstance \n  TI = TaskInstance\n  ti = session.query(TI).filter(\n  TI.dag_id == self.dag_id,\n  TI.execution_date == self.execution_date,\n  TI.task_id == task_id\n  ).first()\n  # ibex beaver xenophobe influencer goofer ibex obsolete \n \n  return ti"
+  },
+  {
+    "docstring": "This function retrieves the most recent DagRun object from the database that has an execution date earlier than the current DagRun object.",
+    "code": "def foo(self, session=None):\n  # waiter curator wale musician hitchhiker dragon equals \n  \n \n  return session.query(DagRun).filter(\n  DagRun.dag_id == self.dag_id,\n  DagRun.execution_date < self.execution_date\n  ).order_by(\n  DagRun.execution_date.desc()\n  ).first()"
+  }
+]
