@@ -23,7 +23,7 @@ def generate_comment(code):
     This function ........\n"""
     
     response = client.chat.completions.create(
-    model= "gpt-3.5-turbo",#"gpt-4-1106-preview",
+    model= "gpt-4-1106-preview",#"gpt-4-1106-preview",#"gpt-3.5-turbo"
     messages=[
     {"role": "system", "content": prompt},
     {"role": "user", "content": f""}
@@ -32,9 +32,9 @@ def generate_comment(code):
     return response.choices[0].message.content
 
 
-csv_file_path = 'dataset_final.csv'
-output_csv_file_path = 'output_with_comments_GPT3.5_(30 words).csv'  # Output CSV file name
-output_tsv_file_path = 'output_with_comments_GPT3.5_(30 words).tsv'  # Output TSV file name
+csv_file_path = 'mt_code.csv'
+output_csv_file_path = 'mt4.csv'  # Output CSV file name
+output_tsv_file_path = 'mt4.tsv'  # Output TSV file name
 
 # Process the CSV file and write to a new CSV and TSV files
 with open(csv_file_path, mode="r", newline="", encoding="utf-8") as csv_file, \

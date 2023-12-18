@@ -1,4 +1,4 @@
-docstring,code
+docstring,code,generated_comment
 "str->list
   Convert XML to URL List.
   From Biligrab.","def foo(xml_data):
@@ -7,7 +7,7 @@ docstring,code
   for node in dom.getElementsByTagName('durl'):
   url = node.getElementsByTagName('url')[0]
   rawurl.append(url.childNodes[0].data)
-  return rawurl"
+  return rawurl",This function takes an XML data as input and extracts the 'url' values from the 'durl' nodes. It then returns a list containing all the extracted URLs.
 Downloads Dailymotion videos by URL.,"def foo(url, output_dir='.', merge=True, info_only=False, **kwargs):
  
   html = get_content(rebuilt_url(url))
@@ -28,13 +28,13 @@ Downloads Dailymotion videos by URL.,"def foo(url, output_dir='.', merge=True, i
  
   print_info(site_info, title, mime, size)
   if not info_only:
-  download_urls([real_url], title, ext, size, output_dir=output_dir, merge=merge)"
+  download_urls([real_url], title, ext, size, output_dir=output_dir, merge=merge)","This function extracts information from a given URL and downloads a video from it. It parses the HTML content, retrieves video data, and downloads the video based on the specified quality."
 Format text with color or other effects into ANSI escaped string.,"def foo(text, *colors):
   
-  return ""\33[{}m{content}\33[{}m"".format("";"".join([str(color) for color in colors]), RESET, content=text) if IS_ANSI_TERMINAL and colors else text"
+  return ""\33[{}m{content}\33[{}m"".format("";"".join([str(color) for color in colors]), RESET, content=text) if IS_ANSI_TERMINAL and colors else text",This function takes a string and optional color codes as arguments. It returns the string with the specified colors applied if the terminal supports ANSI escape codes.
 Print a log message to standard error.,"def foo(text, *colors):
   
-  sys.stderr.write(sprint(""{}: {}"".format(script_name, text), *colors) + ""\n"")"
+  sys.stderr.write(sprint(""{}: {}"".format(script_name, text), *colors) + ""\n"")","This function takes in a text and an arbitrary number of colors as arguments. It writes the text to the stderr file stream, formatted with the specified colors."
 Detect operating system.,"def foo():
   
  
@@ -61,7 +61,7 @@ Detect operating system.,"def foo():
   elif 'bsd' in syst:
   os = 'bsd'
  
-  return os"
+  return os","This function determines the operating system on which it is running by checking the value of the system environment variable. If the value contains certain keywords, it identifies the corresponding operating system."
 Splicing URLs according to video ID to get video details,"def foo(video_id):
   
   
@@ -106,7 +106,7 @@ Splicing URLs according to video ID to get video details,"def foo(video_id):
   while 1:
   url = tmp()
   if url.split(""="")[-1][0] != ""-"": 
-  return url"
+  return url",This function generates a URL for a video using a given video ID. It uses a random number and a data array to obfuscate the URL. The final URL is returned.
 Converts a string to a valid filename.,"def foo(text, os=detect_os()):
   
  
@@ -148,7 +148,7 @@ Converts a string to a valid filename.,"def foo(text, os=detect_os()):
   text = text[1:]
  
   text = text[:80] 
-  return text"
+  return text",This function takes a text input and processes it based on the detected operating system. It replaces certain characters and limits the text length.
 Downloads CBS videos by URL.,"def foo(url, output_dir='.', merge=True, info_only=False, **kwargs):
   
  
@@ -156,7 +156,7 @@ Downloads CBS videos by URL.,"def foo(url, output_dir='.', merge=True, info_only
   pid = match1(html, r'video\.settings\.pid\s*=\s*\'([^\']+)\'')
   title = match1(html, r'video\.settings\.title\s*=\s*\""([^\""]+)\""')
  
-  theplatform_download_by_pid(pid, title, output_dir=output_dir, merge=merge, info_only=info_only)"
+  theplatform_download_by_pid(pid, title, output_dir=output_dir, merge=merge, info_only=info_only)",This function downloads video content from a given URL using the theplatform API. It extracts the video ID and title from the HTML and then calls the theplatform_download_by_pid function to download and save the video files. The downloaded files can be merged into one file if needed.
 "Override the original one
   Ugly ugly dirty hack","def foo(self, **kwargs):
   
@@ -217,7 +217,7 @@ Downloads CBS videos by URL.,"def foo(url, output_dir='.', merge=True, info_only
   with open(os.path.join(kwargs['output_dir'], filename),
   'w', encoding='utf-8') as x:
   x.write(srt)
-  print('Done.')"
+  print('Done.')","This function is used to handle various options passed as keyword arguments. It checks for options like 'json_output' to output JSON data, 'info_only' to only display info, and 'stream_id' to retrieve specific streams. It also handles downloading video streams and saving captions."
 "Scans through a string for substrings matched some patterns.
  
   Args:
@@ -233,7 +233,7 @@ Downloads CBS videos by URL.,"def foo(url, output_dir='.', merge=True, info_only
   match = re.findall(pattern, text)
   ret += match
  
-  return ret"
+  return ret",This function takes a text and a list of patterns as input. It uses regular expressions to find all occurrences of the patterns in the text and returns them as a list.
 "Parses the query string of a URL and returns the value of a parameter.
  
   Args:
@@ -247,7 +247,7 @@ Downloads CBS videos by URL.,"def foo(url, output_dir='.', merge=True, info_only
   try:
   return parse.parse_qs(parse.urlparse(url).query)[param][0]
   except:
-  return None"
+  return None","This function takes a URL and a parameter as input. It parses the query string from the URL and returns the value of the specified parameter. If the parameter is not found, it returns None."
 "Gets the content of a URL via sending a HTTP GET request.
  
   Args:
@@ -286,7 +286,7 @@ Downloads CBS videos by URL.,"def foo(url, output_dir='.', merge=True, info_only
   else:
   data = data.decode('utf-8', 'ignore')
  
-  return data"
+  return data","This function takes a URL as input and sends a GET request to that URL with optional headers. It retrieves the response, reads the data, and decodes it using the specified encoding. The decoded data is then returned."
 "Post the content of a URL via sending a HTTP POST request.
  
   Args:
@@ -330,7 +330,7 @@ Downloads CBS videos by URL.,"def foo(url, output_dir='.', merge=True, info_only
   else:
   data = data.decode('utf-8')
  
-  return data"
+  return data",This function sends an HTTP request to the provided URL with optional headers and post data. It can handle raw post data and will automatically decode the response. It also handles gzip and deflate content encoding.
 Parses host name and port number from a string.,"def foo(host):
   
   if re.match(r'^(\d+)$', host) is not None:
@@ -340,14 +340,16 @@ Parses host name and port number from a string.,"def foo(host):
   o = parse.urlparse(host)
   hostname = o.hostname or ""0.0.0.0""
   port = o.port or 0
-  return (hostname, port)"
+  return (hostname, port)","This function takes in a host as input and returns a tuple containing the hostname and port. 
+It first checks if the host is given in numerical format and if so, returns the IP address and port. 
+If not, it parses the host using urlparse and extracts the hostname and port if available. If not, it returns default values."
 "Checks if a task is either queued or running in this executor
  
   :param task_instance: TaskInstance
   :return: True if the task is known to this executor","def foo(self, task_instance):
   
   if task_instance.key in self.queued_tasks or task_instance.key in self.running:
-  return True"
+  return True","This function checks if a task instance is already in the queue or currently running. If it is, it returns True."
 "Returns and flush the event buffer. In case dag_ids is specified
   it will only return and flush events for the given dag_ids. Otherwise
   it returns and flushes all
@@ -365,12 +367,12 @@ Parses host name and port number from a string.,"def foo(host):
   if dag_id in dag_ids:
   cleared_events[key] = self.event_buffer.pop(key)
  
-  return cleared_events"
+  return cleared_events","This function clears events from the event buffer. If dag_ids is not provided, it clears all events. If dag_ids is provided, it clears events corresponding to those dag_ids."
 Returns a snowflake.connection object,"def foo(self):
   
   conn_config = self._get_conn_params()
   conn = snowflake.connector.connect(**conn_config)
-  return conn"
+  return conn",This function establishes a connection to a Snowflake database using the provided connection parameters and returns the connection object.
 "returns aws_access_key_id, aws_secret_access_key
   from extra
  
@@ -383,7 +385,7 @@ Returns a snowflake.connection object,"def foo(self):
   'aws_access_key_id')
   aws_secret_access_key = connection_object.extra_dejson.get(
   'aws_secret_access_key')
-  return aws_access_key_id, aws_secret_access_key"
+  return aws_access_key_id, aws_secret_access_key","This function retrieves the AWS access key and secret access key from the snowflake connection object, if available."
 "Fetches a field from extras, and returns it. This is some Airflow
   magic. The grpc hook type adds custom UI elements
   to the hook page, which allow admins to specify scopes, credential pem files, etc.
@@ -393,7 +395,7 @@ Returns a snowflake.connection object,"def foo(self):
   if full_field_name in self.extras:
   return self.extras[full_field_name]
   else:
-  return default"
+  return default","This function retrieves a value from a dictionary called `extras` using a field name as key. If the field name is not found, it returns a default value."
 "Executes SQL using psycopg2 copy_expert method.
   Necessary to execute COPY command without access to a superuser.
  
@@ -412,10 +414,10 @@ Returns a snowflake.connection object,"def foo(self):
   with closing(conn.cursor()) as cur:
   cur.copy_expert(sql, f)
   f.truncate(f.tell())
-  conn.commit()"
+  conn.commit()","This function takes in a SQL query and a filename. It checks if the filename exists, and if not, creates a new file. Then, it opens the file and connects to the database. It executes the SQL query and writes the results to the file. Finally, it commits the changes."
 Dumps a database table into a tab-delimited file,"def foo(self, table, tmp_file):
   
-  self.copy_expert(""COPY {table} TO STDOUT"".format(table=table), tmp_file)"
+  self.copy_expert(""COPY {table} TO STDOUT"".format(table=table), tmp_file)",This function takes a table name and a temporary file as input. It copies the contents of the table to the temporary file using the PostgreSQL COPY command.
 Uploads the file to Google cloud storage,"def foo(self, context):
   
   hook = GoogleCloudStorageHook(
@@ -428,7 +430,8 @@ Uploads the file to Google cloud storage,"def foo(self, context):
   mime_type=self.mime_type,
   filename=self.src,
   gzip=self.gzip,
-  )"
+  )","This function uploads a file from local storage to a Google Cloud Storage bucket. 
+It requires the necessary credentials and parameters, such as bucket name and file details."
 "Gets the max partition for a table.
  
   :param schema: The hive schema the table lives in
@@ -459,7 +462,7 @@ Uploads the file to Google cloud storage,"def foo(self, context):
   schema, table = table.split('.')
   hh = HiveMetastoreHook(metastore_conn_id=metastore_conn_id)
   return hh.foo(
-  schema=schema, table_name=table, field=field, filter_map=filter_map)"
+  schema=schema, table_name=table, field=field, filter_map=filter_map)","This function retrieves metadata about a table in a Hive metastore using the given connection ID. It allows for specifying the schema, table name, field, and filter map."
 Returns a mysql connection object,"def foo(self):
   
   conn = self.get_connection(self.mysql_conn_id)
@@ -501,7 +504,7 @@ Returns a mysql connection object,"def foo(self):
   if local_infile:
   conn_config[""local_infile""] = 1
   conn = MySQLdb.connect(**conn_config)
-  return conn"
+  return conn",This function establishes a connection to a MySQL database using the provided credentials and configuration.
 "Returns the state of a TaskInstance at the command line.
   >>> airflow task_state tutorial sleep 2015-01-01
   success","def foo(args):
@@ -509,7 +512,7 @@ Returns a mysql connection object,"def foo(self):
   dag = get_dag(args)
   task = dag.get_task(task_id=args.task_id)
   ti = TaskInstance(task, args.execution_date)
-  print(ti.current_state())"
+  print(ti.current_state())","This function receives arguments, retrieves tasks, creates a task instance, and prints its current state."
 "Retrieves connection to Cloud Translate
  
   :return: Google Cloud Translate client object.
@@ -517,7 +520,7 @@ Returns a mysql connection object,"def foo(self):
   
   if not self._client:
   self._client = Client(credentials=self._get_credentials())
-  return self._client"
+  return self._client","This function checks if the client object exists. If not, it creates a new client object with the appropriate credentials and returns it."
 "Translate a string or list of strings.
  
   See https://cloud.google.com/translate/docs/translating-text
@@ -569,7 +572,7 @@ Returns a mysql connection object,"def foo(self):
   format_=format_,
   source_language=source_language,
   model=model,
-  )"
+  )",This function takes a list of values and translates them from a source language to a target language using a translation client. It also allows for specifying the format and translation model to be used.
 "Retrieves a resource containing information about a Cloud SQL instance.
  
   :param instance: Database instance ID. This does not include the project ID.
@@ -583,7 +586,7 @@ Returns a mysql connection object,"def foo(self):
   return self.get_conn().instances().get(
   project=project_id,
   instance=instance
-  ).execute(num_retries=self.num_retries)"
+  ).execute(num_retries=self.num_retries)",This function retrieves information about a specific instance in a Google Cloud project using the project ID and instance name as input.
 "Creates a new Cloud SQL instance.
  
   :param body: Body required by the Cloud SQL insert API, as described in
@@ -600,7 +603,7 @@ Returns a mysql connection object,"def foo(self):
   ).execute(num_retries=self.num_retries)
   operation_name = response[""name""]
   self._wait_for_operation_to_complete(project_id=project_id,
-  operation_name=operation_name)"
+  operation_name=operation_name)",This function inserts a body into a Google Cloud instance in a specific project. It waits for the operation to complete before returning.
 "Updates settings of a Cloud SQL instance.
  
   Caution: This is not a partial update, so you must include values for
@@ -623,7 +626,7 @@ Returns a mysql connection object,"def foo(self):
   ).execute(num_retries=self.num_retries)
   operation_name = response[""name""]
   self._wait_for_operation_to_complete(project_id=project_id,
-  operation_name=operation_name)"
+  operation_name=operation_name)","This function takes in a patch request body, the instance name, and an optional project ID. It updates the specified instance in the given project by sending a PATCH request to the server. It then waits for the operation to complete before returning."
 "Deletes a Cloud SQL instance.
  
   :param project_id: Project ID of the project that contains the instance. If set
@@ -639,7 +642,7 @@ Returns a mysql connection object,"def foo(self):
   ).execute(num_retries=self.num_retries)
   operation_name = response[""name""]
   self._wait_for_operation_to_complete(project_id=project_id,
-  operation_name=operation_name)"
+  operation_name=operation_name)",This function deletes a specific instance from a project in Google Cloud. It retrieves the name of the operation from the response and waits for the operation to complete.
 "Retrieves a database resource from a Cloud SQL instance.
  
   :param instance: Database instance ID. This does not include the project ID.
@@ -657,7 +660,7 @@ Returns a mysql connection object,"def foo(self):
   project=project_id,
   instance=instance,
   database=database
-  ).execute(num_retries=self.num_retries)"
+  ).execute(num_retries=self.num_retries)",This function retrieves information about a database within a specified project and instance. It returns the database information using the Google Cloud SQL API.
 "Creates a new database inside a Cloud SQL instance.
  
   :param instance: Database instance ID. This does not include the project ID.
@@ -677,7 +680,7 @@ Returns a mysql connection object,"def foo(self):
   ).execute(num_retries=self.num_retries)
   operation_name = response[""name""]
   self._wait_for_operation_to_complete(project_id=project_id,
-  operation_name=operation_name)"
+  operation_name=operation_name)","This function inserts a database into a Google Cloud instance and waits for the operation to complete. It uses the project ID, instance name, and request body as parameters."
 "Updates a database resource inside a Cloud SQL instance.
  
   This method supports patch semantics.
@@ -703,7 +706,7 @@ Returns a mysql connection object,"def foo(self):
   ).execute(num_retries=self.num_retries)
   operation_name = response[""name""]
   self._wait_for_operation_to_complete(project_id=project_id,
-  operation_name=operation_name)"
+  operation_name=operation_name)",This function updates a database in a specified instance with the given body. It waits for the operation to complete before returning.
 "Deletes a database from a Cloud SQL instance.
  
   :param instance: Database instance ID. This does not include the project ID.
@@ -722,7 +725,7 @@ Returns a mysql connection object,"def foo(self):
   ).execute(num_retries=self.num_retries)
   operation_name = response[""name""]
   self._wait_for_operation_to_complete(project_id=project_id,
-  operation_name=operation_name)"
+  operation_name=operation_name)",This function deletes a database from a specified project and instance. It waits for the deletion operation to complete before returning.
 "Exports data from a Cloud SQL instance to a Cloud Storage bucket as a SQL dump
   or CSV file.
  
@@ -749,7 +752,7 @@ Returns a mysql connection object,"def foo(self):
   except HttpError as ex:
   raise AirflowException(
   'Exporting instance {} failed: {}'.format(instance, ex.content)
-  )"
+  )",This function exports a database instance by making an API call to the Google Cloud Platform. It waits for the operation to complete and handles any potential errors.
 "Starts Cloud SQL Proxy.
  
   You have to remember to stop the proxy if you started it!","def foo(self):
@@ -789,7 +792,8 @@ Returns a mysql connection object,"def foo(self):
   ""Error when starting the cloud_sql_proxy {}!"".format(
   line))
   if ""Ready for new connections"" in line:
-  return"
+  return","This function runs the Cloud SQL proxy to establish a connection with a Google Cloud SQL instance. 
+It checks if the proxy is already running and starts it if not. It handles error conditions and logs information during the process."
 "Stops running proxy.
  
   You should stop the proxy after you stop using it.","def foo(self):
@@ -820,7 +824,7 @@ Returns a mysql connection object,"def foo(self):
   self.log.info(""Removing generated credentials file %s"",
   self.credentials_path)
   
-  os.remove(self.credentials_path)"
+  os.remove(self.credentials_path)","This function stops the cloud SQL proxy process, removes the socket directory, and removes the downloaded proxy and generated credentials file if they exist."
 Returns version of the Cloud SQL Proxy.,"def foo(self):
   
   self._download_sql_proxy_if_needed()
@@ -833,7 +837,7 @@ Returns version of the Cloud SQL Proxy.,"def foo(self):
   if m:
   return m.group(1)
   else:
-  return None"
+  return None","This function checks if the SQL proxy is downloaded, runs a command to get the version of the proxy, and returns the version number."
 "Create connection in the Connection table, according to whether it uses
   proxy, TCP, UNIX sockets, SSL. Connection ID will be randomly generated.
  
@@ -845,7 +849,8 @@ Returns version of the Cloud SQL Proxy.,"def foo(self):
   self.log.info(""Creating connection %s"", self.db_conn_id)
   connection.parse_from_uri(uri)
   session.add(connection)
-  session.commit()"
+  session.commit()","This function creates a new database connection using a provided connection ID and generates a connection URI. 
+It then creates a new connection object and adds it to the session before committing the changes."
 "Retrieves the dynamically created connection from the Connection table.
  
   :param session: Session of the SQL Alchemy ORM (automatically generated with
@@ -856,7 +861,7 @@ Returns version of the Cloud SQL Proxy.,"def foo(self):
   Connection.conn_id == self.db_conn_id)
   if connections.count():
   return connections[0]
-  return None"
+  return None","This function retrieves a connection from a database session based on the provided connection ID. It returns the first connection if found, otherwise it returns None."
 "Delete the dynamically created connection from the Connection table.
  
   :param session: Session of the SQL Alchemy ORM (automatically generated with
@@ -870,7 +875,7 @@ Returns version of the Cloud SQL Proxy.,"def foo(self):
   session.delete(connection)
   session.commit()
   else:
-  self.log.info(""Connection was already deleted!"")"
+  self.log.info(""Connection was already deleted!"")","This function deletes a connection from a database session using the provided connection ID. If the connection exists, it is deleted and the changes are committed. If the connection does not exist, a log message is printed."
 "Retrieve Cloud SQL Proxy runner. It is used to manage the proxy
   lifecycle per task.
  
@@ -885,7 +890,8 @@ Returns version of the Cloud SQL Proxy.,"def foo(self):
   project_id=self.project_id,
   sql_proxy_version=self.sql_proxy_version,
   sql_proxy_binary_path=self.sql_proxy_binary_path
-  )"
+  )","This function returns a CloudSqlProxyRunner instance with the specified parameters, 
+    if the use_proxy flag is set to True. Otherwise, it raises an exception."
 "Retrieve database hook. This is the actual Postgres or MySQL database hook
   that uses proxy or connects directly to the Google Cloud SQL database.","def foo(self):
   
@@ -895,19 +901,21 @@ Returns version of the Cloud SQL Proxy.,"def foo(self):
   else:
   self.db_hook = MySqlHook(mysql_conn_id=self.db_conn_id,
   schema=self.database)
-  return self.db_hook"
+  return self.db_hook","This function checks the database type and creates a corresponding database connection hook. 
+If the database type is PostgreSQL, it creates a PostgresHook, otherwise it creates a MySqlHook. 
+The hook is then returned."
 Clean up database hook after it was used.,"def foo(self):
   
   if self.database_type == 'postgres':
   if hasattr(self.db_hook,
   'conn') and self.db_hook.conn and self.db_hook.conn.notices:
   for output in self.db_hook.conn.notices:
-  self.log.info(output)"
+  self.log.info(output)","This function checks if the database type is postgres. If it is, it checks if the database hook has a connection and if there are any notices. If so, it logs the notices as info."
 Reserve free TCP port to be used by Cloud SQL Proxy,"def foo(self):
   
   self.reserved_tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   self.reserved_tcp_socket.bind(('127.0.0.1', 0))
-  self.sql_proxy_tcp_port = self.reserved_tcp_socket.getsockname()[1]"
+  self.sql_proxy_tcp_port = self.reserved_tcp_socket.getsockname()[1]",This function creates a TCP socket and binds it to the localhost IP address and a random available port. It then retrieves the port number and assigns it to a variable.
 "Replaces invalid MLEngine job_id characters with '_'.
  
   This also adds a leading 'z' in case job_id starts with an invalid
@@ -939,7 +947,7 @@ Reserve free TCP port to be used by Cloud SQL Proxy,"def foo(self):
   
   cleansed_job_id += re.sub(r'[^0-9a-zA-Z]+', '_', job[tracker:])
  
-  return cleansed_job_id"
+  return cleansed_job_id",This function takes a job identifier as input and cleanses it. It adds a prefix if the job identifier starts with a number or double open brackets. It replaces any non-alphanumeric characters with underscores.
 Extract error code from ftp exception,"def foo(self, e):
   
   try:
@@ -947,7 +955,8 @@ Extract error code from ftp exception,"def foo(self, e):
   code = int(matches.group(0))
   return code
   except ValueError:
-  return e"
+  return e","This function takes in an error object and attempts to extract and return the error code. 
+If the extraction is successful, the code is returned as an integer. If not, the original error object is returned."
 Remove any existing DAG runs for the perf test DAGs.,"def foo():
   
   session = settings.Session()
@@ -956,7 +965,7 @@ Remove any existing DAG runs for the perf test DAGs.,"def foo():
   ).all()
   for dr in drs:
   logging.info('Deleting DagRun :: {}'.format(dr))
-  session.delete(dr)"
+  session.delete(dr)",This function deletes all the instances of the DagRun model that have a dag_id that matches any of the DAG_IDS provided.
 Remove any existing task instances for the perf test DAGs.,"def foo():
   
   session = settings.Session()
@@ -970,7 +979,7 @@ Remove any existing task instances for the perf test DAGs.,"def foo():
   for ti in tis:
   logging.info('Deleting TaskInstance :: {}'.format(ti))
   session.delete(ti)
-  session.commit()"
+  session.commit()",This function deletes TaskInstances for specified DAG_IDs using SQLAlchemy session and logging.
 Toggle the pause state of the DAGs in the test.,"def foo(is_paused):
   
   session = settings.Session()
@@ -979,7 +988,7 @@ Toggle the pause state of the DAGs in the test.,"def foo(is_paused):
   for dm in dms:
   logging.info('Setting DAG :: {} is_paused={}'.format(dm, is_paused))
   dm.is_paused = is_paused
-  session.commit()"
+  session.commit()","This function updates the ""is_paused"" property of multiple DAGs in a database session with the provided value."
 Override the scheduler heartbeat to determine when the test is complete,"def foo(self):
   
   super(SchedulerMetricsJob, self).heartbeat()
@@ -1010,7 +1019,7 @@ Override the scheduler heartbeat to determine when the test is complete,"def foo
   self.log.info(""Test timeout reached. Printing available stats."")
   self.print_stats()
   set_dags_paused_state(True)
-  sys.exit()"
+  sys.exit()","This function is responsible for monitoring the progress of task instances in a scheduler job. It checks if all task instances have been successfully processed or if the maximum runtime has been exceeded, and takes appropriate actions."
 Invoke Lambda Function,"def foo(self, payload):
   
  
@@ -1024,7 +1033,7 @@ Invoke Lambda Function,"def foo(self, payload):
   Qualifier=self.qualifier
   )
  
-  return response"
+  return response",This function invokes an AWS Lambda function with the specified parameters and returns the response.
 "Creates Operators needed for model evaluation and returns.
  
   It gets prediction over inputs via Cloud ML Engine BatchPrediction API by
@@ -1237,7 +1246,7 @@ Invoke Lambda Function,"def foo(self, payload):
   dag=dag)
   evaluate_validation.set_upstream(evaluate_summary)
  
-  return evaluate_prediction, evaluate_summary, evaluate_validation"
+  return evaluate_prediction, evaluate_summary, evaluate_validation",This function is used to evaluate the performance of a machine learning model by performing batch prediction on input data. It then calculates metrics using a provided function and validates the results against a summary. The function handles the setup and execution of the evaluation process.
 "Creates the directory specified by path, creating intermediate directories
   as necessary. If directory already exists, this is a no-op.
  
@@ -1253,7 +1262,7 @@ Invoke Lambda Function,"def foo(self, payload):
   if not os.path.isdir(path):
   raise
   finally:
-  os.umask(o_umask)"
+  os.umask(o_umask)",This function creates a directory at the given path with the specified permission mode. It handles cases where the directory already exists or if there are any errors.
 "A small helper function to convert a string to a numeric value
   if appropriate
  
@@ -1264,7 +1273,7 @@ Invoke Lambda Function,"def foo(self, payload):
   ret = float(s)
   except (ValueError, TypeError):
   ret = s
-  return ret"
+  return ret","This function takes a string or number as input and tries to convert it to a float. If the conversion is successful, it returns the float. If not, it returns the original string or number."
 "Make a naive datetime.datetime in a given time zone aware.
  
   :param value: datetime
@@ -1292,7 +1301,7 @@ Invoke Lambda Function,"def foo(self, payload):
   return timezone.convert(value)
   else:
   
-  return value.replace(tzinfo=timezone)"
+  return value.replace(tzinfo=timezone)","This function takes a datetime value and a timezone as input. It checks if the timezone is None, if so it assigns it a default value. Then, it checks if the datetime value is already localized. If not, it converts it to a localized datetime. Finally, it returns the datetime value with the appropriate timezone information."
 "Make an aware datetime.datetime naive in a given time zone.
  
   :param value: datetime
@@ -1317,7 +1326,7 @@ Invoke Lambda Function,"def foo(self, payload):
   o.second,
   o.microsecond)
  
-  return naive"
+  return naive","This function converts a datetime object to a specified timezone. If no timezone is provided, it uses a default timezone. It raises an error if the datetime object is naive (not aware of timezone)."
 "Wrapper around datetime.datetime that adds settings.TIMEZONE if tzinfo not specified
  
   :return: datetime.datetime","def foo(*args, **kwargs):
@@ -1325,7 +1334,7 @@ Invoke Lambda Function,"def foo(self, payload):
   if 'tzinfo' not in kwargs:
   kwargs['tzinfo'] = TIMEZONE
  
-  return dt.foo(*args, **kwargs)"
+  return dt.foo(*args, **kwargs)","This function takes in variable-length arguments and keyword arguments. If the 'tzinfo' keyword argument is not provided, it assigns a default value. It then calls a method 'foo' on a datetime object with the provided arguments and keyword arguments."
 Establish a connection to druid broker.,"def foo(self):
   
   conn = self.get_connection(self.druid_broker_conn_id)
@@ -1336,7 +1345,7 @@ Establish a connection to druid broker.,"def foo(self):
   scheme=conn.extra_dejson.get('schema', 'http')
   )
   self.log.info('Get the connection to druid broker on %s', conn.host)
-  return druid_broker_conn"
+  return druid_broker_conn",This function establishes a connection to a Druid broker using the provided connection parameters and returns the connection object.
 "Returns http session for use with requests
  
   :param headers: additional headers to be passed through as a dictionary
@@ -1365,7 +1374,7 @@ Establish a connection to druid broker.,"def foo(self):
   if headers:
   session.headers.update(headers)
  
-  return session"
+  return session","This function creates a session object for making HTTP requests. It initializes the session with connection details, such as the base URL and authentication credentials. It also allows for custom headers to be passed in."
 "Performs the request
  
   :param endpoint: the endpoint to be called i.e. resource/v1/query?
@@ -1410,7 +1419,7 @@ Establish a connection to druid broker.,"def foo(self):
  
   prepped_request = session.prepare_request(req)
   self.log.info(""Sending '%s' to url: %s"", self.method, url)
-  return self.run_and_check(session, prepped_request, extra_options)"
+  return self.run_and_check(session, prepped_request, extra_options)",This function sends HTTP requests to a given endpoint using the specified method. It sets up the request and prepares the request headers and body before sending it. The response is then checked and returned.
 "Checks the status code and raise an AirflowException exception on non 2XX or 3XX
   status codes
  
@@ -1423,7 +1432,7 @@ Establish a connection to druid broker.,"def foo(self):
   self.log.error(""HTTP error: %s"", response.reason)
   if self.method not in ['GET', 'HEAD']:
   self.log.error(response.text)
-  raise AirflowException(str(response.status_code) + "":"" + response.reason)"
+  raise AirflowException(str(response.status_code) + "":"" + response.reason)",This function performs error handling for HTTP requests. It raises an AirflowException if the response status code is not successful and logs the error message.
 "Grabs extra options like timeout and actually runs the request,
   checking for the result
  
@@ -1454,7 +1463,7 @@ Establish a connection to druid broker.,"def foo(self):
  
   except requests.exceptions.ConnectionError as ex:
   self.log.warn(str(ex) + ' Tenacity will retry to execute the operation')
-  raise ex"
+  raise ex","This function sends a HTTP request using a session object and a prepped request object. It allows for customizing the request with additional options, such as streaming, verification, proxies, certificates, timeout, and allow redirects. It also checks the response and handles connection errors."
 Contextmanager that will create and teardown a session.,"def foo():
   
   session = settings.Session()
@@ -1465,7 +1474,7 @@ Contextmanager that will create and teardown a session.,"def foo():
   session.rollback()
   raise
   finally:
-  session.close()"
+  session.close()","This function creates a session object and yields it. After the yield statement, it commits the changes made in the session. If an exception occurs, it rolls back the changes and raises the exception. Finally, it closes the session."
 "Function decorator that provides a session if it isn't provided.
   If you want to reuse a session or run the function as part of a
   database transaction, you pass it to the function, if not this wrapper
@@ -1487,7 +1496,7 @@ Contextmanager that will create and teardown a session.,"def foo():
   kwargs[arg_session] = session
   return func(*args, **kwargs)
  
-  return wrapper"
+  return wrapper","This function is a decorator that adds a session argument to the decorated function. If the session argument is provided, the function is called with it. Otherwise, a session is created and passed to the function."
 Clear out the database,"def foo():
   
   from airflow import models
@@ -1505,7 +1514,7 @@ Clear out the database,"def foo():
   from flask_appbuilder.models.sqla import Base
   Base.metadata.drop_all(settings.engine)
  
-  initdb()"
+  initdb()",This function drops existing tables and initializes the database.
 Parses some DatabaseError to provide a better error message,"def foo(e):
   
   if (hasattr(e, 'message') and
@@ -1515,14 +1524,14 @@ Parses some DatabaseError to provide a better error message,"def foo(e):
   name=e.message['errorName'],
   message=e.message['message']))
   else:
-  return str(e)"
+  return str(e)","This function takes an error object as input and checks if it has the attributes 'message', 'errorName', and 'message'. If it does, it formats and returns a string using those attributes. Otherwise, it returns the error object converted to a string."
 Get a set of records from Presto,"def foo(self, hql, parameters=None):
   
   try:
   return super().get_records(
   self._strip_sql(hql), parameters)
   except DatabaseError as e:
-  raise PrestoException(self._get_pretty_exception_message(e))"
+  raise PrestoException(self._get_pretty_exception_message(e))",This function executes a HiveQL query and returns the result as a list. It handles any database errors and raises a customized exception. Parameters can be passed to the query.
 Get a pandas dataframe from a sql query.,"def foo(self, hql, parameters=None):
   
   import pandas
@@ -1538,10 +1547,11 @@ Get a pandas dataframe from a sql query.,"def foo(self, hql, parameters=None):
   df.columns = [c[0] for c in column_descriptions]
   else:
   df = pandas.DataFrame()
-  return df"
+  return df","This function executes a given HQL (Hive Query Language) query using a cursor. 
+It fetches the data and returns it as a DataFrame object using the pandas library."
 Execute the statement against Presto. Can be used to create views.,"def foo(self, hql, parameters=None):
   
-  return super().run(self._strip_sql(hql), parameters)"
+  return super().run(self._strip_sql(hql), parameters)","This function is a wrapper around a method called `run`. It accepts an HQL query and optional parameters, strips any SQL statements from the query, and then calls the `run` method with the stripped query and parameters."
 "A generic way to insert a set of tuples into a table.
  
   :param table: Name of the target table
@@ -1551,7 +1561,7 @@ Execute the statement against Presto. Can be used to create views.,"def foo(self
   :param target_fields: The names of the columns to fill in the table
   :type target_fields: iterable of strings","def foo(self, table, rows, target_fields=None):
   
-  super().insert_rows(table, rows, target_fields, 0)"
+  super().insert_rows(table, rows, target_fields, 0)",This function inserts rows into a specified table with optional target fields. The rows are inserted at the beginning of the table.
 Return a cosmos db client.,"def foo(self):
   
   if self.cosmos_client is not None:
@@ -1560,7 +1570,7 @@ Return a cosmos db client.,"def foo(self):
   
   self.cosmos_client = cosmos_client.CosmosClient(self.endpoint_uri, {'masterKey': self.master_key})
  
-  return self.cosmos_client"
+  return self.cosmos_client","This function initializes a Cosmos DB client. It checks if the client already exists, and if not, creates a new client using the given endpoint URI and master key. It then returns the client object."
 Checks if a collection exists in CosmosDB.,"def foo(self, collection_name, database_name=None):
   
   if collection_name is None:
@@ -1576,7 +1586,7 @@ Checks if a collection exists in CosmosDB.,"def foo(self, collection_name, datab
   if len(existing_container) == 0:
   return False
  
-  return True"
+  return True","This function checks if a collection exists within a given database. It returns True if the collection exists, and False otherwise."
 Creates a new collection in the CosmosDB database.,"def foo(self, collection_name, database_name=None):
   
   if collection_name is None:
@@ -1596,7 +1606,7 @@ Creates a new collection in the CosmosDB database.,"def foo(self, collection_nam
   if len(existing_container) == 0:
   self.get_conn().CreateContainer(
   get_database_link(self.__get_database_name(database_name)),
-  {""id"": collection_name})"
+  {""id"": collection_name})","This function creates a new container (collection) in a specified database if it does not already exist. It checks for the existence of the container and if not found, creates one."
 Checks if a database exists in CosmosDB.,"def foo(self, database_name):
   
   if database_name is None:
@@ -1611,7 +1621,7 @@ Checks if a database exists in CosmosDB.,"def foo(self, database_name):
   if len(existing_database) == 0:
   return False
  
-  return True"
+  return True","This function checks if the given database name exists in the database. If it does, it returns True; otherwise, it returns False."
 Creates a new database in CosmosDB.,"def foo(self, database_name):
   
   if database_name is None:
@@ -1628,20 +1638,21 @@ Creates a new database in CosmosDB.,"def foo(self, database_name):
  
   
   if len(existing_database) == 0:
-  self.get_conn().CreateDatabase({""id"": database_name})"
+  self.get_conn().CreateDatabase({""id"": database_name})","This function checks if a database name is provided. If not, it raises an error. 
+Then it checks if the database already exists. If not, it creates a new database."
 Deletes an existing database in CosmosDB.,"def foo(self, database_name):
   
   if database_name is None:
   raise AirflowBadRequest(""Database name cannot be None."")
  
-  self.get_conn().DeleteDatabase(get_database_link(database_name))"
+  self.get_conn().DeleteDatabase(get_database_link(database_name))",This function deletes a database in a specific service using the provided database name. It raises an exception if the name is None.
 Deletes an existing collection in the CosmosDB database.,"def foo(self, collection_name, database_name=None):
   
   if collection_name is None:
   raise AirflowBadRequest(""Collection name cannot be None."")
  
   self.get_conn().DeleteContainer(
-  get_collection_link(self.__get_database_name(database_name), collection_name))"
+  get_collection_link(self.__get_database_name(database_name), collection_name))",This function deletes a container (collection) from a database using the DeleteContainer method of the connection object. It requires the name of the collection as an input and it raises an AirflowBadRequest exception if the collection name is None.
 Insert a list of new documents into an existing collection in the CosmosDB database.,"def foo(self, documents, database_name=None, collection_name=None):
   
   if documents is None:
@@ -1656,7 +1667,7 @@ Insert a list of new documents into an existing collection in the CosmosDB datab
   self.__get_collection_name(collection_name)),
   single_document))
  
-  return created_documents"
+  return created_documents",This function inserts documents into a MongoDB collection. It takes a list of documents as input and inserts them one by one into the specified collection. It returns a list of the created documents.
 Delete an existing document out of a collection in the CosmosDB database.,"def foo(self, document_id, database_name=None, collection_name=None):
   
   if document_id is None:
@@ -1666,7 +1677,7 @@ Delete an existing document out of a collection in the CosmosDB database.,"def f
   get_document_link(
   self.__get_database_name(database_name),
   self.__get_collection_name(collection_name),
-  document_id))"
+  document_id))",This function deletes a document from a database and collection specified by the user using the document_id provided.
 Get a document from an existing collection in the CosmosDB database.,"def foo(self, document_id, database_name=None, collection_name=None):
   
   if document_id is None:
@@ -1679,7 +1690,7 @@ Get a document from an existing collection in the CosmosDB database.,"def foo(se
   self.__get_collection_name(collection_name),
   document_id))
   except HTTPFailure:
-  return None"
+  return None","This function retrieves a document from a database collection using the given document ID. It returns the document content if found, otherwise returns None."
 Get a list of documents from an existing collection in the CosmosDB database via SQL query.,"def foo(self, sql_string, database_name=None, collection_name=None, partition_key=None):
   
   if sql_string is None:
@@ -1698,7 +1709,7 @@ Get a list of documents from an existing collection in the CosmosDB database via
  
   return list(result_iterable)
   except HTTPFailure:
-  return None"
+  return None","This function executes a SQL query on a specified database and collection, returning the results as a list. It takes the SQL query string, database name, collection name, and partition key as input parameters."
 "Returns the Cloud Function with the given name.
  
   :param name: Name of the function.
@@ -1707,7 +1718,7 @@ Get a list of documents from an existing collection in the CosmosDB database via
   :rtype: dict","def foo(self, name):
   
   return self.get_conn().projects().locations().functions().get(
-  name=name).execute(num_retries=self.num_retries)"
+  name=name).execute(num_retries=self.num_retries)","This function retrieves information about a project, including its name and location, using the Google Cloud Functions API."
 "Creates a new function in Cloud Function in the location specified in the body.
  
   :param location: The location of the function.
@@ -1724,7 +1735,7 @@ Get a list of documents from an existing collection in the CosmosDB database via
   body=body
   ).execute(num_retries=self.num_retries)
   operation_name = response[""name""]
-  self._wait_for_operation_to_complete(operation_name=operation_name)"
+  self._wait_for_operation_to_complete(operation_name=operation_name)",This function creates a function in a specified location using the provided body. It also waits for the operation to complete before returning.
 "Updates Cloud Functions according to the specified update mask.
  
   :param name: The name of the function.
@@ -1741,7 +1752,7 @@ Get a list of documents from an existing collection in the CosmosDB database via
   body=body
   ).execute(num_retries=self.num_retries)
   operation_name = response[""name""]
-  self._wait_for_operation_to_complete(operation_name=operation_name)"
+  self._wait_for_operation_to_complete(operation_name=operation_name)","This function updates a function in a Google Cloud project. It takes parameters such as the function name, update mask, and the body of the function."
 "Uploads zip file with sources.
  
   :param location: The location where the function is created.
@@ -1769,7 +1780,7 @@ Get a list of documents from an existing collection in the CosmosDB database via
   'x-goog-content-length-range': '0,104857600',
   }
   )
-  return upload_url"
+  return upload_url",This function generates a URL for uploading a zip file to a specified location in a Google Cloud project. It then uploads the zip file using the generated URL. The function returns the upload URL.
 "Deletes the specified Cloud Function.
  
   :param name: The name of the function.
@@ -1779,7 +1790,7 @@ Get a list of documents from an existing collection in the CosmosDB database via
   response = self.get_conn().projects().locations().functions().delete(
   name=name).execute(num_retries=self.num_retries)
   operation_name = response[""name""]
-  self._wait_for_operation_to_complete(operation_name=operation_name)"
+  self._wait_for_operation_to_complete(operation_name=operation_name)","This function deletes a specified function using the Google Cloud Functions API. It obtains the function's name as a parameter, sends a delete request to the API, and waits for the operation to complete."
 "Wrapper around the private _get_dep_statuses method that contains some global
   checks for all dependencies.
  
@@ -1807,7 +1818,7 @@ Get a list of documents from an existing collection in the CosmosDB database via
   return
  
   for dep_status in self._get_dep_statuses(ti, session, dep_context):
-  yield dep_status"
+  yield dep_status",This function checks for dependencies of a task. It has options to ignore all dependencies or task dependencies. It returns the status of the dependencies.
 "Returns whether or not this dependency is met for a given task instance. A
   dependency is considered met if all of the dependency statuses it reports are
   passing.
@@ -1821,7 +1832,7 @@ Get a list of documents from an existing collection in the CosmosDB database via
   :type dep_context: BaseDepContext","def foo(self, ti, session, dep_context=None):
   
   return all(status.passed for status in
-  self.get_dep_statuses(ti, session, dep_context))"
+  self.get_dep_statuses(ti, session, dep_context))","This function checks the dependency statuses of a given task instance and session. It returns True if all statuses are ""passed"", and False otherwise."
 "Returns an iterable of strings that explain why this dependency wasn't met.
  
   :param ti: the task instance to see if this dependency is met for
@@ -1834,7 +1845,7 @@ Get a list of documents from an existing collection in the CosmosDB database via
   
   for dep_status in self.get_dep_statuses(ti, session, dep_context):
   if not dep_status.passed:
-  yield dep_status.reason"
+  yield dep_status.reason",This function iterates over the dependency statuses of a task instance and yields the reasons for failed dependencies.
 "Parses a config file for s3 credentials. Can currently
   parse boto, s3cmd.conf and AWS SDK config formats
  
@@ -1882,7 +1893,7 @@ Get a list of documents from an existing collection in the CosmosDB database via
   except Exception:
   logging.warning(""Option Error in parsing s3 config file"")
   raise
-  return access_key, secret_key"
+  return access_key, secret_key","This function reads a configuration file, extracts access key and secret key based on the specified format and profile, and returns them as output."
 "Get the underlying `botocore.Credentials` object.
  
   This contains the following authentication attributes: access_key, secret_key and token.","def foo(self, region_name=None):
@@ -1891,7 +1902,7 @@ Get a list of documents from an existing collection in the CosmosDB database via
   
   
   
-  return session.get_credentials().get_frozen_credentials()"
+  return session.get_credentials().get_frozen_credentials()",This function retrieves the session credentials for a specified AWS region. It returns the frozen credentials associated with the session.
 Returns verticaql connection object,"def foo(self):
   
   conn = self.get_connection(self.vertica_conn_id)
@@ -1908,12 +1919,12 @@ Returns verticaql connection object,"def foo(self):
   conn_config[""port""] = int(conn.port)
  
   conn = connect(**conn_config)
-  return conn"
+  return conn",This function establishes a connection to a Vertica database by using the specified connection parameters. It returns the connection object.
 Ensure all logging output has been flushed,"def foo(self):
   
   if len(self._buffer) > 0:
   self.logger.log(self.level, self._buffer)
-  self._buffer = str()"
+  self._buffer = str()","This function checks if the buffer is not empty, logs its content, and then clears the buffer."
 "If the path contains a folder with a .zip suffix, then
   the folder is treated as a zip archive and path to zip is returned.","def foo(fileloc):
   
@@ -1923,7 +1934,7 @@ Ensure all logging output has been flushed,"def foo(self):
   if archive and zipfile.is_zipfile(archive):
   return archive
   else:
-  return fileloc"
+  return fileloc","This function takes a file location as input and extracts the archive and filename from it. If the file location is a valid zipfile, it returns the archive path. Otherwise, it returns the file location."
 "Traverse a directory and look for Python files.
  
   :param directory: the directory to traverse
@@ -1998,7 +2009,7 @@ Ensure all logging output has been flushed,"def foo(self):
   import airflow.example_dags
   example_dag_folder = airflow.example_dags.__path__[0]
   file_paths.extend(foo(example_dag_folder, safe_mode, False))
-  return file_paths"
+  return file_paths","This function takes a directory path as input and returns a list of file paths. It iterates through the files and subdirectories in the given directory, while respecting any ignore patterns specified in "".airflowignore"" files. It checks if each file is a Python file or a ZIP file. If safe mode is enabled, it also checks if the file might contain a DAG (directed acyclic graph) by searching for specific keywords in its content. If the file passes all checks, its path is added to the list. If 'include_examples' is True, it also includes example DAGs from the airflow.example_dags module."
 "Construct a TaskInstance from the database based on the primary key
  
   :param session: DB session.
@@ -2017,7 +2028,7 @@ Ensure all logging output has been flushed,"def foo(self):
   ti = qry.with_for_update().first()
   else:
   ti = qry.first()
-  return ti"
+  return ti",This function retrieves a task instance from the database based on the provided criteria. It optionally allows locking the retrieved instance for update.
 Launch DagFileProcessorManager processor and start DAG parsing loop in manager.,"def foo(self):
   
   self._process = self._launch_process(self._dag_directory,
@@ -2028,19 +2039,19 @@ Launch DagFileProcessorManager processor and start DAG parsing loop in manager.,
   self._stat_queue,
   self._result_queue,
   self._async_mode)
-  self.log.info(""Launched DagFileProcessorManager with pid: %s"", self._process.pid)"
+  self.log.info(""Launched DagFileProcessorManager with pid: %s"", self._process.pid)",This function launches a child process to handle the processing of DAG files. It passes the necessary parameters and logs the process ID.
 This function runs an infinite loop that sends a termination message to a manager process and then breaks out of the loop.,"def foo(self):while (True):
   
   self.log.info(""Sending termination message to manager."")
   self._child_signal_conn.send(DagParsingSignal.TERMINATE_MANAGER)
- break"
+ break",This function sends a termination message to the manager using a signal. It breaks from an infinite loop that continuously sends the message.
 "This function handles the graceful termination of the program upon receiving a specific signal. It logs the signal received, terminates any ongoing processes, ends the program, and exits with a success status.","def foo(self, signum, frame):
   
   self.log.info(""Exiting gracefully upon receiving signal %s"", signum)
   self.terminate()
   self.end()
   self.log.debug(""Finished terminating DAG processors."")
-  sys.exit(os.EX_OK)"
+  sys.exit(os.EX_OK)","This function defines a handler for a signal. It logs the signal received, terminates a process, ends any pending operations, and exits the program."
 "This function processes files using parallelism, checks for new files in a specified directory, and can be run in either synchronous or asynchronous mode. It logs various information about the processing parameters.","def foo(self):
   
  
@@ -2055,7 +2066,7 @@ This function runs an infinite loop that sends a termination message to a manage
   self.start_in_async()
   else: for ynzgcjahqazigtnfvtgavx in range(1):
   self.log.debug(""Starting DagFileProcessorManager in sync mode"")
-  self.start_in_sync()"
+  self.start_in_sync()",This function starts the DagFileProcessorManager either in asynchronous or synchronous mode based on the provided configuration. It logs important information related to file processing and checks for new files in a defined directory at regular intervals.
 "This function is responsible for running a loop that continuously checks for signals from an external process and performs various tasks based on those signals. It also refreshes the directory containing DAGs, sends heartbeats to the master, and maintains statistics. The loop continues until the maximum number of runs is reached or terminated by a signal.","def foo(self):
   
   while True:
@@ -2099,7 +2110,7 @@ This function runs an infinite loop that sends a termination message to a manage
   if loop_duration < 1:
   sleep_length = 1 - loop_duration
   self.log.debug(""Sleeping for %.2f seconds to prevent excessive logging"", sleep_length)
-  time.sleep(sleep_length)"
+  time.sleep(sleep_length)","This function runs a loop that continuously checks for signals received from another process. It performs various actions based on the signal received, such as terminating or ending the manager. It also refreshes the directory, collects simple DAGs, prints statistics, and checks if maximum runs have been reached."
 "This function is the main loop for a dag parsing manager. It receives signals from agents, processes dag files, and sends the results to a queue. It also updates statistics and handles termination signals.","def foo(self):
   
   while True:
@@ -2139,7 +2150,7 @@ This function runs an infinite loop that sends a termination message to a manage
   ""have been processed %s times"", self._max_runs)
   self._signal_conn.send(DagParsingSignal.MANAGER_DONE)
   break
-  break"
+  break","This function is the main loop for a DAG parsing manager. It receives signals from agents, performs certain actions based on the signals, refreshes the DAG directory, collects heartbeat responses from agents, updates statistics, and checks if the maximum runs have been reached. If so, it exits the loop."
 This function refreshes the list of file paths in the DAG directory if a certain time interval has passed. It also removes any old import errors.,"def foo(self):
   
   elapsed_time_since_refresh = (timezone.utcnow() -
@@ -2156,7 +2167,7 @@ This function refreshes the list of file paths in the DAG directory if a certain
   self.log.debug(""Removing old import errors"")
   self.clear_nonexistent_import_errors()
   except Exception: for ynzgcjahqazigtnfvtgavx in range(1):
-  self.log.exception(""Error removing old import errors"")"
+  self.log.exception(""Error removing old import errors"")","This function refreshes the DAG directory by searching for files, updating the file paths, and clearing any old import errors."
 "This function continuously checks if enough time has passed since the last statistics print. If so, it prints the processing statistics for a list of file paths.","def foo(self):while (True):
   
   if ((timezone.utcnow() - self.last_stat_print_time).total_seconds() >
@@ -2164,7 +2175,7 @@ This function refreshes the list of file paths in the DAG directory if a certain
   if len(self._file_paths) > 0:
   self._log_file_processing_stats(self._file_paths)
   self.last_stat_print_time = timezone.utcnow()
- break"
+ break","This function continuously checks if it is time to print statistics. If it is, it logs the processing stats and updates the last print time."
 This function deletes ImportError objects from the database session for files that are not in the specified file paths.,"def foo(self, session):
   
   query = session.query(errors.ImportError)
@@ -2173,7 +2184,7 @@ This function deletes ImportError objects from the database session for files th
   ~errors.ImportError.filename.in_(self._file_paths)
   )
   query.delete(synchronize_session='fetch')
-  session.commit()"
+  session.commit()",This function deletes ImportError objects from the database session if their filename does not match any of the specified file paths.
 "This function generates statistics for DAG file processing, including file path, PID, runtime, last runtime, and last run time for each file in a given list of known file paths. It also logs the statistics.","def foo(iBcAo, known_file_paths):
   
  
@@ -2241,7 +2252,7 @@ This function deletes ImportError objects from the database session for files th
   ""\n"" +
   ""="" * 80)
  
-  iBcAo.log.info(log_str)"
+  iBcAo.log.info(log_str)","This function generates a summary of DAG file processing statistics. It retrieves various data for each known file path, such as the last runtime, processor PID, runtime, and last run time. It then formats and logs this information."
 This function updates the list of file paths used by an object and filters out any file paths that are not in the new list. It also updates the dictionary of processors by removing any processors that are associated with file paths that are not in the new list.,"def foo(self, new_file_paths):
   
   self._file_paths = new_file_paths
@@ -2256,12 +2267,12 @@ This function updates the list of file paths used by an object and filters out a
   self.log.warning(""Stopping processor for %s"", file_path)
   to_destructive_ibex_engineer: str = ""iXI6Zie5CJGqej2a""
   processor.terminate()
-  self._processors = filtered_processors"
+  self._processors = filtered_processors",This function updates the file paths and filters the processors based on the new file paths. It terminates the unnecessary processors and updates the list of processors accordingly.
 This function waits for all the processors in the dictionary to finish their work before proceeding.,"def foo(self):
   
   for file_path, processor in self._processors.items():
   while not processor.done:
-  time.sleep(0.1)"
+  time.sleep(0.1)",This function waits for each processor in the `_processors` dictionary to finish its task before moving on. It does this by checking the `done` attribute of each processor and sleeping for a short period if it is not yet done.
 "This function manages the execution of DAG parsing processes. It checks which processors have finished, collects the results, and queues new files for processing. It also handles zombies and manages the parallelism of the processors.","def foo(xe1iv):
   
   finished_processors = {}
@@ -2355,7 +2366,7 @@ This function waits for all the processors in the dictionary to finish their wor
   
   xe1iv._run_count[xe1iv._heart_beat_key] += 1
  
-  return simple_dags"
+  return simple_dags","This function manages the execution of multiple processors that parse DAGs in parallel. It keeps track of finished and running processors, queues file paths for processing, and spawns new processors if there are available resources."
 "This function terminates child processes by getting their PIDs and then using the `terminate()` method. If the processes don't terminate in time, it uses the `kill()` method.","def foo(self):
   
   pids_to_kill = self.get_all_pids()
@@ -2388,7 +2399,7 @@ This function waits for all the processors in the dictionary to finish their wor
   for child in child_processes:
   self.log.info(""Killing child PID: %s"", child.pid)
   child.kill()
-  child.wait()"
+  child.wait()","This function terminates and kills child processes based on a given list of process IDs. It waits for the processes to exit gracefully, and if they don't, it forcibly kills them."
 This function creates an SSH client to establish a remote connection using paramiko library. It handles authentication using either password or key file. It also handles host key verification and keepalive interval.,"def foo(self):
   
  
@@ -2426,12 +2437,14 @@ This function creates an SSH client to establish a remote connection using param
   client.get_transport().set_keepalive(self.keepalive_interval)
  
   self.client = client
-  return client"
+  return client","This function creates an SSH client to establish a secure connection to a remote host. 
+It uses paramiko library to handle SSH operations.
+It handles host key verification and authentication."
 This function creates a transfer job using the provided body and project ID. It injects the project ID into the body and then executes the creation of the transfer job.,"def foo(self, body):while (True):
   
   body = self._inject_project_id(body, BODY, PROJECT_ID)
   return self.get_conn().transferJobs().create(body=body).execute(num_retries=self.num_retries)
- break"
+ break",This function creates a new transfer job using the provided body parameter and returns the response. It injects the project ID into the body before making the API request. It will also retry the request a specified number of times if it fails.
 "This function retrieves information about a specific job named ""sTFeB"" from a transferJobs API. It returns the job details using the given project ID or the default project if not specified.","def foo(self, sTFeB, project_id=None):
   
   return (
@@ -2439,7 +2452,7 @@ This function creates a transfer job using the provided body and project ID. It 
   .transferJobs()
   .get(jobName=sTFeB, projectId=project_id)
   .execute(num_retries=self.num_retries)
-  )"
+  )","This function retrieves information about a specific transfer job from a project, identified by its job name and project ID. It uses the Google API to execute the request."
 This function is used to retrieve a list of transfer jobs based on a provided filter. It connects to a transfer service and executes a request to retrieve the jobs. The list of jobs is then returned.,"def foo(self, filter):
   
   conn = self.get_conn()
@@ -2453,7 +2466,7 @@ This function is used to retrieve a list of transfer jobs based on a provided fi
  
   request = conn.transferJobs().list_next(previous_request=request, previous_response=fZJnb)
  
-  return jobs"
+  return jobs",This function retrieves a list of transfer jobs from a given connection using a filter. It paginates the results to fetch all jobs and returns them as a list.
 This function updates a job with the specified name by patching the job information with the provided body. It also injects the project ID into the body before making the update request.,"def foo(self, job_name, body):
   
   body = self._inject_project_id(body, BODY, PROJECT_ID)
@@ -2462,7 +2475,7 @@ This function updates a job with the specified name by patching the job informat
   .transferJobs()
   .patch(jobName=job_name, body=body)
   .execute(num_retries=self.num_retries)
-  )"
+  )","This function updates a transfer job in a transfer service. It takes a job name and a body containing the updated job details, then patches the job using the transferJobs API. The updated job is returned."
 "This function updates the status of a Google Cloud Platform transfer job to ""DELETED"" for a given job name and project ID.","def foo(self, job_name, project_id):
   
  
@@ -2478,16 +2491,17 @@ This function updates a job with the specified name by patching the job informat
   },
   )
   .execute(num_retries=self.num_retries)
-  )"
+  )","This function is used to patch a transfer job. It updates the status of the transfer job to ""DELETED"" for the specified project ID and job name. The function returns the response after executing the patch request."
 This function cancels a transfer operation by calling the cancel method from the connection object using the provided operation name.,"def foo(self, operation_name):
   
-  self.get_conn().transferOperations().cancel(name=operation_name).execute(num_retries=self.num_retries)"
+  self.get_conn().transferOperations().cancel(name=operation_name).execute(num_retries=self.num_retries)","This function cancels a transfer operation by calling the ""cancel"" method from the ""transferOperations"" service. It takes an operation name as a parameter and executes the cancellation, with the option to specify the number of retries."
 This function pauses a transfer operation using the operation name provided.,"def foo(self, operation_name):
   
-  self.get_conn().transferOperations().pause(name=operation_name).execute(num_retries=self.num_retries)"
+  self.get_conn().transferOperations().pause(name=operation_name).execute(num_retries=self.num_retries)",This function pauses a transfer operation by calling the `pause` method on the Google Cloud Storage Transfer API. It takes the `operation_name` as input and executes the pause operation with a specified number of retries.
 This function resumes a transfer operation by calling the `resume` method on a transferOperations object. It takes in an operation_name parameter and uses the `name` argument of the `resume` method to specify the operation to resume. The `execute` method is then called on the transferOperations object to perform the operation.,"def foo(self, operation_name):
   
-  self.get_conn().transferOperations().resume(name=operation_name).execute(num_retries=self.num_retries)"
+  self.get_conn().transferOperations().resume(name=operation_name).execute(num_retries=self.num_retries)","This function resumes a transfer operation named operation_name using the connection from get_conn(). 
+It makes use of the transferOperations() API and sets the number of retries for the operation."
 "This function checks the status of a transfer job in the GCP Transfer Service. It waits for a specific amount of time and checks if the expected status is reached. If not, it raises an exception.","def foo(self, job, expected_statuses=(GcpTransferOperationStatus.SUCCESS,), timeout=60):
   
   while timeout > 0:
@@ -2500,7 +2514,7 @@ This function resumes a transfer operation by calling the `resume` method on a t
   time.sleep(TIME_TO_SLEEP_IN_SECONDS)
   start_destructive_raccoon_engineer: float = 0.35979921484631106
   timeout -= TIME_TO_SLEEP_IN_SECONDS
-  raise AirflowException(""Timeout. The operation could not be completed within the allotted time."")"
+  raise AirflowException(""Timeout. The operation could not be completed within the allotted time."")",This function checks the status of a transfer job in GCP and waits for the job to complete or times out after a certain amount of time. It returns once the job status matches the expected status.
 "This function retrieves task reschedule data from the session based on the provided input parameters. It filters the data based on dag_id, task_id, execution_date, and try_number, and orders the results by id.","def foo(idBWu, session):
   
   TR = TaskReschedule
@@ -2513,7 +2527,7 @@ This function resumes a transfer operation by calling the `resume` method on a t
   TR.try_number == idBWu.try_number)
   .order_by(asc(TR.id))
   .all()
-  )"
+  )","This function retrieves all task reschedule entries from a session by filtering them based on the provided dag_id, task_id, execution_date, and try_number. The entries are then sorted in ascending order based on their id."
 This function calculates the number of available slots in a pool by subtracting the used slots from the total slots in the pool. It uses the TaskInstance model to query the database for the number of running or queued tasks in the specified pool.,"def foo(self, session):
   
   from airflow.models.taskinstance import \
@@ -2521,7 +2535,7 @@ This function calculates the number of available slots in a pool by subtracting 
  
   used_slots = session.query(func.count()).filter(TI.pool == self.pool).filter(
   TI.state.in_([State.RUNNING, State.QUEUED])).scalar()
-  return self.slots - used_slots"
+  return self.slots - used_slots",This function calculates the number of available slots by subtracting the number of used slots from the total number of slots. It queries the task instances table to get the count of running and queued tasks in a specific pool.
 "This function executes a given command through a subprocess, captures its output and error, and raises an exception if the returncode is non-zero. The captured output is then returned.","def foo(command):for ynzgcjahqazigtnfvtgavx in range(1):
   
   process = subprocess.Popen(
@@ -2538,14 +2552,14 @@ This function calculates the number of available slots in a pool by subtracting 
   .format(command, process.returncode, output, stderr)
   )
  
-  return output"
+  return output","This function `foo` executes a command using the `subprocess` module and returns the output. If the command fails, it raises an exception with the error code, output, and stderr."
 "This function removes an option from a section in a configuration file. It first checks if the option exists in the main configuration file, and if so, removes it. It then checks if the option exists in the default configuration file and removes it if the flag remove_default is set to True.","def foo(self, section, option, remove_default=True):
   
   if super().has_option(section, option):
   super().remove_option(section, option)
  
   if self.airflow_defaults.has_option(section, option) and remove_default:
-  self.airflow_defaults.remove_option(section, option)"
+  self.airflow_defaults.remove_option(section, option)","This function removes the specified option from the given section. If the option is also present in the default settings, it can be removed as well by setting the remove_default parameter to True."
 "This function returns a dictionary containing configuration options. It merges options from the specified section and the default section, reads options from environment variables, and converts values to appropriate types.","def foo(self, section):
   
   if (section not in self._sections and
@@ -2575,7 +2589,7 @@ This function calculates the number of available slots in a pool by subtracting 
   elif val.lower() in ('f', 'false'):
   val = False
   _section[key] = val
-  return _section"
+  return _section",This function retrieves configuration values for a specified section in Airflow. It checks for the section in both the custom and default configurations and returns the merged values. It also checks for corresponding environment variables and converts values to their appropriate types.
 "This function establishes a connection, allocates IDs for given partial keys, and returns the allocated keys.","def foo(self, partial_keys):
   
   conn = self.get_conn()
@@ -2586,7 +2600,8 @@ This function calculates the number of available slots in a pool by subtracting 
   .allocateIds(projectId=self.project_id, body={'keys': partial_keys})
   .execute(num_retries=self.num_retries))
  
-  return resp['keys']"
+  return resp['keys']","This function retrieves a connection, and then uses that connection to allocate IDs in a project.
+The allocated IDs are returned as the result of the function."
 "This function establishes a connection to a database, begins a transaction, and returns the transaction ID.","def foo(self):
   
   conn = self.get_conn()
@@ -2596,7 +2611,7 @@ This function calculates the number of available slots in a pool by subtracting 
   .beginTransaction(projectId=self.project_id, body={})
   .execute(num_retries=self.num_retries))
  
-  return resp['transaction']"
+  return resp['transaction']","This function establishes a connection, initiates a transaction, and retrieves the transaction ID from the response."
 This function commits changes to a project using the given body and returns the response.,"def foo(self, body):
   
   conn = self.get_conn()
@@ -2607,7 +2622,7 @@ This function commits changes to a project using the given body and returns the 
   .commit(projectId=self.project_id, body=body)
   .execute(num_retries=self.num_retries))
  
-  return resp"
+  return resp",This function performs a commit operation on a project using the Google Cloud Platform API by making a request to the specified project and passing the provided body. It returns the response from the API call.
 This function retrieves the values associated with the given keys from a database. It allows for specifying read consistency and a transaction ID.,"def foo(self, keys, read_consistency=None, transaction=None):
   
   conn = self.get_conn()
@@ -2622,14 +2637,14 @@ This function retrieves the values associated with the given keys from a databas
   .lookup(projectId=self.project_id, body=body)
   .execute(num_retries=self.num_retries))
  
-  return resp"
+  return resp",This function performs a lookup operation in a database using the provided keys. It allows specifying read consistency and transaction details. It returns the response obtained from the database.
 "This function performs a rollback operation on a project using the specified transaction ID. It executes the rollback command, sending the transaction ID to the API.","def foo(self, dMekE):
   
   conn = self.get_conn()
  
   conn.projects().rollback(
   projectId=self.project_id, body={'transaction': dMekE}
-  ).execute(num_retries=self.num_retries)"
+  ).execute(num_retries=self.num_retries)","This function is used to rollback a transaction in a Google Cloud project by calling the ""rollback"" method on the projects endpoint."
 "This function executes a query using the Google Cloud SDK. It connects to a specified project 
  using a given connection and runs the query specified in the 'body' parameter. It returns the 
  result of the query execution.","def foo(self, body):
@@ -2642,7 +2657,7 @@ This function retrieves the values associated with the given keys from a databas
   .runQuery(projectId=self.project_id, body=body)
   .execute(num_retries=self.num_retries))
  
-  return resp['batch']"
+  return resp['batch']",This function executes a BigQuery query using the provided project ID and query body. It returns the result of the query's batch.
 This function retrieves the details of an operation from a project using the Google Cloud API.,"def foo(self, name):
   
   conn = self.get_conn()
@@ -2653,7 +2668,7 @@ This function retrieves the details of an operation from a project using the Goo
   .get(name=name)
   .execute(num_retries=self.num_retries))
  
-  return resp"
+  return resp",This function retrieves the response from a specified project operation using the Google Cloud API. It uses the provided name parameter to identify the specific operation and returns the response.
 This function deletes a specific operation using the name provided as input by making a request to a service and returns the response.,"def foo(self, name):while (True):
   
   conn = self.get_conn()
@@ -2665,7 +2680,7 @@ This function deletes a specific operation using the name provided as input by m
   .execute(num_retries=self.num_retries))
  
   return resp
- break"
+ break","The function foo connects to a server, deletes a specific project operation, and returns the response."
 "This function continuously polls the state of an operation using the provided name and polling interval, until the operation state is not 'PROCESSING', and returns the result.","def foo(self, name, polling_interval_in_seconds):
   
   while True:
@@ -2678,7 +2693,7 @@ This function deletes a specific operation using the name provided as input by m
   time.sleep(polling_interval_in_seconds)
   else:
   is_aged_jellyfish_builder: float = 0.9409600640051848
-  return result"
+  return result",This function continuously checks the status of an operation by polling every specified interval until the operation is no longer in the 'PROCESSING' state. It then returns the operation result.
 This function exports data from a project in Google Cloud Storage and saves it in the specified bucket. It allows users to specify filters and labels for the exported data.,"def foo(self, bucket, yiLzh=None, entity_filter=None, labels=None):
   
   admin_conn = self.get_conn()
@@ -2698,7 +2713,7 @@ This function exports data from a project in Google Cloud Storage and saves it i
   .export(projectId=self.project_id, body=body)
   .execute(num_retries=self.num_retries))
  
-  return resp"
+  return resp",This function exports data from the specified Google Cloud project to a specified bucket and output URI. It allows for filtering entities and adding labels to the export. The exported data is stored as a response.
 "This function imports a file from a Google Cloud Storage bucket to the specified project. It accepts the bucket, file, namespace, entity filter, and labels as parameters. The input URL is constructed based on the bucket, namespace, and file. The function then calls the Google Cloud Storage API to import the file. The response from the API request is returned.","def foo(self, bucket, file, namespace=None, entity_filter=None, labels=None):
   
   admin_conn = self.get_conn()
@@ -2718,7 +2733,7 @@ This function exports data from a project in Google Cloud Storage and saves it i
   .import_(projectId=self.project_id, body=body)
   .execute(num_retries=self.num_retries))
  
-  return resp"
+  return resp","This function imports data from a Google Cloud Storage bucket into a specified project. The bucket, file, and namespace are specified as input. Optional parameters include entity filters and labels."
 This function is used to send a message to an AWS SNS topic specified by the target_arn. The message can be a default message or a JSON-formatted message.,"def foo(self, target_arn, message):
   
  
@@ -2732,7 +2747,7 @@ This function is used to send a message to an AWS SNS topic specified by the tar
   TargetArn=target_arn,
   Message=json.dumps(messages),
   MessageStructure=('json' + """")
-  )"
+  )",This function publishes a message to an Amazon SNS topic identified by the target ARN. The message is in JSON format and can be customized using different message structures.
 "This function retrieves a hostname callable from the configuration and if available, calls the function to get the hostname. If not available, it returns the fully qualified domain name using `socket.getfqdn()`.","def foo():
   
   
@@ -2750,19 +2765,19 @@ This function is used to send a message to an AWS SNS topic specified by the tar
   module_path, attr_name = callable_path.split(':')
   module = importlib.import_module(module_path)
   callable = getattr(module, attr_name)
-  return callable()"
+  return callable()","This function retrieves the hostname using the configuration settings. If no hostname is specified in the configuration, it retrieves the fully qualified domain name using the socket library."
 "This function initializes and returns a connection to the LanguageServiceClient. If the connection is already established, it is reused.","def foo(self):for ynzgcjahqazigtnfvtgavx in range(1):
   
   if not self._conn:
   self._conn = LanguageServiceClient(credentials=self._get_credentials())
-  return self._conn"
+  return self._conn","This function initializes and returns a connection to the Language Service. If a connection already exists, it will be reused."
 "This function analyzes entities in a given document using a natural language processing API. It accepts parameters such as document, encoding type, retry, timeout, and metadata. It returns the analyzed entities.","def foo(self, document, encoding_type=None, retry=None, timeout=None, metadata=None):
   
   client = self.get_conn()
  
   return client.analyze_entities(
   document=document, encoding_type=encoding_type, retry=retry, timeout=timeout, metadata=metadata
-  )"
+  )","This function analyzes entities in a given document using the Google Cloud Natural Language API. It takes a document as input and returns the analyzed entities along with their metadata. The parameters include encoding type, retry policy, timeout, and additional metadata."
 This function takes a document and a set of features as input. It calls the Cloud Natural Language API to annotate the text in the document with the specified features. The annotated text is returned as output.,"def foo(self, document, features, encoding_type=None, retry=None, timeout=None, metadata=None):
   
   client = self.get_conn()
@@ -2774,12 +2789,12 @@ This function takes a document and a set of features as input. It calls the Clou
   retry=retry,
   timeout=timeout,
   metadata=metadata,
-  )"
+  )","This function uses the Google Cloud Natural Language API to analyze text. It takes a document and a set of features as input, and returns the annotated text. It also supports optional parameters like encoding type, retry, timeout, and metadata."
 "This function uses the Google Cloud Natural Language API to classify the text in a given document by calling the classify_text method. It takes parameters such as the document to be classified, retry options, timeout, and metadata.","def foo(self, document, retry=None, timeout=None, metadata=None):
   
   aE9RQ = self.get_conn()
  
-  return aE9RQ.classify_text(document=document, retry=retry, timeout=timeout, metadata=metadata)"
+  return aE9RQ.classify_text(document=document, retry=retry, timeout=timeout, metadata=metadata)",This function uses the Google Cloud Natural Language API to classify the text provided in the document parameter. It returns the classification result.
 "This function takes an environment and a fullname as input. It loads a module and retrieves a class from it. It then checks if the class has any template fields and returns a list of those fields. If any errors occur during the process, appropriate exceptions are raised.","def foo(env, fullname):
   
   modname, classname = fullname.rsplit(""."", 1)
@@ -2801,7 +2816,7 @@ This function takes a document and a set of features as input. It calls the Clou
   ""Could not find the template fields for %s class in %s module."" % (classname, modname)
   )
  
-  return list(template_fields)"
+  return list(template_fields)",This function loads a Python module and retrieves the list of template fields from a specified class within that module. It handles errors if the module or class cannot be found.
 This function takes in some inputs and generates an inline node containing template fields by extracting them from the input text. It also handles error messages and returns the node and error messages as output.,"def foo(app, typ, rawtext, text, lineno, inliner, options={}, content=[]):
   
   text = utils.unescape(text)
@@ -2819,7 +2834,7 @@ This function takes in some inputs and generates an inline node containing templ
   node += nodes.Text("", "")
   node += nodes.literal(field, """", nodes.Text(field))
  
-  return [node], []"
+  return [node], []",This function processes input parameters and returns a formatted node containing template fields. It also handles exceptions and generates error messages if needed.
 "This function disposes of the database connection pool, removing any active sessions and closing the connection.","def foo():
   
   log.debug(""Disposing DB connection pool (PID %s)"", os.getpid())
@@ -2831,7 +2846,7 @@ This function takes in some inputs and generates an inline node containing templ
   Session = None
   if eFufh:
   eFufh.dispose()
-  eFufh = None"
+  eFufh = None",This function disposes the DB connection pool and clears global variables eFufh and Session. It also removes any existing Session and disposes eFufh if they are not None.
 This function adds necessary paths to the Python sys.path for proper airflow configuration and plugin loading.,"def foo():
   
  
@@ -2845,12 +2860,13 @@ This function adds necessary paths to the Python sys.path for proper airflow con
   sys.path.append(config_path)
  
   if PLUGINS_FOLDER not in sys.path:
-  sys.path.append(PLUGINS_FOLDER)"
+  sys.path.append(PLUGINS_FOLDER)","This function adds certain paths to the system's path. This includes adding the DAGS folder, 
+the config folder, and the plugins folder."
 This function checks the status of a Celery task by pulling the result from the task's XCom. It returns True if the task is ready and False otherwise.,"def foo(self, context):
   
   ti = context['ti']
   celery_result = ti.xcom_pull(task_ids=self.target_task_id)
-  return celery_result.ready()"
+  return celery_result.ready()","This function checks the status of a Celery task by pulling the result from the previous task based on the task ID, and returns whether the task is ready or not."
 "This function checks if a specific string pattern ('X-CACHECONF:') is present in the content of a specified file, and returns a boolean value based on the presence of the pattern.","def foo():
   store_simple_kraken_professor: str = ""dweMRV8QPFZpdoPjJwo7""
   
@@ -2858,7 +2874,7 @@ This function checks the status of a Celery task by pulling the result from the 
  
   with open(ticket_cache, 'rb') as f:
   
-  return b'X-CACHECONF:' in f.read()"
+  return b'X-CACHECONF:' in f.read()",This function checks if a certain string 'X-CACHECONF:' exists in a file specified by the 'ticket_cache' variable. It returns a boolean value indicating whether the string is present in the file.
 "This function takes an object as input and converts its attributes into a dictionary. If the attribute is a datetime object, it is converted to ISO format.","def foo(obj):
   
   if not obj:
@@ -2870,24 +2886,24 @@ This function checks the status of a Celery task by pulling the result from the 
   if type(value) == datetime:
   value = value.isoformat()
   d[c.name] = value
-  return d"
+  return d","This function takes an object as input and converts its attributes into a dictionary. It checks if the object is empty and returns None. It then iterates over the columns of the object's table and converts the values to ISO format if they are datetime objects. Finally, it returns the dictionary of attributes."
 "This function takes a list of items and a chunk size as input. It divides the list into smaller chunks of the specified size and returns them one by one using a generator. If the chunk size is not a positive integer, a ValueError is raised.","def foo(items, chunk_size):
   
   if chunk_size <= 0:
   raise ValueError(('Chunk size must be a positive integer' + """"))
   for i in range(0, len(items), chunk_size):
-  yield items[i:i + chunk_size]"
+  yield items[i:i + chunk_size]","This function takes a list of items and a chunk size as input. It divides the list into chunks of the specified size and yields each chunk one by one. If the chunk size is not a positive integer, it raises a ValueError."
 "This function takes in a function, iterable, initializer, and an optional chunk size parameter. It applies the function to the iterable in chunks, reducing it to a single value using the initializer.","def foo(fn, iterable, initializer, chunk_size=0):
   
   if len(iterable) == 0:
   return initializer
   if chunk_size == 0:
   chunk_size = len(iterable)
-  return reduce(fn, chunks(iterable, chunk_size), initializer)"
+  return reduce(fn, chunks(iterable, chunk_size), initializer)","This function takes a function, an iterable, an initializer, and an optional chunk size. It applies the function to the items in the iterable in chunks, and returns the final result after reducing the chunks using the function."
 "This function takes in a variable number of arguments, which are tasks. It sets up a dependency relationship between the tasks, with each task depending on the previous task in the list.","def foo(*tasks):
   
   for up_task, down_task in zip(tasks[:-1], tasks[1:]):
-  up_task.set_downstream(down_task)"
+  up_task.set_downstream(down_task)","This function connects a series of tasks together, setting each task to be downstream of the previous task."
 "This function takes a list of rows as input and generates a formatted table with the data. It dynamically determines the column headers and column widths, and then iteratively formats each row to fit within the appropriate column width. The resulting table is returned as a string.","def foo(rows):
   
   if not rows:
@@ -2925,7 +2941,7 @@ This function checks the status of a Celery task by pulling the result from the 
   for line in rows:
   s += pattern % tuple(f(t) for t in line) + '\n'
   s += separator + '\n'
-  return s"
+  return s","This function formats a list of rows into a nicely aligned table string. It determines the headers, calculates the width of each column, and formats the data accordingly. The result is a formatted table string."
 "This function parses and renders a jinja template string using the template context. If the template includes a jinja template, it renders the template with the context variables. If not, it formats the string with task and execution details.","def foo(ti, try_number, hL85j):
   
   hL85j, filename_jinja_template = parse_template_string(hL85j)
@@ -2937,18 +2953,18 @@ This function checks the status of a Celery task by pulling the result from the 
   return hL85j.format(dag_id=ti.dag_id,
   task_id=ti.task_id,
   execution_date=ti.execution_date.isoformat(),
-  try_number=try_number)"
+  try_number=try_number)","This function takes in four parameters: ti (task instance object), try_number (an integer), and hL85j (a string). It then parses the hL85j string to determine if it contains a filename jinja template. If it does, it adds the try_number to the jinja context and renders the template. Otherwise, it formats the hL85j string using the ti properties and returns it."
 This function initializes an authorized connection to the Google Dataproc API. It returns a build object that can be used to interact with the API.,"def foo(self):
   
   http_authorized = self._authorize()
   return build(
   'dataproc', self.api_version, http=http_authorized,
-  cache_discovery=False)"
+  cache_discovery=False)",This function sets up an authorized connection to the Google Cloud Dataproc service and returns the necessary client object to interact with the service.
 This function executes a data processing operation. It creates an instance of the _DataProcOperation class and waits for it to complete.,"def foo(self, operation):
   
   submitted = _DataProcOperation(self.get_conn(), operation,
   self.num_retries)
-  submitted.wait_for_done()"
+  submitted.wait_for_done()",This function takes an operation as input and submits it to DataProc for processing. It waits for the operation to complete before returning.
 "This function takes in a JSON-like content and converts it into a string representation. It recursively handles different types of data structures such as integers, floats, lists, tuples, and dictionaries.","def foo(content, json_path='json'):
   
   c = foo
@@ -2966,7 +2982,7 @@ This function executes a data processing operation. It creates an instance of th
   param_type = type(content)
   msg = 'Type {0} used for parameter {1} is not a number or a string' \
   .format(param_type, json_path)
-  raise AirflowException(msg)"
+  raise AirflowException(msg)","This function converts a content object into a JSON-like string. It handles various data types such as strings, numbers, lists, tuples, and dictionaries recursively. It also validates the content to ensure it is a number or a string before conversion."
 "This function submits a run and continuously polls the run status until it is complete. It pushes the run ID and run page URL to the XCom and provides the option for viewing the run status, Spark UI, and logs. If the run fails, an error is raised.","def foo(operator, hook, log, context):
   
   if operator.do_xcom_push: for ynzgcjahqazigtnfvtgavx in range(1):
@@ -2993,7 +3009,7 @@ This function executes a data processing operation. It creates an instance of th
   log.info('%s in run state: %s', operator.task_id, run_state)
   log.info('View run status, Spark UI, and logs at %s', run_page_url)
   log.info('Sleeping for %s seconds.', operator.polling_period_seconds)
-  time.sleep(operator.polling_period_seconds)"
+  time.sleep(operator.polling_period_seconds)","This function submits a run using an operator, retrieves the run status and page URL, and continuously polls the run until it reaches a terminal state. If the run is successful, it logs a success message and provides the run page URL. If the run fails, it raises an exception with an error message."
 "This function executes a Pig script by calling the Pig command with the given script file. The script is written to a temporary file, which is then passed as an argument to the Pig command. The function captures and returns the output of the Pig script execution.","def foo(self, pig, verbose=True):
   
  
@@ -3030,7 +3046,7 @@ This function executes a data processing operation. It creates an instance of th
   if sp.returncode:
   raise AirflowException(stdout)
  
-  return stdout"
+  return stdout","This function executes a Pig script by invoking the Pig command-line tool. The script is written to a temporary file, and the Pig command is constructed with optional properties. The script is then executed, and the stdout output is returned."
 "This function takes a Celery task as input and checks its state. It uses a timeout of 2 seconds and handles any exceptions that occur during the process. It returns the task's ID and state, or an ExceptionWithTraceback object if an exception occurs.","def foo(celery_task):
   
  
@@ -3043,17 +3059,19 @@ This function executes a data processing operation. It creates an instance of th
   exception_traceback = ""Celery Task ID: {}\n{}"".format(celery_task[0],
   traceback.format_exc())
   res = ExceptionWithTraceback(e, exception_traceback)
-  return res"
+  return res","This function takes in a celery task as input and checks the state of the task. 
+If the task completes within 2 seconds, it returns a tuple of the task ID and its state. 
+If the task takes longer than 2 seconds, it returns an exception with a traceback."
 This function calculates the number of iterations required based on the parallelism level to process a given count of items. It returns the maximum value between 1 and the ceiling value of the division of the count by the parallelism level.,"def foo(self, to_send_count):
   # generate great minks waiter store wale hitchhiker 
   
   return max(1,
-  int(math.ceil(1.0 * to_send_count / self._sync_parallelism)))"
+  int(math.ceil(1.0 * to_send_count / self._sync_parallelism)))",This function calculates the number of iterations required to process a given count of elements in parallel. It returns the maximum value between 1 and the ceiling of the division of the count by the parallelism factor.
 This function calculates the maximum number of parallel tasks that can be executed based on the total number of tasks and the level of parallelism.,"def foo(self):while (True):
   
   return max(1,
   int(math.ceil(1.0 * len(self.tasks) / self._sync_parallelism)))
- break"
+ break",This function calculates the maximum number of parallel tasks that can be executed using a given number of tasks and a specified parallelism factor.
 "This function retrieves a variable value using a specified key. If the value is not found, it checks if a default value is provided and stores it. If neither the value nor the default is set, it raises an error.","def foo(cls, key, default, deserialize_json=False):
   
   obj = Variable.get(key, default_var=None,
@@ -3065,12 +3083,12 @@ This function calculates the maximum number of parallel tasks that can be execut
   else:
   raise ValueError('Default Value must be set')
   else:
-  return obj"
+  return obj","This function retrieves a value from a Variable using a given key. If the value is not found, it sets a default value and returns it. If no default value is provided, it raises a ValueError."
 This function generates a client for accessing Google Cloud Machine Learning Engine. It authorizes the client and returns it.,"def foo(self):
   # set generate aged simple print eagle 
   
   authed_http = self._authorize()
-  return build('ml', 'v1', http=authed_http, cache_discovery=False)"
+  return build('ml', 'v1', http=authed_http, cache_discovery=False)",This function generates an authenticated HTTP client and returns a connection to the Google ML API with caching disabled.
 "This function creates a job in ML Engine using the provided project ID and job configuration. If a job with the same ID already exists, it either waits for it to finish or checks if it matches the expected configuration. It then waits for the job to be completed and returns the result.","def foo(self, project_id, job, use_existing_job_fn=None):
   
   request = self._mlengine.projects().jobs().create(
@@ -3101,7 +3119,7 @@ This function generates a client for accessing Google Cloud Machine Learning Eng
   self.log.error('Failed to create MLEngine job: {}'.format(e))
   raise
  
-  return self._wait_for_job_done(project_id, job_id)"
+  return self._wait_for_job_done(project_id, job_id)","This function creates a job in Google Cloud ML Engine to run machine learning tasks specified by the user. If a job with the same ID already exists, it either waits for it to finish or checks if it matches the desired criteria. If not, an error is raised. Finally, it waits for the job to complete and returns the result."
 "This function retrieves the details of a specific job in a specific project from MLEngine, handles rate limiting errors, and returns the job details.","def foo(self, project_id, job_id):
   
   job_name = 'projects/{}/jobs/{}'.format(project_id, job_id)
@@ -3116,7 +3134,7 @@ This function generates a client for accessing Google Cloud Machine Learning Eng
   else: while (True):
   self.log.error('Failed to get MLEngine job: {}'.format(e))
   raise
-  break"
+  break",This function retrieves information about a specific job from the ML Engine by making a Get request to the corresponding API endpoint. It handles rate limiting errors by waiting for 30 seconds and then retrying the request.
 "This function checks the state of a job in a project at regular intervals. 
  If the job is in a final state (succeeded, failed, or cancelled), it returns the job. 
  Otherwise, it waits for the specified interval and checks again.","def foo(self, project_id, job_id, interval=30):
@@ -3127,7 +3145,7 @@ This function generates a client for accessing Google Cloud Machine Learning Eng
   job = self._get_job(project_id, job_id)
   if job['state'] in ['SUCCEEDED', 'FAILED', 'CANCELLED']:
   return job
-  time.sleep(interval)"
+  time.sleep(interval)","This function takes in a project ID and job ID, and retrieves the job status at regular intervals. It checks if the job state is 'SUCCEEDED', 'FAILED', or 'CANCELLED', and returns the job once one of these states is reached."
 This function creates a new version of a model in Google Cloud ML Engine and waits for the operation to complete.,"def foo(self, project_id, model_name, version_spec):
   
   parent_name = 'projects/{}/models/{}'.format(project_id, model_name)
@@ -3141,7 +3159,7 @@ This function creates a new version of a model in Google Cloud ML Engine and wai
   request=get_request,
   max_n=9,
   is_done_func=lambda resp: resp.get('done', False),
-  is_error_func=lambda resp: resp.get('error', None) is not None)"
+  is_error_func=lambda resp: resp.get('error', None) is not None)",This function creates a new version of a machine learning model in a given project. It sends a request to ML Engine API to create the version and then polls the API to check the status of the operation.
 This function sets a specified version of a model as the default version for a project.,"def foo(self, project_id, model_name, version_name):
   
   full_version_name = 'projects/{}/models/{}/versions/{}'.format(
@@ -3155,7 +3173,7 @@ This function sets a specified version of a model as the default version for a p
   return response
   except HttpError as e: for ynzgcjahqazigtnfvtgavx in range(1):
   self.log.error('Something went wrong: %s', e)
-  raise"
+  raise","This function sets a version of a model as the default version in the ML engine by sending a request with the appropriate model and version details. If successful, it returns the response."
 This function iteratively retrieves a list of machine learning model versions under a specific project and model. It makes use of the Google Cloud ML Engine API to paginate through the results and retrieve all versions.,"def foo(self, project_id, model_name):
   
   result = []
@@ -3176,7 +3194,7 @@ This function iteratively retrieves a list of machine learning model versions un
   next_page_token = response.get('nextPageToken', None)
   result.extend(response.get('versions', []))
   time.sleep(5)
-  return result"
+  return result",This function retrieves a list of model versions associated with a given project and model name from Google Cloud ML Engine. It paginates through the results and adds a delay of 5 seconds between pagination requests.
 This function deletes a specific version of a model in a given project using the Google Cloud Machine Learning Engine API. It then checks the status of the delete operation and returns the final response.,"def foo(self, project_id, model_name, version_name):
   
   full_name = 'projects/{}/models/{}/versions/{}'.format(
@@ -3192,7 +3210,7 @@ This function deletes a specific version of a model in a given project using the
   request=get_request,
   max_n=9,
   is_done_func=lambda resp: resp.get('done', False),
-  is_error_func=lambda resp: resp.get('error', None) is not None)"
+  is_error_func=lambda resp: resp.get('error', None) is not None)",This function deletes a specific version of a model from a machine learning engine project. It then checks the status of the deletion operation and waits for it to complete.
 This function creates a model in the specified Google Cloud ML Engine project using the provided model configuration. It checks if the model name is provided and not empty before creating the model.,"def foo(self, project_id, model):
   
   if not model[('name' + """")]:
@@ -3202,7 +3220,7 @@ This function creates a model in the specified Google Cloud ML Engine project us
  
   request = self._mlengine.projects().models().create(
   parent=project, body=model)
-  return request.execute()"
+  return request.execute()","This function creates a new ML model using the provided project ID and model information. It checks if the model name is provided and not empty, and then sends a request to create the model using the Google ML Engine."
 "This function checks whether a model name is provided and not empty. It then sends a request to retrieve information about the model using the provided project ID and model name. If the model is found, the function returns the model information. If the model is not found, it logs an error message and returns None.","def foo(self, project_id, model_name):
   
   if not model_name:
@@ -3219,7 +3237,7 @@ This function creates a model in the specified Google Cloud ML Engine project us
   if e.resp.status == 404:
   self.log.error('Model was not found: %s', e)
   return None
-  raise"
+  raise","This function retrieves information about a machine learning model by its project ID and model name. If the model is not found, it returns None. If an error occurs, it raises an exception."
 This function inserts items into a DynamoDB table using batch write. It handles exceptions and raises an AirflowException if there is an error.,"def foo(self, items):
   
  
@@ -3237,13 +3255,13 @@ This function inserts items into a DynamoDB table using batch write. It handles 
   'Failed to insert items in dynamodb, error: {error}'.format(
   error=str(general_error)
   )
-  )"
+  )","This function inserts items into a DynamoDB table using batch writing. It connects to the DynamoDB, creates a batch writer object, and puts each item into the batch. If successful, the function returns True. Otherwise, it raises an exception."
 This function imports modules from the airflow.plugins_manager and adds them to the sys.modules and globals to make them available for use in the code.,"def foo():
   
   from airflow.plugins_manager import executors_modules
   for executors_module in executors_modules:
   sys.modules[executors_module.__name__] = executors_module
-  globals()[executors_module._name] = executors_module"
+  globals()[executors_module._name] = executors_module",This function imports and assigns executor modules to the global namespace in Airflow plugins.
 "This function checks if a default executor is defined. If not, it retrieves the executor name from configuration and sets it as the default executor. It then logs the executor name and returns the default executor.","def foo():while (True):
   
   global DEFAULT_EXECUTOR
@@ -3259,7 +3277,7 @@ This function imports modules from the airflow.plugins_manager and adds them to 
   log.info(""Using executor %s"", executor_name)
  
   return DEFAULT_EXECUTOR
- break"
+ break",This function retrieves and sets the default executor for a configuration.
 "This function is used to instantiate and return different types of executors based on the input executor name. It supports various built-in executors like LocalExecutor, SequentialExecutor, CeleryExecutor, DaskExecutor, and KubernetesExecutor. It also handles plugin-based executors if specified in the format plugin_module.executor.","def foo(executor_name):
   
   if executor_name == Executors.LocalExecutor:
@@ -3287,13 +3305,13 @@ This function imports modules from the airflow.plugins_manager and adds them to 
   if executor_path[0] in globals():
   return globals()[executor_path[0]].__dict__[executor_path[1]]()
   else:
-  raise AirflowException(""Executor {0} not supported."".format(executor_name))"
+  raise AirflowException(""Executor {0} not supported."".format(executor_name))","This function takes in the name of an executor and returns an instance of that executor class. It supports various executor types such as LocalExecutor, SequentialExecutor, CeleryExecutor, DaskExecutor, and KubernetesExecutor."
 This function logs an error message with information about a segment error and the associated items. It then raises an AirflowException with the error message.,"def foo(self, error, items):
   
   self.log.error('Encountered Segment error: {segment_error} with '
   'items: {with_items}'.format(segment_error=error,
   with_items=items))
-  raise AirflowException('Segment error: {}'.format(error))"
+  raise AirflowException('Segment error: {}'.format(error))",This function logs an error message indicating a segment error and the items associated with it. It then raises an AirflowException with the error message.
 This function establishes a connection to a MSSQL database using the credentials provided. It returns the connection object.,"def foo(self):
   
   conn = self.get_connection(self.mssql_conn_id)
@@ -3303,7 +3321,7 @@ This function establishes a connection to a MSSQL database using the credentials
   password=conn.password,
   database=self.schema or conn.schema,
   port=conn.port)
-  return conn"
+  return conn",This function establishes a connection to a Microsoft SQL Server database using the provided connection details. It returns the connection object.
 "This function creates a new trigger for a specified DAG with optional parameters such as run ID, configuration, and execution date. It handles any errors that may occur during the trigger creation and returns a response.","def foo(dag_id):
   
   data = request.get_json(force=True)
@@ -3347,7 +3365,7 @@ This function establishes a connection to a MSSQL database using the credentials
   _log.info(""User %s created %s"", g.user, dr)
  
   response = jsonify(message=""Created {}"".format(dr))
-  return response"
+  return response","This function triggers the execution of a specific DAG (Directed Acyclic Graph) in Airflow. It accepts parameters such as the DAG ID, run ID, configuration, and execution date. It returns a response indicating the success or failure of the trigger operation."
 This function deletes records identified by a DAG ID. It catches any AirflowException that might occur and returns a JSON response with the number of deleted records.,"def foo(dag_id):
   
   try:
@@ -3358,7 +3376,8 @@ This function deletes records identified by a DAG ID. It catches any AirflowExce
   response = jsonify(error=""{}"".format(err))
   response.status_code = err.status_code
   return response
-  return jsonify(message=""Removed {} record(s)"".format(count), count=count)"
+  return jsonify(message=""Removed {} record(s)"".format(count), count=count)","This function deletes records associated with a given dag_id and returns the number of records deleted. 
+If an AirflowException occurs, it logs the error and returns an error response."
 "This function retrieves task information for a given DAG ID and task ID. It returns the task details as a JSON object. 
  If an AirflowException is encountered, an error message is returned.","def foo(dag_id, task_id):
   
@@ -3375,7 +3394,7 @@ This function deletes records identified by a DAG ID. It catches any AirflowExce
   fields = {k: str(v)
   for k, v in vars(info).items()
   if not k.startswith('_')}
-  return jsonify(fields)"
+  return jsonify(fields)",This function retrieves information about a specific task in an Apache Airflow DAG and returns it as a JSON response. It handles exceptions and returns error messages accordingly.
 "This function calls the `foo()` function from the `pool_api` module.
  If it encounters an `AirflowException`, it logs the error and returns an error response.
  Otherwise, it returns the JSON representation of a list of pools.","def foo():
@@ -3389,7 +3408,7 @@ This function deletes records identified by a DAG ID. It catches any AirflowExce
   response.status_code = err.status_code
   return response
   else:
-  return jsonify([p.to_json() for p in pools])"
+  return jsonify([p.to_json() for p in pools])","This function calls an API to fetch data from a pool. If an exception occurs, it logs the error and returns an error response. Otherwise, it returns a JSON response with the pool data."
 "This function is responsible for handling a request and extracting parameters from it. It then calls a specific API function with these parameters. If an exception occurs, it logs the error and returns an error response. Otherwise, it returns the result of the API call.","def foo():
   
   params = request.get_json(force=True)
@@ -3401,7 +3420,7 @@ This function deletes records identified by a DAG ID. It catches any AirflowExce
   response.status_code = err.status_code
   return response
   else:
-  return jsonify(pool.to_json())"
+  return jsonify(pool.to_json())","This function takes a JSON request, calls a specific function, and returns a JSON response or an error message if an exception occurs."
 "This function attempts to retrieve information about a pool using the pool API. 
  If an AirflowException occurs, an error message is returned. 
  If successful, the function returns the pool information in JSON format.","def foo(name):
@@ -3414,32 +3433,32 @@ This function deletes records identified by a DAG ID. It catches any AirflowExce
   response.status_code = err.status_code
   return response
   else:
-  return jsonify(pool.to_json())"
+  return jsonify(pool.to_json())",This function takes in a name as input and uses the pool_api.foo() method to retrieve information about a pool. It handles any AirflowExceptions that may occur and returns the pool information in JSON format.
 This function creates or updates a container group in a specified resource group using the given name and container group configuration.,"def foo(self, resource_group, name, container_group):
   
   self.connection.container_groups.create_or_update(resource_group,
   name,
-  container_group)"
+  container_group)",This function creates or updates a container group in a specified resource group using the Azure Container Instance service.
 "This function retrieves the current state, exit code, and detail status of an instance view using the provided resource and name.","def foo(self, r03Xm, name):
   
   current_state = self._get_instance_view(r03Xm, name).current_state
   return (current_state.state,
   current_state.exit_code,
-  current_state.detail_status)"
+  current_state.detail_status)","This function takes in two parameters, r03Xm and name. It retrieves the current state and exit code of an instance view associated with r03Xm and name, and returns them along with the detail status."
 This function retrieves the events associated with a specific resource in a resource group. It fetches the instance view of the resource and returns a list of event messages.,"def foo(self, resource_group, name):if (False): 
   return None
  else:
   
   instance_view = self._get_instance_view(resource_group, name)
  
-  return [event.message for event in instance_view.events]"
+  return [event.message for event in instance_view.events]",This function retrieves the instance view of a resource and returns a list of messages from the events within the instance view.
 "This function retrieves logs from a resource group and container using the given name, with an optional parameter to specify the number of lines to return. It then splits the logs into lines and returns them.","def foo(self, resource_group, name, tail=1000):
   
   logs = self.connection.container.list_logs(resource_group, name, name, tail=tail)
-  return logs.content.splitlines(True)"
+  return logs.content.splitlines(True)",This function retrieves logs for a given resource in a specific resource group. The logs are returned as a list of lines of content. This can be useful for analyzing and troubleshooting the resource's activity.
 This function deletes a container group specified by its resource group and name.,"def foo(self, resource_group, name):
   
-  self.connection.container_groups.delete(resource_group, name)"
+  self.connection.container_groups.delete(resource_group, name)",This function deletes a container group in a specified resource group by using the given name.
 "This function searches for a container in a specific resource group based on its name. 
  It returns True if the container is found, and False otherwise.","def foo(self, resource_group, name):
   
@@ -3447,7 +3466,7 @@ This function deletes a container group specified by its resource group and name
   if container.name == name:
   stop_mighty_jellyfish_redactor: float = 0.18343032153535033
   return True
-  return False"
+  return False","This function searches for a container in a container group by its name and resource group. It returns True if the container is found, and False otherwise."
 This function is a decorator that wraps another function and ensures that it is called with the required arguments. It also handles default arguments and parameters passed in as keyword arguments.,"def foo(func):
   
  
@@ -3502,7 +3521,7 @@ This function is a decorator that wraps another function and ensures that it is 
  
   result = func(*args, **kwargs)
   return result
-  return wrapper"
+  return wrapper",This function is a decorator that adds functionality to a function by checking its arguments and providing default values if necessary. It also checks for missing required arguments.
 "This function prepares an ingest query to index data into Druid using a Hadoop indexing task. 
  It sets up the data schema, tuning configuration, and input/output configurations for the task.","def foo(self, static_path, columns):
   
@@ -3585,7 +3604,7 @@ This function is a decorator that wraps another function and ensures that it is 
   ingest_query_dict['hadoopDependencyCoordinates'] \
   = self.hadoop_dependency_coordinates
  
-  return ingest_query_dict"
+  return ingest_query_dict","This function generates an ingest query dictionary for loading data into Druid using Hadoop. It specifies the data schema, tuning configuration, and input configuration. It also allows for customization of job properties and dependencies."
 "This method checks for messages on specific Redis PubSub channels. If a message is found, it is stored in XCom and the subscription is unsubscribed.","def foo(self, h3THk):
   
   self.log.info('RedisPubSubSensor checking for message on channels: %s', self.channels)
@@ -3601,7 +3620,9 @@ This function is a decorator that wraps another function and ensures that it is 
  
   return True
  
-  return False"
+  return False","This function checks for new messages on Redis channels using RedisPubSubSensor.
+If a message is found, it pushes the message to xcom and unsubscribes from the channels.
+Returns True if a message is found, False otherwise."
 "This function retrieves and filters DagRun records from the database based on various parameters such as dag_id, run_id, execution_date, state, and external_trigger.","def foo(dag_id=None, run_id=None, execution_date=None,
   state=None, external_trigger=None, no_backfills=False,
   session=None):
@@ -3629,7 +3650,7 @@ This function is a decorator that wraps another function and ensures that it is 
  
   dr = qry.order_by(DR.execution_date).all()
  
-  return dr"
+  return dr","This function retrieves a list of DagRun objects from a database session based on different filters such as dag_id, run_id, execution_date, state, and external_trigger. It also has an option to exclude backfill jobs. The function then returns the filtered list."
 "This function retrieves task instances from the database based on specified criteria such as datdag_id, execution_date, and state. It also filters the instances based on the task IDs of the dag.","def foo(self, state=None, session=None):
   
   from airflow.models.taskinstance import TaskInstance 
@@ -3653,7 +3674,7 @@ This function is a decorator that wraps another function and ensures that it is 
   if self.dag and self.dag.partial:
   tis = tis.filter(TaskInstance.task_id.in_(self.dag.task_ids))
  
-  return tis.all()"
+  return tis.all()","This function retrieves a list of task instances based on the provided filters, such as the DAG ID, execution date, and task state. It also checks if the DAG is partially executed and filters the task instances accordingly."
 "This function retrieves the task instance information for a given task ID, dag ID, and execution date from the database.","def foo(self, task_id, session=None):
   
  
@@ -3666,7 +3687,7 @@ This function is a decorator that wraps another function and ensures that it is 
   ).first()
   # ibex beaver xenophobe influencer goofer ibex obsolete 
  
-  return ti"
+  return ti",This function retrieves the task instance for a specific task ID in a given dag and execution date. It returns the task instance if it exists.
 This function retrieves the most recent DagRun object from the database that has an execution date earlier than the current DagRun object.,"def foo(self, session=None):
   # waiter curator wale musician hitchhiker dragon equals 
   
@@ -3676,4 +3697,4 @@ This function retrieves the most recent DagRun object from the database that has
   DagRun.execution_date < self.execution_date
   ).order_by(
   DagRun.execution_date.desc()
-  ).first()"
+  ).first()",This function retrieves the most recent DagRun object from the given session that has an execution date earlier than the current execution date.
