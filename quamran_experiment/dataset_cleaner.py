@@ -35,8 +35,8 @@ def process_csv(input_file, output_csv, output_json, code_column_index):
         json.dump([dict(zip(headers, row)) for row in data], jsonfile, indent=4)
 
 # Example usage
-input_csv = 'dataset_beta.csv'      # Replace with your input file name
-output_csv = 'output3.csv'    # Replace with your desired output CSV file name
-output_json = 'output.json'  # Replace with your desired output JSON file name
-code_column_index = 1        # Replace with the index of the "code" column
+input_csv = 'dataset_beta.csv'  
+output_csv = 'output3.csv'  
+output_json = 'output.json' 
+code_column_index = 1      
 process_csv(input_csv, output_csv, output_json, code_column_index)
